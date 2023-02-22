@@ -23,7 +23,7 @@ private:
     void cleanup();
 
 private:
-    const uint32_t WIDTH = 800;
-    const uint32_t HEIGHT = 600;
+    const uint32_t WIDTH = 1024;
+    const uint32_t HEIGHT = 768;
     GLFWwindow* mWindow = nullptr;
 };
