@@ -11,3 +11,8 @@ add_executable( ${TARGET_NAME} WIN32
 )
 
 find_package(Vulkan REQUIRED)
+target_link_libraries(VulkanRenderApp ${Vulkan_LIBRARIES})
+
+target_compile_features( VulkanRenderApp 
+	PUBLIC cxx_std_17
+)
