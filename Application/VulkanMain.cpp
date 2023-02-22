@@ -9,7 +9,6 @@
 //#include <iostream>
 
 #include "GraphicsSystem.h"
-#include <vulkan/vulkan.h>
 
 #include <iostream>
 #include <stdexcept>
