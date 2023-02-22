@@ -11,6 +11,11 @@ add_executable( ${TARGET_NAME} WIN32
 )
 
 find_package(Vulkan REQUIRED)
+
+target_include_directories (VulkanRenderApp 
+    PUBLIC ${Vulkan_INCLUDE_DIRS}
+)
+
 target_link_libraries(VulkanRenderApp ${Vulkan_LIBRARIES})
 
 target_compile_features( VulkanRenderApp 
