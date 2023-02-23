@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include <vector>
+#include <iostream>
 
 class GraphicsSystem
 {
@@ -32,19 +33,35 @@ private:
 private:
     bool checkValidationLayerSupport();
 
+    std::vector<const char*> getGLFWRequiredExtensions();
+
+    void setupDebugMessenger();
+
+    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, 
+        VkDebugUtilsMessageTypeFlagsEXT messageType, 
+        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, 
+        void* pUserData) 
+    {
+        std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+
+        return VK_FALSE;
+    }
+
 private:
 
     VkInstance mVkInstance = nullptr;
 
-    const std::vector<const char*> validationLayers = {
+#ifdef NDEBUG
+    const bool mEnableValidationLayers = false;
+#else
+    const bool mEnableValidationLayers = true;
+#endif
+
+    const std::vector<const char*> mValidationLayers = {
         "VK_LAYER_KHRONOS_validation"
     };
 
-#ifdef NDEBUG
-    const bool enableValidationLayers = false;
-#else
-    const bool enableValidationLayers = true;
-#endif
+    VkDebugUtilsMessengerEXT mDebugMessenger;
 
     const uint32_t WIDTH = 1024;
     const uint32_t HEIGHT = 768;
