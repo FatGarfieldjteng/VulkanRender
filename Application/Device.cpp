@@ -11,10 +11,21 @@ Device::Device()
 
 Device::~Device()
 {
-
+    vkDestroyDevice(mLogicalDevice, nullptr);
 }
 
 void Device::create(VkInstance VkInstance)
+{
+    createPhysicalDevice(VkInstance);
+    createLogicalDevice();
+}
+
+void Device::acquireQueue(VkQueue* graphicsQueue)
+{
+    vkGetDeviceQueue(mLogicalDevice, mQueueFamilyIndices.graphicsFamily.value(), 0, graphicsQueue);
+}
+
+void Device::createPhysicalDevice(VkInstance VkInstance)
 {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(VkInstance, &deviceCount, nullptr);
@@ -23,28 +34,60 @@ void Device::create(VkInstance VkInstance)
         throw std::runtime_error("failed to find GPUs with Vulkan support!");
     }
 
-    std::vector<VkPhysicalDevice> devices(deviceCount);
-    vkEnumeratePhysicalDevices(VkInstance, &deviceCount, devices.data());
+    std::vector<VkPhysicalDevice> physicalDevices(deviceCount);
+    vkEnumeratePhysicalDevices(VkInstance, &deviceCount, physicalDevices.data());
 
-    for (const auto& device : devices) {
-        if (isDeviceSuitable(device)) {
-            mDevice = device;
+    for (const auto& physicalDevice : physicalDevices) {
+        if (isDeviceSuitable(physicalDevice)) {
+            mPhysicalDevice = physicalDevice;
             break;
         }
     }
 
-    if (mDevice == VK_NULL_HANDLE) {
+    if (mPhysicalDevice == VK_NULL_HANDLE) {
         throw std::runtime_error("failed to find a suitable GPU!");
     }
 }
 
-bool Device::isDeviceSuitable(VkPhysicalDevice device)
+void Device::createLogicalDevice()
+{
+    mQueueFamilyIndices = findQueueFamilies(mPhysicalDevice);
+
+    // queue creation information
+    VkDeviceQueueCreateInfo queueCreateInfo{};
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = mQueueFamilyIndices.graphicsFamily.value();
+    queueCreateInfo.queueCount = 1;
+
+    // set priority of the queue
+    float queuePriority = 1.0f;
+    queueCreateInfo.pQueuePriorities = &queuePriority;
+
+    // no specific feature needed
+    VkPhysicalDeviceFeatures deviceFeatures{};
+
+    VkDeviceCreateInfo createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
+    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.queueCreateInfoCount = 1;
+
+    createInfo.pEnabledFeatures = &deviceFeatures;
+
+    createInfo.enabledExtensionCount = 0;
+
+    if (vkCreateDevice(mPhysicalDevice, &createInfo, nullptr, &mLogicalDevice) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create logical device!");
+    }
+}
+
+bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)
 {
     VkPhysicalDeviceProperties deviceProperties;
     VkPhysicalDeviceFeatures deviceFeatures;
-    vkGetPhysicalDeviceProperties(device, &deviceProperties);
+    vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 
-    QueueFamilyIndices indices = findQueueFamilies(device);
+    QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
         
     return (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && indices.isComplete());
 }

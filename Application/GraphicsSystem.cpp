@@ -1,6 +1,7 @@
 #include "GraphicsSystem.h"
 #include "Validation.h"
 #include "Device.h"
+#include "Queue.h"
 
 #include <stdexcept>
 
@@ -86,6 +87,12 @@ void GraphicsSystem::createDevice()
     mDevice->create(mVkInstance);
 }
 
+void GraphicsSystem::createQueue()
+{
+    mQueue = new Queue();
+    mQueue->acquireQueue(mDevice);
+}
+
 void GraphicsSystem::initWindow()
 {
     glfwInit();
@@ -99,6 +106,7 @@ void GraphicsSystem::initVulkan()
     createInstance();
     createDebugMessenger();
     createDevice();
+    createQueue();
 }
 
 void GraphicsSystem::mainLoop() 

@@ -6,6 +6,7 @@ set(HEADER_FILES
 	GraphicsSystem.h
 	Validation.h
 	Device.h
+	Queue.h
 )
 
 set(SOURCE_FILES 
@@ -13,6 +14,7 @@ set(SOURCE_FILES
 	GraphicsSystem.cpp
 	Validation.cpp
 	Device.cpp
+	Queue.cpp
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")

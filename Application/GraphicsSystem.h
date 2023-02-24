@@ -9,6 +9,7 @@
 
 class Validation;
 class Device;
+class Queue;
 
 class GraphicsSystem
 {
@@ -28,6 +29,8 @@ private:
     void createValidation();
 
     void createDevice();
+
+    void createQueue();
 
     void initWindow();
 
@@ -50,6 +53,8 @@ private:
     VkInstance mVkInstance = nullptr;
 
     Device* mDevice = nullptr;
+
+    Queue* mQueue = nullptr;
 
 #ifdef NDEBUG
     const bool mEnableValidationLayers = false;

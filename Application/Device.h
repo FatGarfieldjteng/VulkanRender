@@ -25,10 +25,17 @@ public:
 
 public:
 	void create(VkInstance VkInstance);
+	void acquireQueue(VkQueue* graphicsQueue);
 
 private:
+
+	void createPhysicalDevice(VkInstance VkInstance);
+	void createLogicalDevice();
+
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
 private:
-	VkPhysicalDevice mDevice = VK_NULL_HANDLE;
+	VkPhysicalDevice mPhysicalDevice = VK_NULL_HANDLE;
+	VkDevice mLogicalDevice = VK_NULL_HANDLE;
+	QueueFamilyIndices mQueueFamilyIndices;
 };
