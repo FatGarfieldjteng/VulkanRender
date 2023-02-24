@@ -3,12 +3,14 @@ cmake_minimum_required(VERSION 3.16.1)
 set(TARGET_NAME VulkanRenderApp)
 
 set(HEADER_FILES
-	GraphicsSystem.h 
+	GraphicsSystem.h
+	Validation.h
 )
 
 set(SOURCE_FILES 
 	VulkanMain.cpp
 	GraphicsSystem.cpp
+	Validation.cpp
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")

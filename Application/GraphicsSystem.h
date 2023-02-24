@@ -7,6 +7,8 @@
 #include <vector>
 #include <iostream>
 
+class Validation;
+
 class GraphicsSystem
 {
 public:
@@ -22,32 +24,25 @@ private:
     // create Vulkan instance
     void createInstance();
 
+    void createValidation();
+
     void initWindow();
 
     void initVulkan();
+
+    void createDebugMessenger(VkInstance VkInstance);
 
     void mainLoop();
 
     void cleanup();
 
 private:
-    bool checkValidationLayerSupport();
-
+    
     std::vector<const char*> getGLFWRequiredExtensions();
-
-    void setupDebugMessenger();
-
-    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, 
-        VkDebugUtilsMessageTypeFlagsEXT messageType, 
-        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, 
-        void* pUserData) 
-    {
-        std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
-
-        return VK_FALSE;
-    }
-
+        
 private:
+
+    Validation* mValidation = nullptr;
 
     VkInstance mVkInstance = nullptr;
 
@@ -56,12 +51,6 @@ private:
 #else
     const bool mEnableValidationLayers = true;
 #endif
-
-    const std::vector<const char*> mValidationLayers = {
-        "VK_LAYER_KHRONOS_validation"
-    };
-
-    VkDebugUtilsMessengerEXT mDebugMessenger;
 
     const uint32_t WIDTH = 1024;
     const uint32_t HEIGHT = 768;

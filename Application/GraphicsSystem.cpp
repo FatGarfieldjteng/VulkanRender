@@ -1,5 +1,5 @@
 #include "GraphicsSystem.h"
-
+#include "Validation.h"
 #include <stdexcept>
 
 GraphicsSystem::GraphicsSystem()
@@ -9,7 +9,10 @@ GraphicsSystem::GraphicsSystem()
 
 GraphicsSystem::~GraphicsSystem()
 {
-
+    if (mEnableValidationLayers)
+    {
+        delete mValidation;
+    }
 }
 
 void GraphicsSystem::run() 
@@ -22,7 +25,13 @@ void GraphicsSystem::run()
 
 void GraphicsSystem::createInstance()
 {
-    if (mEnableValidationLayers && !checkValidationLayerSupport()) {
+    if (mEnableValidationLayers)
+    {
+        createValidation();
+        
+    }
+
+    if (!mValidation->checkValidationLayerSupport()) {
         throw std::runtime_error("validation layers requested, but not available!");
     }
 
@@ -41,10 +50,13 @@ void GraphicsSystem::createInstance()
     auto extensions = getGLFWRequiredExtensions();
     createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
     createInfo.ppEnabledExtensionNames = extensions.data();
-
+    
+    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
     if (mEnableValidationLayers) {
-        createInfo.enabledLayerCount = static_cast<uint32_t>(mValidationLayers.size());
-        createInfo.ppEnabledLayerNames = mValidationLayers.data();
+        createInfo.enabledLayerCount = static_cast<uint32_t>(mValidation->getValidationLayersSize());
+        createInfo.ppEnabledLayerNames = mValidation->getValidationLayersData();
+        mValidation->setupVkDebugUtilsMessengerCreateInfo(debugCreateInfo);
+        createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
     }
     else {
         createInfo.enabledLayerCount = 0;
@@ -54,6 +66,16 @@ void GraphicsSystem::createInstance()
         throw std::runtime_error("failed to create Vulkan instance!");
     }
 
+}
+
+void GraphicsSystem::createDebugMessenger(VkInstance VkInstance)
+{
+    mValidation->createDebugMessenger(VkInstance);
+}
+
+void GraphicsSystem::createValidation()
+{
+    mValidation = new Validation();
 }
 
 void GraphicsSystem::initWindow()
@@ -67,6 +89,7 @@ void GraphicsSystem::initWindow()
 void GraphicsSystem::initVulkan() 
 {
     createInstance();
+    createDebugMessenger(mVkInstance);
 }
 
 void GraphicsSystem::mainLoop() 
@@ -78,6 +101,11 @@ void GraphicsSystem::mainLoop()
 
 void GraphicsSystem::cleanup() 
 {
+    if (mEnableValidationLayers) 
+    {
+       mValidation->destroyDebugMessenger(mVkInstance);
+    }
+
     vkDestroyInstance(mVkInstance, nullptr);
 
     glfwDestroyWindow(mWindow);
@@ -85,50 +113,6 @@ void GraphicsSystem::cleanup()
     glfwTerminate();
 }
 
-bool GraphicsSystem::checkValidationLayerSupport()
-{
-    uint32_t layerCount;
-    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-
-    std::vector<VkLayerProperties> availableLayers(layerCount);
-    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-    for (const char* layerName : mValidationLayers) {
-        bool layerFound = false;
-
-        for (const auto& layerProperties : availableLayers) {
-            if (strcmp(layerName, layerProperties.layerName) == 0) {
-                layerFound = true;
-                break;
-            }
-        }
-
-        if (!layerFound) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-void GraphicsSystem::setupDebugMessenger()
-{
-    if (mEnableValidationLayers) return;
-
-    VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
-    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-    createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT 
-        | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT 
-        | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-    createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT 
-        | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT 
-        | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-    createInfo.pfnUserCallback = debugCallback;
-
-    if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
-        throw std::runtime_error("failed to set up debug messenger!");
-    }
-}
 
 std::vector<const char*> GraphicsSystem::getGLFWRequiredExtensions() {
     uint32_t glfwExtensionCount = 0;
