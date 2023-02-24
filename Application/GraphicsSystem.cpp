@@ -1,5 +1,7 @@
 #include "GraphicsSystem.h"
 #include "Validation.h"
+#include "Device.h"
+
 #include <stdexcept>
 
 GraphicsSystem::GraphicsSystem()
@@ -68,14 +70,20 @@ void GraphicsSystem::createInstance()
 
 }
 
-void GraphicsSystem::createDebugMessenger(VkInstance VkInstance)
+void GraphicsSystem::createDebugMessenger()
 {
-    mValidation->createDebugMessenger(VkInstance);
+    mValidation->createDebugMessenger(mVkInstance);
 }
 
 void GraphicsSystem::createValidation()
 {
     mValidation = new Validation();
+}
+
+void GraphicsSystem::createDevice()
+{
+    mDevice = new Device();
+    mDevice->create(mVkInstance);
 }
 
 void GraphicsSystem::initWindow()
@@ -89,7 +97,8 @@ void GraphicsSystem::initWindow()
 void GraphicsSystem::initVulkan() 
 {
     createInstance();
-    createDebugMessenger(mVkInstance);
+    createDebugMessenger();
+    createDevice();
 }
 
 void GraphicsSystem::mainLoop() 

@@ -5,12 +5,14 @@ set(TARGET_NAME VulkanRenderApp)
 set(HEADER_FILES
 	GraphicsSystem.h
 	Validation.h
+	Device.h
 )
 
 set(SOURCE_FILES 
 	VulkanMain.cpp
 	GraphicsSystem.cpp
 	Validation.cpp
+	Device.cpp
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")

@@ -8,6 +8,7 @@
 #include <iostream>
 
 class Validation;
+class Device;
 
 class GraphicsSystem
 {
@@ -26,11 +27,13 @@ private:
 
     void createValidation();
 
+    void createDevice();
+
     void initWindow();
 
     void initVulkan();
 
-    void createDebugMessenger(VkInstance VkInstance);
+    void createDebugMessenger();
 
     void mainLoop();
 
@@ -45,6 +48,8 @@ private:
     Validation* mValidation = nullptr;
 
     VkInstance mVkInstance = nullptr;
+
+    Device* mDevice = nullptr;
 
 #ifdef NDEBUG
     const bool mEnableValidationLayers = false;
