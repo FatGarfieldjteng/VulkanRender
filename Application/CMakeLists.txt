@@ -7,6 +7,7 @@ set(HEADER_FILES
 	Validation.h
 	Device.h
 	Queue.h
+	SwapChain.h
 )
 
 set(SOURCE_FILES 
@@ -15,6 +16,7 @@ set(SOURCE_FILES
 	Validation.cpp
 	Device.cpp
 	Queue.cpp
+	SwapChain.cpp
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")

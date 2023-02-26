@@ -5,10 +5,12 @@
 #include <optional>
 
 #include "Queue.h"
+#include "SwapChain.h"
 
-class Queue;
+#include <vector>
+
 class Validation;
-class Queue;
+class SwapChain;
 
 class Device
 {
@@ -17,18 +19,7 @@ public:
 	Device(bool enableValidationLayers, Validation* validation);
 	~Device();
 
-	struct QueueFamilyIndices
-	{
-		std::optional<uint32_t> graphicsFamily;
-		std::optional<uint32_t> presentFamily;
-
-		bool isComplete() 
-		{
-			return graphicsFamily.has_value() && presentFamily.has_value();
-		}
-	};
-
-	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+	
 
 public:
 	void create(VkInstance VkInstance, GLFWwindow* window);
@@ -41,11 +32,17 @@ private:
 
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
+	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+
+	Queue::QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+
+	SwapChain::SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device); 
+
 private:
 	const bool mEnableValidationLayers = false;
 	Validation* mValidation = nullptr;
 
-	QueueFamilyIndices mQueueFamilyIndices;
+	Queue::QueueFamilyIndices mQueueFamilyIndices;
 	VkPhysicalDevice mPhysicalDevice = VK_NULL_HANDLE;
 	VkDevice mLogicalDevice = VK_NULL_HANDLE;
 	VkSurfaceKHR mSurface = VK_NULL_HANDLE;
@@ -53,4 +50,12 @@ private:
 
 	Queue* mGraphicsQueue = nullptr;
 	Queue* mPresentQueue = nullptr;
+
+	SwapChain* mSwapChain = nullptr;
+
+	// swap chain extension
+	const std::vector<const char*> mSwapChainExtensionName = 
+	{
+		VK_KHR_SWAPCHAIN_EXTENSION_NAME
+	};
 };

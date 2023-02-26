@@ -1,9 +1,9 @@
 #include "Device.h"
 #include "Validation.h"
+#include "SwapChain.h"
 
 #include <stdexcept>
 #include <iostream>
-#include <vector>
 #include <set>
 
 Device::Device(bool enableValidationLayers, Validation* validation)
@@ -124,7 +124,8 @@ void Device::createLogicalDevice()
 
     createInfo.pEnabledFeatures = &deviceFeatures;
 
-    createInfo.enabledExtensionCount = 0;
+    createInfo.enabledExtensionCount = static_cast<uint32_t>(mSwapChainExtensionName.size());
+    createInfo.ppEnabledExtensionNames = mSwapChainExtensionName.data();
 
     if (mEnableValidationLayers) {
         createInfo.enabledLayerCount = static_cast<uint32_t>(mValidation->getValidationLayersSize());
@@ -152,14 +153,43 @@ bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)
     VkPhysicalDeviceFeatures deviceFeatures;
     vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 
-    QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+    Queue::QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+
+    bool extensionsSupported = checkDeviceExtensionSupport(physicalDevice);
+
+    bool swapChainAdequate = false;
+    if (extensionsSupported) {
+        SwapChain::SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice);
+        swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+    }
         
-    return (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && indices.isComplete());
+    return (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU 
+        && indices.isComplete() 
+        && extensionsSupported
+        && swapChainAdequate);
 }
 
-Device::QueueFamilyIndices Device::findQueueFamilies(VkPhysicalDevice device)
+bool Device::checkDeviceExtensionSupport(VkPhysicalDevice device)
 {
-    QueueFamilyIndices indices;
+    uint32_t extensionCount;
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+    std::set<std::string> requiredExtensions(mSwapChainExtensionName.begin(), mSwapChainExtensionName.end());
+
+    for (const auto& extension : availableExtensions)
+    {
+        requiredExtensions.erase(extension.extensionName);
+    }
+
+    return requiredExtensions.empty();
+}
+
+Queue::QueueFamilyIndices Device::findQueueFamilies(VkPhysicalDevice device)
+{
+    Queue::QueueFamilyIndices indices;
 
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
@@ -188,4 +218,30 @@ Device::QueueFamilyIndices Device::findQueueFamilies(VkPhysicalDevice device)
     }
 
     return indices;
+}
+
+SwapChain::SwapChainSupportDetails Device::querySwapChainSupport(VkPhysicalDevice device)
+{
+    SwapChain::SwapChainSupportDetails details;
+
+
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, mSurface, &details.capabilities);
+
+    uint32_t formatCount;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, mSurface, &formatCount, nullptr);
+
+    if (formatCount != 0) {
+        details.formats.resize(formatCount);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, mSurface, &formatCount, details.formats.data());
+    }
+
+    uint32_t presentModeCount;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, mSurface, &presentModeCount, nullptr);
+
+    if (presentModeCount != 0) {
+        details.presentModes.resize(presentModeCount);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, mSurface, &presentModeCount, details.presentModes.data());
+    }
+
+    return details;
 }
