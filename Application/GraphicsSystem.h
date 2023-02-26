@@ -38,6 +38,8 @@ private:
 
     void createDebugMessenger();
 
+    void createSurface();
+
     void mainLoop();
 
     void cleanup();
@@ -55,6 +57,8 @@ private:
     Device* mDevice = nullptr;
 
     Queue* mQueue = nullptr;
+
+    VkSurfaceKHR mSurface = VK_NULL_HANDLE;
 
 #ifdef NDEBUG
     const bool mEnableValidationLayers = false;

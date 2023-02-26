@@ -7,23 +7,20 @@
 
 GraphicsSystem::GraphicsSystem()
 {
-
+    
 }
 
 GraphicsSystem::~GraphicsSystem()
 {
-    if (mEnableValidationLayers)
-    {
-        delete mValidation;
-    }
+    cleanup();
 }
 
 void GraphicsSystem::run() 
 {
     initWindow();
     initVulkan();
+
     mainLoop();
-    cleanup();
 }
 
 void GraphicsSystem::createInstance()
@@ -76,6 +73,17 @@ void GraphicsSystem::createDebugMessenger()
     mValidation->createDebugMessenger(mVkInstance);
 }
 
+void GraphicsSystem::createSurface()
+{
+    if (glfwCreateWindowSurface(mVkInstance, 
+        mWindow, 
+        nullptr, 
+        &mSurface) != VK_SUCCESS) 
+    {
+        throw std::runtime_error("failed to create window surface!");
+    }
+}
+
 void GraphicsSystem::createValidation()
 {
     mValidation = new Validation();
@@ -105,6 +113,7 @@ void GraphicsSystem::initVulkan()
 {
     createInstance();
     createDebugMessenger();
+    createSurface();
     createDevice();
     createQueue();
 }
@@ -118,10 +127,17 @@ void GraphicsSystem::mainLoop()
 
 void GraphicsSystem::cleanup() 
 {
+    if (mDevice)
+    {
+        delete mDevice;
+    }
+
     if (mEnableValidationLayers) 
     {
        mValidation->destroyDebugMessenger(mVkInstance);
     }
+
+    vkDestroySurfaceKHR(mVkInstance, mSurface, nullptr);
 
     vkDestroyInstance(mVkInstance, nullptr);
 
