@@ -10,12 +10,20 @@ class Queue
 {
 public:
 
-	Queue();
+	enum class Type
+	{
+		Present = 1,
+		Graphics
+	};
+
+	Queue(Type type);
 	~Queue();
 
 public:
 	void acquireQueue(Device* device);
+	Type getType();
 
 private:
-	VkQueue mGraphicsQueue = VK_NULL_HANDLE;
+	VkQueue mQueue = VK_NULL_HANDLE;
+	Type mType;
 };

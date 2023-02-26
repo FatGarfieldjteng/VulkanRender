@@ -1,7 +1,6 @@
 #include "GraphicsSystem.h"
 #include "Validation.h"
 #include "Device.h"
-#include "Queue.h"
 
 #include <stdexcept>
 
@@ -73,17 +72,6 @@ void GraphicsSystem::createDebugMessenger()
     mValidation->createDebugMessenger(mVkInstance);
 }
 
-void GraphicsSystem::createSurface()
-{
-    if (glfwCreateWindowSurface(mVkInstance, 
-        mWindow, 
-        nullptr, 
-        &mSurface) != VK_SUCCESS) 
-    {
-        throw std::runtime_error("failed to create window surface!");
-    }
-}
-
 void GraphicsSystem::createValidation()
 {
     mValidation = new Validation();
@@ -91,14 +79,8 @@ void GraphicsSystem::createValidation()
 
 void GraphicsSystem::createDevice()
 {
-    mDevice = new Device();
-    mDevice->create(mVkInstance);
-}
-
-void GraphicsSystem::createQueue()
-{
-    mQueue = new Queue();
-    mQueue->acquireQueue(mDevice);
+    mDevice = new Device(mEnableValidationLayers, mValidation);
+    mDevice->create(mVkInstance, mWindow);
 }
 
 void GraphicsSystem::initWindow()
@@ -113,9 +95,7 @@ void GraphicsSystem::initVulkan()
 {
     createInstance();
     createDebugMessenger();
-    createSurface();
     createDevice();
-    createQueue();
 }
 
 void GraphicsSystem::mainLoop() 
@@ -137,7 +117,7 @@ void GraphicsSystem::cleanup()
        mValidation->destroyDebugMessenger(mVkInstance);
     }
 
-    vkDestroySurfaceKHR(mVkInstance, mSurface, nullptr);
+    
 
     vkDestroyInstance(mVkInstance, nullptr);
 
