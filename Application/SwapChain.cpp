@@ -21,7 +21,7 @@ SwapChain::~SwapChain()
     vkDestroySwapchainKHR(mLogicalDevice, mSwapChain, nullptr);
 }
 
-void SwapChain::createSwapChain(VkPhysicalDevice physicalDevice, VkDevice logicalDevice, GLFWwindow* window, VkSurfaceKHR surface)
+void SwapChain::create(VkPhysicalDevice physicalDevice, VkDevice logicalDevice, GLFWwindow* window, VkSurfaceKHR surface)
 {
     mLogicalDevice = logicalDevice;
 

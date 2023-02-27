@@ -9,6 +9,10 @@ ShaderManager::ShaderManager(VkDevice logicalDevice)
 
 ShaderManager::~ShaderManager()
 {
+	for (VkShaderModule shaderModule : mScratchPad)
+	{
+		vkDestroyShaderModule(mLogicalDevice, shaderModule, nullptr);
+	}
 }
 
 void ShaderManager::createShaders()
@@ -27,13 +31,13 @@ void ShaderManager::createSimpleVS()
 
 	VkShaderModule shaderModule = createShaderModule(bytecode);
 
+	mScratchPad.push_back(shaderModule);
+
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
 	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
 	vertShaderStageInfo.module = shaderModule;
 	vertShaderStageInfo.pName = "main";
-
-	vkDestroyShaderModule(mLogicalDevice, shaderModule, nullptr);
 
 	addVS("SimpleVS", vertShaderStageInfo);
 }
@@ -46,6 +50,8 @@ void ShaderManager::createSimplePS()
 	std::vector<char> bytecode = readFile(shaderPath);
 	VkShaderModule shaderModule = createShaderModule(bytecode);
 
+	mScratchPad.push_back(shaderModule);
+
 	VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
 	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
@@ -53,8 +59,6 @@ void ShaderManager::createSimplePS()
 	fragShaderStageInfo.pName = "main";
 
 	addPS("SimplePS", fragShaderStageInfo);
-
-	vkDestroyShaderModule(mLogicalDevice, shaderModule, nullptr);
 }
 
 void ShaderManager::addVS(const std::string& ID, VkPipelineShaderStageCreateInfo vs)

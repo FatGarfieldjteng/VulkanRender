@@ -44,4 +44,5 @@ private:
     std::map<std::string, VkPipelineShaderStageCreateInfo > mIDToVS;
     std::map<std::string, VkPipelineShaderStageCreateInfo > mIDToPS;
 
+    std::vector< VkShaderModule> mScratchPad;
 };

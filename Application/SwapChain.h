@@ -19,7 +19,7 @@ public:
 	~SwapChain();
 
 public:
-	void createSwapChain(VkPhysicalDevice physicalDevice, 
+	void create(VkPhysicalDevice physicalDevice, 
 		VkDevice logicalDevice, 
 		GLFWwindow* window, 
 		VkSurfaceKHR surface);
