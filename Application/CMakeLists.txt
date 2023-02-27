@@ -48,3 +48,5 @@ ${GLEW_lib}
 target_compile_features( VulkanRenderApp 
 	PUBLIC cxx_std_17
 )
+
+add_subdirectory(Shader)
