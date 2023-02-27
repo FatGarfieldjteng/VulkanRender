@@ -18,9 +18,6 @@ public:
 
 	Device(bool enableValidationLayers, Validation* validation);
 	~Device();
-
-	
-
 public:
 	void create(VkInstance VkInstance, GLFWwindow* window);
 	void acquireQueue(Queue::Type type, VkQueue* queue);
@@ -33,10 +30,6 @@ private:
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-
-	Queue::QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-
-	SwapChain::SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device); 
 
 private:
 	const bool mEnableValidationLayers = false;

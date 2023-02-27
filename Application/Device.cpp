@@ -99,7 +99,7 @@ void Device::createPhysicalDevice()
 
 void Device::createLogicalDevice()
 {
-    mQueueFamilyIndices = findQueueFamilies(mPhysicalDevice);
+    mQueueFamilyIndices = Queue::findQueueFamilies(mPhysicalDevice, mSurface);
 
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
     std::set<uint32_t> uniqueQueueFamilies = { mQueueFamilyIndices.graphicsFamily.value(), mQueueFamilyIndices.presentFamily.value() };
@@ -153,13 +153,13 @@ bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)
     VkPhysicalDeviceFeatures deviceFeatures;
     vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 
-    Queue::QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+    Queue::QueueFamilyIndices indices = Queue::findQueueFamilies(physicalDevice, mSurface);
 
     bool extensionsSupported = checkDeviceExtensionSupport(physicalDevice);
 
     bool swapChainAdequate = false;
     if (extensionsSupported) {
-        SwapChain::SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice);
+        SwapChain::SwapChainSupportDetails swapChainSupport = SwapChain::querySwapChainSupport(physicalDevice, mSurface);
         swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
         
@@ -185,63 +185,4 @@ bool Device::checkDeviceExtensionSupport(VkPhysicalDevice device)
     }
 
     return requiredExtensions.empty();
-}
-
-Queue::QueueFamilyIndices Device::findQueueFamilies(VkPhysicalDevice device)
-{
-    Queue::QueueFamilyIndices indices;
-
-    uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
-
-    std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
-
-    for (size_t i = 0; i < queueFamilies.size(); ++i)
-    {
-        if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-        {
-            indices.graphicsFamily = static_cast<uint32_t>(i);
-        }
-
-        VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, mSurface, &presentSupport);
-
-        if (presentSupport) {
-            indices.presentFamily = (uint32_t)i;
-        }
-
-        if (indices.isComplete()) {
-            break;
-        }
-
-    }
-
-    return indices;
-}
-
-SwapChain::SwapChainSupportDetails Device::querySwapChainSupport(VkPhysicalDevice device)
-{
-    SwapChain::SwapChainSupportDetails details;
-
-
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, mSurface, &details.capabilities);
-
-    uint32_t formatCount;
-    vkGetPhysicalDeviceSurfaceFormatsKHR(device, mSurface, &formatCount, nullptr);
-
-    if (formatCount != 0) {
-        details.formats.resize(formatCount);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, mSurface, &formatCount, details.formats.data());
-    }
-
-    uint32_t presentModeCount;
-    vkGetPhysicalDeviceSurfacePresentModesKHR(device, mSurface, &presentModeCount, nullptr);
-
-    if (presentModeCount != 0) {
-        details.presentModes.resize(presentModeCount);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device, mSurface, &presentModeCount, details.presentModes.data());
-    }
-
-    return details;
 }
