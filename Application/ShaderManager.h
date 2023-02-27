@@ -24,11 +24,11 @@ public:
 public:
     void createShaders();
 
-    void addVS(const std::string& ID, VkShaderModule vs);
-    void addPS(const std::string& ID, VkShaderModule ps);
+    void addVS(const std::string& ID, VkPipelineShaderStageCreateInfo vs);
+    void addPS(const std::string& ID, VkPipelineShaderStageCreateInfo ps);
 
-    VkShaderModule getVS(const std::string& ID);
-    VkShaderModule getPS(const std::string& ID);
+    VkPipelineShaderStageCreateInfo getVS(const std::string& ID);
+    VkPipelineShaderStageCreateInfo getPS(const std::string& ID);
 
 private:
     void createSimpleVS();
@@ -41,7 +41,7 @@ private:
 private:
     
     VkDevice mLogicalDevice;
-    std::map<std::string, VkShaderModule > mIDToVS;
-    std::map<std::string, VkShaderModule > mIDToPS;
+    std::map<std::string, VkPipelineShaderStageCreateInfo > mIDToVS;
+    std::map<std::string, VkPipelineShaderStageCreateInfo > mIDToPS;
 
 };

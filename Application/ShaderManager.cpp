@@ -9,20 +9,6 @@ ShaderManager::ShaderManager(VkDevice logicalDevice)
 
 ShaderManager::~ShaderManager()
 {
-	std::map<std::string, VkShaderModule>::iterator itVS;
-
-	for (itVS = mIDToVS.begin(); itVS != mIDToVS.end(); itVS++)
-	{
-		vkDestroyShaderModule(mLogicalDevice, itVS->second, nullptr);
-	}
-
-	std::map<std::string, VkShaderModule>::iterator itPS;
-
-	for (itPS = mIDToPS.begin(); itPS != mIDToPS.end(); itPS++)
-	{
-		vkDestroyShaderModule(mLogicalDevice, itPS->second, nullptr);
-	}
-
 }
 
 void ShaderManager::createShaders()
@@ -41,7 +27,15 @@ void ShaderManager::createSimpleVS()
 
 	VkShaderModule shaderModule = createShaderModule(bytecode);
 
-	addVS("SimpleVS", shaderModule);
+	VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
+	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+	vertShaderStageInfo.module = shaderModule;
+	vertShaderStageInfo.pName = "main";
+
+	vkDestroyShaderModule(mLogicalDevice, shaderModule, nullptr);
+
+	addVS("SimpleVS", vertShaderStageInfo);
 }
 
 void ShaderManager::createSimplePS()
@@ -52,22 +46,30 @@ void ShaderManager::createSimplePS()
 	std::vector<char> bytecode = readFile(shaderPath);
 	VkShaderModule shaderModule = createShaderModule(bytecode);
 
-	addPS("SimplePS", shaderModule);
+	VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
+	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+	fragShaderStageInfo.module = shaderModule;
+	fragShaderStageInfo.pName = "main";
+
+	addPS("SimplePS", fragShaderStageInfo);
+
+	vkDestroyShaderModule(mLogicalDevice, shaderModule, nullptr);
 }
 
-void ShaderManager::addVS(const std::string& ID, VkShaderModule vs)
+void ShaderManager::addVS(const std::string& ID, VkPipelineShaderStageCreateInfo vs)
 {
 	mIDToVS[ID] = vs;
 }
 
-void ShaderManager::addPS(const std::string& ID, VkShaderModule ps)
+void ShaderManager::addPS(const std::string& ID, VkPipelineShaderStageCreateInfo ps)
 {
 	mIDToPS[ID] = ps;
 }
 
-VkShaderModule ShaderManager::getVS(const std::string& ID)
+VkPipelineShaderStageCreateInfo ShaderManager::getVS(const std::string& ID)
 {
-	std::map<std::string, VkShaderModule >::iterator it = mIDToVS.find(ID);
+	std::map<std::string, VkPipelineShaderStageCreateInfo >::iterator it = mIDToVS.find(ID);
 
 	if (it != mIDToVS.end())
 	{
@@ -75,13 +77,14 @@ VkShaderModule ShaderManager::getVS(const std::string& ID)
 	}
 	else
 	{
-		return VK_NULL_HANDLE;
+		VkPipelineShaderStageCreateInfo info = {};
+		return info;
 	}
 }
 
-VkShaderModule ShaderManager::getPS(const std::string& ID)
+VkPipelineShaderStageCreateInfo ShaderManager::getPS(const std::string& ID)
 {
-	std::map<std::string, VkShaderModule >::iterator it = mIDToPS.find(ID);
+	std::map<std::string, VkPipelineShaderStageCreateInfo >::iterator it = mIDToPS.find(ID);
 
 	if (it != mIDToPS.end())
 	{
@@ -89,7 +92,8 @@ VkShaderModule ShaderManager::getPS(const std::string& ID)
 	}
 	else
 	{
-		return VK_NULL_HANDLE;
+		VkPipelineShaderStageCreateInfo info = {};
+		return info;
 	}
 }
 

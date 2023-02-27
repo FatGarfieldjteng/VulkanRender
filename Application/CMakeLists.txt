@@ -9,6 +9,7 @@ set(HEADER_FILES
 	Queue.h
 	SwapChain.h
 	ShaderManager.h
+	PipelineLayout.h
 )
 
 set(SOURCE_FILES 
@@ -19,6 +20,7 @@ set(SOURCE_FILES
 	Queue.cpp
 	SwapChain.cpp
 	ShaderManager.cpp
+	PipelineLayout.cpp
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")
