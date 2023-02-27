@@ -11,6 +11,7 @@
 
 class Validation;
 class SwapChain;
+class ShaderManager;
 
 class Device
 {
@@ -27,6 +28,7 @@ private:
 	void createPhysicalDevice();
 	void createLogicalDevice();
 	void createSwapChain();
+	void createShaderManager();
 
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
@@ -47,6 +49,8 @@ private:
 	Queue* mPresentQueue = nullptr;
 
 	SwapChain* mSwapChain = nullptr;
+
+	ShaderManager* mShaderManager = nullptr;
 
 	// swap chain extension
 	const std::vector<const char*> mSwapChainExtensionName = 

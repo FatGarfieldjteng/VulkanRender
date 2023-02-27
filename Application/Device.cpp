@@ -1,6 +1,7 @@
 #include "Device.h"
 #include "Validation.h"
 #include "SwapChain.h"
+#include "ShaderManager.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -15,6 +16,11 @@ Device::Device(bool enableValidationLayers, Validation* validation)
 
 Device::~Device()
 {
+    if (mShaderManager)
+    {
+        delete mShaderManager;
+    }
+
     if (mSwapChain)
     {
         delete mSwapChain;
@@ -40,6 +46,7 @@ void Device::create(VkInstance instance, GLFWwindow* window)
     createPhysicalDevice();
     createLogicalDevice();
     createSwapChain();
+    createShaderManager();
 }
 
 void Device::acquireQueue(Queue::Type type, VkQueue* queue)
@@ -162,6 +169,11 @@ void Device::createSwapChain()
         mLogicalDevice, 
         mWindow, 
         mSurface);
+}
+
+void Device::createShaderManager()
+{
+    mShaderManager = new ShaderManager(mLogicalDevice);
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)

@@ -8,6 +8,7 @@ set(HEADER_FILES
 	Device.h
 	Queue.h
 	SwapChain.h
+	ShaderManager.h
 )
 
 set(SOURCE_FILES 
@@ -17,6 +18,7 @@ set(SOURCE_FILES
 	Device.cpp
 	Queue.cpp
 	SwapChain.cpp
+	ShaderManager.cpp
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")
@@ -31,10 +33,6 @@ find_package(Vulkan REQUIRED)
 get_filename_component(Vulkan_LIBRARIES_Path ${Vulkan_LIBRARIES} DIRECTORY)
 
 set (GLEW_lib ${Vulkan_LIBRARIES_Path}/glfw3_mt.lib)
-
-message("Vulkan_LIBRARIES is \"${Vulkan_LIBRARIES}\"")
-message("GLEW_lib is \"${GLEW_lib}\"")
-
 
 target_include_directories (VulkanRenderApp 
     PUBLIC ${Vulkan_INCLUDE_DIRS}
