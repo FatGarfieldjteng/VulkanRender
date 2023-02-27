@@ -15,6 +15,11 @@ Device::Device(bool enableValidationLayers, Validation* validation)
 
 Device::~Device()
 {
+    if (mSwapChain)
+    {
+        delete mSwapChain;
+    }
+
     if (mGraphicsQueue)
     {
         delete mGraphicsQueue;
@@ -34,6 +39,7 @@ void Device::create(VkInstance instance, GLFWwindow* window)
     createSurface(window);
     createPhysicalDevice();
     createLogicalDevice();
+    createSwapChain();
 }
 
 void Device::acquireQueue(Queue::Type type, VkQueue* queue)
@@ -64,6 +70,8 @@ void Device::acquireQueue(Queue::Type type, VkQueue* queue)
 
 void Device::createSurface(GLFWwindow* window)
 {
+    mWindow = window;
+
     if (glfwCreateWindowSurface(mVkInstance,
         window,
         nullptr,
@@ -145,6 +153,15 @@ void Device::createLogicalDevice()
 
     mGraphicsQueue->acquireQueue(this);
     mPresentQueue->acquireQueue(this);
+}
+
+void Device::createSwapChain()
+{
+    mSwapChain = new SwapChain();
+    mSwapChain->createSwapChain(mPhysicalDevice, 
+        mLogicalDevice, 
+        mWindow, 
+        mSurface);
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)

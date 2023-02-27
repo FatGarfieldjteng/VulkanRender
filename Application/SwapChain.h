@@ -19,7 +19,10 @@ public:
 	~SwapChain();
 
 public:
-	void createSwapChain(VkPhysicalDevice physicalDevice, GLFWwindow* window, VkSurfaceKHR surface);
+	void createSwapChain(VkPhysicalDevice physicalDevice, 
+		VkDevice logicalDevice, 
+		GLFWwindow* window, 
+		VkSurfaceKHR surface);
 	
 	static SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
 
@@ -29,4 +32,14 @@ private:
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
+
+private:
+	VkDevice mLogicalDevice = VK_NULL_HANDLE;;
+	VkFormat mSwapChainImageFormat = VK_FORMAT_UNDEFINED;
+	VkExtent2D mSwapChainExtent = {
+			static_cast<uint32_t>(0),
+			static_cast<uint32_t>(0)
+	};
+	VkSwapchainKHR mSwapChain = VK_NULL_HANDLE;
+	std::vector<VkImage> mImages;
 };

@@ -26,6 +26,7 @@ private:
 	void createSurface(GLFWwindow* window);
 	void createPhysicalDevice();
 	void createLogicalDevice();
+	void createSwapChain();
 
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
@@ -38,6 +39,7 @@ private:
 	Queue::QueueFamilyIndices mQueueFamilyIndices;
 	VkPhysicalDevice mPhysicalDevice = VK_NULL_HANDLE;
 	VkDevice mLogicalDevice = VK_NULL_HANDLE;
+	GLFWwindow* mWindow = nullptr;
 	VkSurfaceKHR mSurface = VK_NULL_HANDLE;
 	VkInstance mVkInstance = VK_NULL_HANDLE;
 
