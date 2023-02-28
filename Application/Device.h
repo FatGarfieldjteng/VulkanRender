@@ -13,6 +13,7 @@ class Validation;
 class SwapChain;
 class ShaderManager;
 class PipelineLayout;
+class PassManager;
 
 class Device
 {
@@ -31,6 +32,7 @@ private:
 	void createSwapChain();
 	void createShaderManager();
 	void createPipelineLayout();
+	void createPassManager();
 
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
@@ -55,6 +57,8 @@ private:
 	ShaderManager* mShaderManager = nullptr;
 
 	PipelineLayout* mPipelineLayout = nullptr;
+
+	PassManager* mPassManager = nullptr;
 
 	// swap chain extension
 	const std::vector<const char*> mSwapChainExtensionName = 

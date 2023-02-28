@@ -10,6 +10,7 @@ set(HEADER_FILES
 	SwapChain.h
 	ShaderManager.h
 	PipelineLayout.h
+	PassManager.h
 )
 
 set(SOURCE_FILES 
@@ -21,6 +22,7 @@ set(SOURCE_FILES
 	SwapChain.cpp
 	ShaderManager.cpp
 	PipelineLayout.cpp
+	PassManager.cpp
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")

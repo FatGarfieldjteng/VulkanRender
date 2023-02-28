@@ -3,6 +3,7 @@
 #include "SwapChain.h"
 #include "ShaderManager.h"
 #include "PipelineLayout.h"
+#include "PassManager.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -187,6 +188,11 @@ void Device::createPipelineLayout()
 {
     mPipelineLayout = new PipelineLayout();
     mPipelineLayout->create(mLogicalDevice, mShaderManager);
+}
+
+void Device::createPassManager()
+{
+    mPassManager = new PassManager(mLogicalDevice, mSwapChain);
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)

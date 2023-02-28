@@ -23,6 +23,8 @@ public:
 		VkDevice logicalDevice, 
 		GLFWwindow* window, 
 		VkSurfaceKHR surface);
+
+	VkFormat getFormat();
 	
 	static SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
 
