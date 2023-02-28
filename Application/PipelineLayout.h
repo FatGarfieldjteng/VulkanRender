@@ -18,5 +18,6 @@ public:
 private:
 	VkDevice mLogicalDevice = VK_NULL_HANDLE;
 	VkPipelineLayout mPipelineLayout = VK_NULL_HANDLE;
-	VkRenderPass menderPass = VK_NULL_HANDLE;
+	VkPipeline graphicsPipeline;
+
 };
