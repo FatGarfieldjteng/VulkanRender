@@ -6,6 +6,7 @@
 #include "PassManager.h"
 #include "Managers.h"
 #include "FrameBuffer.h"
+#include "Command.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -20,6 +21,11 @@ Device::Device(bool enableValidationLayers, Validation* validation)
 
 Device::~Device()
 {
+    if (mCommand)
+    {
+        delete mCommand;
+    }
+
     if (mFrameBuffer)
     {
         delete mFrameBuffer;
@@ -189,6 +195,11 @@ void Device::createManagers()
 void Device::createFrameBuffer()
 {
     mFrameBuffer = new FrameBuffer(mLogicalDevice, mSwapChain, mManagers);
+}
+
+void Device::createCommand()
+{
+    mCommand = new Command();
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)
