@@ -11,6 +11,8 @@ set(HEADER_FILES
 	ShaderManager.h
 	Pipeline.h
 	PassManager.h
+	PipelineManager.h
+	Managers.h
 )
 
 set(SOURCE_FILES 
@@ -23,6 +25,8 @@ set(SOURCE_FILES
 	ShaderManager.cpp
 	Pipeline.cpp
 	PassManager.cpp
+	PipelineManager.cpp
+	Managers.cpp
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")

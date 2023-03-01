@@ -29,7 +29,7 @@ private:
     
 private:
     
-    VkDevice mLogicalDevice;
-    SwapChain* mSwapChain;
+    VkDevice mLogicalDevice = VK_NULL_HANDLE;
+    SwapChain* mSwapChain = nullptr;
     std::map<std::string, VkRenderPass> mIDToPass;
 };

@@ -4,6 +4,7 @@
 #include "ShaderManager.h"
 #include "Pipeline.h"
 #include "PassManager.h"
+#include "Managers.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -18,16 +19,11 @@ Device::Device(bool enableValidationLayers, Validation* validation)
 
 Device::~Device()
 {
-    if (mPipeline)
+    if (mManagers)
     {
-        delete mPipeline;
+        delete mManagers;
     }
-
-    if (mShaderManager)
-    {
-        delete mShaderManager;
-    }
-
+  
     if (mSwapChain)
     {
         delete mSwapChain;
@@ -53,8 +49,7 @@ void Device::create(VkInstance instance, GLFWwindow* window)
     createPhysicalDevice();
     createLogicalDevice();
     createSwapChain();
-    createShaderManager();
-    createPipelineLayout();
+    createManagers();
 }
 
 void Device::acquireQueue(Queue::Type type, VkQueue* queue)
@@ -179,20 +174,9 @@ void Device::createSwapChain()
         mSurface);
 }
 
-void Device::createShaderManager()
+void Device::createManagers()
 {
-    mShaderManager = new ShaderManager(mLogicalDevice);
-}
-
-void Device::createPipelineLayout()
-{
-    mPipeline = new Pipeline();
-    mPipeline->create(mLogicalDevice, mShaderManager);
-}
-
-void Device::createPassManager()
-{
-    mPassManager = new PassManager(mLogicalDevice, mSwapChain);
+    mManagers = new Managers(mLogicalDevice, mSwapChain);
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)

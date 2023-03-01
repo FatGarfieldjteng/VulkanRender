@@ -3,7 +3,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-class ShaderManager;
+class Managers;
 
 class Pipeline
 {
@@ -13,11 +13,11 @@ public:
 	~Pipeline();
 
 public:
-	void create(VkDevice logicalDevice, ShaderManager *shaderManager);
+	void create(VkDevice logicalDevice, Managers *managers);
 
 private:
+
 	VkDevice mLogicalDevice = VK_NULL_HANDLE;
 	VkPipelineLayout mPipelineLayout = VK_NULL_HANDLE;
 	VkPipeline graphicsPipeline;
-
 };

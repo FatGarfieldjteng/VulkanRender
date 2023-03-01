@@ -40,7 +40,7 @@ private:
 
 private:
     
-    VkDevice mLogicalDevice;
+    VkDevice mLogicalDevice = VK_NULL_HANDLE;
     std::map<std::string, VkPipelineShaderStageCreateInfo > mIDToVS;
     std::map<std::string, VkPipelineShaderStageCreateInfo > mIDToPS;
 
