@@ -13,6 +13,7 @@ Pipeline::Pipeline()
 
 Pipeline::~Pipeline()
 {
+    vkDestroyPipeline(mLogicalDevice, mPipeline, nullptr);
     vkDestroyPipelineLayout(mLogicalDevice, mPipelineLayout, nullptr);
 }
 
@@ -125,7 +126,7 @@ void Pipeline::create(VkDevice logicalDevice, Managers* managers)
     pipelineInfo.subpass = 0;
     pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-    if (vkCreateGraphicsPipelines(mLogicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+    if (vkCreateGraphicsPipelines(mLogicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &mPipeline) != VK_SUCCESS) {
         throw std::runtime_error("failed to create graphics pipeline!");
     }
 }

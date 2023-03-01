@@ -19,5 +19,5 @@ private:
 
 	VkDevice mLogicalDevice = VK_NULL_HANDLE;
 	VkPipelineLayout mPipelineLayout = VK_NULL_HANDLE;
-	VkPipeline graphicsPipeline;
+	VkPipeline mPipeline = VK_NULL_HANDLE;
 };
