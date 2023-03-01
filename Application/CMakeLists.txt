@@ -9,7 +9,7 @@ set(HEADER_FILES
 	Queue.h
 	SwapChain.h
 	ShaderManager.h
-	PipelineLayout.h
+	Pipeline.h
 	PassManager.h
 )
 
@@ -21,7 +21,7 @@ set(SOURCE_FILES
 	Queue.cpp
 	SwapChain.cpp
 	ShaderManager.cpp
-	PipelineLayout.cpp
+	Pipeline.cpp
 	PassManager.cpp
 )
 

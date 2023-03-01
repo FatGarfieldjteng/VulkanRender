@@ -1,20 +1,20 @@
-#include "PipelineLayout.h"
+#include "Pipeline.h"
 #include "Shadermanager.h"
 
 #include <vector>
 #include <stdexcept>
 
-PipelineLayout::PipelineLayout()
+Pipeline::Pipeline()
 {
 
 }
 
-PipelineLayout::~PipelineLayout()
+Pipeline::~Pipeline()
 {
     vkDestroyPipelineLayout(mLogicalDevice, mPipelineLayout, nullptr);
 }
 
-void PipelineLayout::create(VkDevice logicalDevice, ShaderManager* shaderManager)
+void Pipeline::create(VkDevice logicalDevice, ShaderManager* shaderManager)
 {
     mLogicalDevice = logicalDevice;
 

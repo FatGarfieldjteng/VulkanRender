@@ -12,7 +12,7 @@
 class Validation;
 class SwapChain;
 class ShaderManager;
-class PipelineLayout;
+class Pipeline;
 class PassManager;
 
 class Device
@@ -56,7 +56,7 @@ private:
 
 	ShaderManager* mShaderManager = nullptr;
 
-	PipelineLayout* mPipelineLayout = nullptr;
+	Pipeline* mPipeline = nullptr;
 
 	PassManager* mPassManager = nullptr;
 

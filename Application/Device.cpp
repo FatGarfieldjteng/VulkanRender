@@ -2,7 +2,7 @@
 #include "Validation.h"
 #include "SwapChain.h"
 #include "ShaderManager.h"
-#include "PipelineLayout.h"
+#include "Pipeline.h"
 #include "PassManager.h"
 
 #include <stdexcept>
@@ -18,9 +18,9 @@ Device::Device(bool enableValidationLayers, Validation* validation)
 
 Device::~Device()
 {
-    if (mPipelineLayout)
+    if (mPipeline)
     {
-        delete mPipelineLayout;
+        delete mPipeline;
     }
 
     if (mShaderManager)
@@ -186,8 +186,8 @@ void Device::createShaderManager()
 
 void Device::createPipelineLayout()
 {
-    mPipelineLayout = new PipelineLayout();
-    mPipelineLayout->create(mLogicalDevice, mShaderManager);
+    mPipeline = new Pipeline();
+    mPipeline->create(mLogicalDevice, mShaderManager);
 }
 
 void Device::createPassManager()

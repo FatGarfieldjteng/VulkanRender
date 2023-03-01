@@ -5,12 +5,12 @@
 
 class ShaderManager;
 
-class PipelineLayout
+class Pipeline
 {
 public:
 	
-	PipelineLayout();
-	~PipelineLayout();
+	Pipeline();
+	~Pipeline();
 
 public:
 	void create(VkDevice logicalDevice, ShaderManager *shaderManager);
