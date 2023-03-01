@@ -13,6 +13,7 @@ set(HEADER_FILES
 	PassManager.h
 	PipelineManager.h
 	Managers.h
+	FrameBuffer.h
 )
 
 set(SOURCE_FILES 
@@ -27,6 +28,7 @@ set(SOURCE_FILES
 	PassManager.cpp
 	PipelineManager.cpp
 	Managers.cpp
+	FrameBuffer.cpp
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")

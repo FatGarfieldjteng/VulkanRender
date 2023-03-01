@@ -12,6 +12,7 @@
 class Validation;
 class SwapChain;
 class Managers;
+class FrameBuffer;
 
 class Device
 {
@@ -29,6 +30,7 @@ private:
 	void createLogicalDevice();
 	void createSwapChain();
 	void createManagers();
+	void createFrameBuffer();
 
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
@@ -51,6 +53,8 @@ private:
 	SwapChain* mSwapChain = nullptr;
 
 	Managers* mManagers = nullptr;
+
+	FrameBuffer* mFrameBuffer = nullptr;
 
 	// swap chain extension
 	const std::vector<const char*> mSwapChainExtensionName = 

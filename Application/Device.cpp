@@ -5,6 +5,7 @@
 #include "Pipeline.h"
 #include "PassManager.h"
 #include "Managers.h"
+#include "FrameBuffer.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -19,6 +20,11 @@ Device::Device(bool enableValidationLayers, Validation* validation)
 
 Device::~Device()
 {
+    if (mFrameBuffer)
+    {
+        delete mFrameBuffer;
+    }
+
     if (mManagers)
     {
         delete mManagers;
@@ -50,6 +56,7 @@ void Device::create(VkInstance instance, GLFWwindow* window)
     createLogicalDevice();
     createSwapChain();
     createManagers();
+    createFrameBuffer();
 }
 
 void Device::acquireQueue(Queue::Type type, VkQueue* queue)
@@ -177,6 +184,11 @@ void Device::createSwapChain()
 void Device::createManagers()
 {
     mManagers = new Managers(mLogicalDevice, mSwapChain);
+}
+
+void Device::createFrameBuffer()
+{
+    mFrameBuffer = new FrameBuffer(mLogicalDevice, mSwapChain, mManagers);
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)

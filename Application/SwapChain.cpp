@@ -85,6 +85,21 @@ VkFormat SwapChain::getFormat()
     return mSwapChainImageFormat;
 }
 
+size_t SwapChain::getViewsCount()
+{
+    return mImageViews.size();
+}
+
+VkImageView SwapChain::getView(size_t index)
+{
+    return mImageViews[index];
+}
+
+VkExtent2D SwapChain::getExtent()
+{
+    return mSwapChainExtent;
+}
+
 SwapChain::SwapChainSupportDetails SwapChain::querySwapChainSupport(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
 {
     SwapChain::SwapChainSupportDetails details;

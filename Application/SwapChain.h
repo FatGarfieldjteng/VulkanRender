@@ -25,6 +25,12 @@ public:
 		VkSurfaceKHR surface);
 
 	VkFormat getFormat();
+
+	size_t getViewsCount();
+
+	VkImageView getView(size_t index);
+
+	VkExtent2D getExtent();
 	
 	static SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
 
@@ -49,4 +55,5 @@ private:
 	// image is created as the swapchain creation process, thus no need to free them
 	std::vector<VkImage> mImages;
 	std::vector<VkImageView> mImageViews;
+	std::vector<VkFramebuffer> mFramebuffers;
 };
