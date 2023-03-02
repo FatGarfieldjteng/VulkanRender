@@ -14,7 +14,7 @@ public:
 
 public:
 	void create(VkDevice logicalDevice, Managers *managers);
-
+	VkPipeline get();
 private:
 
 	VkDevice mLogicalDevice = VK_NULL_HANDLE;

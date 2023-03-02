@@ -130,3 +130,8 @@ void Pipeline::create(VkDevice logicalDevice, Managers* managers)
         throw std::runtime_error("failed to create graphics pipeline!");
     }
 }
+
+VkPipeline Pipeline::get()
+{
+    return mPipeline;
+}

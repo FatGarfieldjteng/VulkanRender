@@ -27,6 +27,11 @@ public:
         return mPassManager;
     }
 
+    PipelineManager* getPipelineManager()
+    {
+        return mPipelineManager;
+    }
+
 private:
     void createManagers();
 

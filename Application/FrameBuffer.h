@@ -16,9 +16,13 @@ public:
 		Managers* managers);
 	~FrameBuffer();
 
+public:
+	VkFramebuffer getFrameBuffer(size_t index);
+
 private:
 
 	void createFramebuffers();
+
 
 private:
 	VkDevice mLogicalDevice = VK_NULL_HANDLE;

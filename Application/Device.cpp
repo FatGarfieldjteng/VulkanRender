@@ -199,7 +199,7 @@ void Device::createFrameBuffer()
 
 void Device::createCommand()
 {
-    mCommand = new Command();
+    mCommand = new Command(mPhysicalDevice, mLogicalDevice, mSurface);
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)

@@ -54,3 +54,8 @@ void FrameBuffer::createFramebuffers()
         }
     }
 }
+
+VkFramebuffer FrameBuffer::getFrameBuffer(size_t index)
+{
+    return mFramebuffers[index];
+}
