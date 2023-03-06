@@ -14,6 +14,7 @@ class SwapChain;
 class Managers;
 class FrameBuffer;
 class Command;
+class SyncObjectManager;
 
 class Device
 {
@@ -33,6 +34,7 @@ private:
 	void createManagers();
 	void createFrameBuffer();
 	void createCommand();
+	void createObjectManager();
 
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
@@ -59,6 +61,8 @@ private:
 	FrameBuffer* mFrameBuffer = nullptr;
 
 	Command* mCommand = nullptr;
+
+	SyncObjectManager* mSyncObjectManager = nullptr;
 
 	// swap chain extension
 	const std::vector<const char*> mSwapChainExtensionName = 

@@ -7,6 +7,7 @@
 #include "Managers.h"
 #include "FrameBuffer.h"
 #include "Command.h"
+#include "SyncObjectManager.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -21,6 +22,11 @@ Device::Device(bool enableValidationLayers, Validation* validation)
 
 Device::~Device()
 {
+    if (mSyncObjectManager)
+    {
+        delete mSyncObjectManager;
+    }
+
     if (mCommand)
     {
         delete mCommand;
@@ -200,6 +206,11 @@ void Device::createFrameBuffer()
 void Device::createCommand()
 {
     mCommand = new Command(mPhysicalDevice, mLogicalDevice, mSurface);
+}
+
+void Device::createObjectManager()
+{
+    mSyncObjectManager = new SyncObjectManager(mLogicalDevice);
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)
