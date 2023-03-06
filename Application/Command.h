@@ -21,6 +21,7 @@ public:
 		FrameBuffer* frameBuffer,
 		Managers *managers,
 		size_t imageIndex);
+	VkCommandBuffer get();
 
 private:
 	VkPhysicalDevice mPhysicalDevice = VK_NULL_HANDLE;

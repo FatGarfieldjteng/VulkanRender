@@ -25,6 +25,8 @@ public:
 public:
 	void create(VkInstance VkInstance, GLFWwindow* window);
 	void acquireQueue(Queue::Type type, VkQueue* queue);
+	void drawFrame();
+	void waitIdle();
 
 private:
 	void createSurface(GLFWwindow* window);
@@ -34,7 +36,7 @@ private:
 	void createManagers();
 	void createFrameBuffer();
 	void createCommand();
-	void createObjectManager();
+	void createSyncObjectManager();
 
 	bool isDeviceSuitable(VkPhysicalDevice device);
 

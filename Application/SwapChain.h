@@ -34,6 +34,8 @@ public:
 	
 	static SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
 
+	VkSwapchainKHR get();
+
 private:
 
 	// select optimal surface format, present mode and swap extent

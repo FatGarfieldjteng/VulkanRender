@@ -57,6 +57,11 @@ void Command::create()
     }
 }
 
+VkCommandBuffer Command::get()
+{
+    return mCommandBuffer;
+}
+
 void Command::recordCommandBuffer(SwapChain* swapChain,
     FrameBuffer* frameBuffer,
     Managers* managers,

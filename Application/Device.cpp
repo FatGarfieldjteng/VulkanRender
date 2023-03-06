@@ -69,6 +69,8 @@ void Device::create(VkInstance instance, GLFWwindow* window)
     createSwapChain();
     createManagers();
     createFrameBuffer();
+    createCommand();
+    createSyncObjectManager();
 }
 
 void Device::acquireQueue(Queue::Type type, VkQueue* queue)
@@ -95,6 +97,60 @@ void Device::acquireQueue(Queue::Type type, VkQueue* queue)
     break;
 
     }
+}
+
+void Device::drawFrame()
+{
+    VkFence fence = mSyncObjectManager->getFence("InFlight");
+    VkCommandBuffer commandBuffer = mCommand->get();
+
+    vkWaitForFences(mLogicalDevice, 1, &fence, VK_TRUE, UINT64_MAX);
+    vkResetFences(mLogicalDevice, 1, &fence);
+
+    uint32_t imageIndex;
+    vkAcquireNextImageKHR(mLogicalDevice, mSwapChain->get(), UINT64_MAX, mSyncObjectManager->getSemaphore("BackBufferAvailable"), VK_NULL_HANDLE, &imageIndex);
+
+    vkResetCommandBuffer(commandBuffer, /*VkCommandBufferResetFlagBits*/ 0);
+    mCommand->recordCommandBuffer(mSwapChain, mFrameBuffer, mManagers, imageIndex);
+    
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+    VkSemaphore waitSemaphores[] = { mSyncObjectManager->getSemaphore("BackBufferAvailable") };
+    VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+    submitInfo.waitSemaphoreCount = 1;
+    submitInfo.pWaitSemaphores = waitSemaphores;
+    submitInfo.pWaitDstStageMask = waitStages;
+
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffer;
+
+    VkSemaphore signalSemaphores[] = { mSyncObjectManager->getSemaphore("RenderFinish") };
+    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.pSignalSemaphores = signalSemaphores;
+
+    if (vkQueueSubmit(mGraphicsQueue->get(), 1, &submitInfo, fence) != VK_SUCCESS) {
+        throw std::runtime_error("failed to submit draw command buffer!");
+    }
+
+    VkPresentInfoKHR presentInfo{};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = signalSemaphores;
+
+    VkSwapchainKHR swapChains[] = { mSwapChain->get() };
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = swapChains;
+
+    presentInfo.pImageIndices = &imageIndex;
+
+    vkQueuePresentKHR(mPresentQueue->get(), &presentInfo);
+}
+
+void Device::waitIdle()
+{
+    vkDeviceWaitIdle(mLogicalDevice);
 }
 
 void Device::createSurface(GLFWwindow* window)
@@ -208,7 +264,7 @@ void Device::createCommand()
     mCommand = new Command(mPhysicalDevice, mLogicalDevice, mSurface);
 }
 
-void Device::createObjectManager()
+void Device::createSyncObjectManager()
 {
     mSyncObjectManager = new SyncObjectManager(mLogicalDevice);
 }

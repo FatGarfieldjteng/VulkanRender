@@ -78,6 +78,8 @@ void SwapChain::create(VkPhysicalDevice physicalDevice, VkDevice logicalDevice, 
 
     mSwapChainImageFormat = surfaceFormat.format;
     mSwapChainExtent = extent;
+
+    createImageViews();
 }
 
 VkFormat SwapChain::getFormat()
@@ -98,6 +100,11 @@ VkImageView SwapChain::getView(size_t index)
 VkExtent2D SwapChain::getExtent()
 {
     return mSwapChainExtent;
+}
+
+VkSwapchainKHR SwapChain::get()
+{
+    return mSwapChain;
 }
 
 SwapChain::SwapChainSupportDetails SwapChain::querySwapChainSupport(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)

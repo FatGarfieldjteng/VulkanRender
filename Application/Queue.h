@@ -33,6 +33,7 @@ public:
 	static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
 	void acquireQueue(Device* device);
 	Type getType();
+	VkQueue get();
 
 private:
 	VkQueue mQueue = VK_NULL_HANDLE;

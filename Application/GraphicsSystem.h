@@ -39,6 +39,8 @@ private:
 
     void cleanup();
 
+    void drawFrame();
+
 private:
     
     std::vector<const char*> getGLFWRequiredExtensions();

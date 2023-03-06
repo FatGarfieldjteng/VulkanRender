@@ -22,6 +22,11 @@ Queue::Type Queue::getType()
 	return mType;
 }
 
+VkQueue Queue::get()
+{
+    return mQueue;
+}
+
 Queue::QueueFamilyIndices Queue::findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)
 {
     Queue::QueueFamilyIndices indices;

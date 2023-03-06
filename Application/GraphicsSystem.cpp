@@ -102,7 +102,10 @@ void GraphicsSystem::mainLoop()
 {
     while (!glfwWindowShouldClose(mWindow)) {
         glfwPollEvents();
+        drawFrame();
     }
+
+    mDevice->waitIdle();
 }
 
 void GraphicsSystem::cleanup() 
@@ -117,13 +120,16 @@ void GraphicsSystem::cleanup()
        mValidation->destroyDebugMessenger(mVkInstance);
     }
 
-    
-
     vkDestroyInstance(mVkInstance, nullptr);
 
     glfwDestroyWindow(mWindow);
 
     glfwTerminate();
+}
+
+void GraphicsSystem::drawFrame()
+{
+    mDevice->drawFrame();
 }
 
 
