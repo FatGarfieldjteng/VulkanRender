@@ -7,6 +7,7 @@ class SwapChain;
 class ShaderManager;
 class PassManager;
 class PipelineManager;
+class FormatManager;
 
 class Managers
 {
@@ -42,4 +43,5 @@ private:
     ShaderManager*      mShaderManager = nullptr;
     PassManager*        mPassManager = nullptr;
     PipelineManager*    mPipelineManager = nullptr;
+    FormatManager*      mFormatManager = nullptr;
 };

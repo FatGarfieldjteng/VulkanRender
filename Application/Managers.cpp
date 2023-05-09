@@ -2,6 +2,7 @@
 #include "ShaderManager.h"
 #include "PassManager.h"
 #include "PipelineManager.h"
+#include "FormatManager.h"
 #include "SwapChain.h"
 
 Managers::Managers(VkDevice logicalDevice, SwapChain* swapChain)
@@ -27,6 +28,11 @@ Managers::~Managers()
 	{
 		delete mShaderManager;
 	}
+
+	if (mFormatManager)
+	{
+		delete mFormatManager;
+	}
 }
 
 void Managers::createManagers()
@@ -39,4 +45,7 @@ void Managers::createManagers()
 
 	// pipelinemanager
 	mPipelineManager = new PipelineManager(mLogicalDevice, this);
+
+	// vertex format manager
+	mFormatManager = new FormatManager();
 }

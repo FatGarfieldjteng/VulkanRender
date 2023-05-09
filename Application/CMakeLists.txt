@@ -16,6 +16,11 @@ set(HEADER_FILES
 	Managers.h
 	FrameBuffer.h
 	Command.h
+	VertexFormat.h
+	FormatManager.h
+	VertexBuffer.h
+	Mesh.h
+	Scene.h
 )
 
 set(SOURCE_FILES 
@@ -33,6 +38,11 @@ set(SOURCE_FILES
 	Managers.cpp
 	FrameBuffer.cpp
 	Command.cpp
+	VertexFormat.cpp
+	FormatManager.cpp
+	VertexBuffer.cpp
+	Mesh.cpp
+	Scene.cpp
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")
