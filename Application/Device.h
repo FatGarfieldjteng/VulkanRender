@@ -20,7 +20,9 @@ class Device
 {
 public:
 
-	Device(bool enableValidationLayers, Validation* validation);
+	Device(bool enableValidationLayers, 
+		Validation* validation,
+		unsigned int maxFramesInFligt = 2);
 	~Device();
 public:
 	void create(VkInstance VkInstance, GLFWwindow* window);
@@ -43,6 +45,8 @@ private:
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 
 private:
+	unsigned int mMaxFramesInFligt = 2;
+
 	const bool mEnableValidationLayers = false;
 	Validation* mValidation = nullptr;
 
@@ -65,6 +69,8 @@ private:
 	Command* mCommand = nullptr;
 
 	SyncObjectManager* mSyncObjectManager = nullptr;
+
+	uint32_t mSyncObjIndex = 0;
 
 	// swap chain extension
 	const std::vector<const char*> mSwapChainExtensionName = 

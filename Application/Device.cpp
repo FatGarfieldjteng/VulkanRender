@@ -13,9 +13,12 @@
 #include <iostream>
 #include <set>
 
-Device::Device(bool enableValidationLayers, Validation* validation)
+Device::Device(bool enableValidationLayers, 
+    Validation* validation,
+    unsigned int maxFramesInFligt)
     :mEnableValidationLayers(enableValidationLayers)
     ,mValidation(validation)
+    , mMaxFramesInFligt(maxFramesInFligt)
 {
 
 }
@@ -101,22 +104,24 @@ void Device::acquireQueue(Queue::Type type, VkQueue* queue)
 
 void Device::drawFrame()
 {
-    VkFence fence = mSyncObjectManager->getFence("InFlight");
-    VkCommandBuffer commandBuffer = mCommand->get();
+    VkFence fence = mSyncObjectManager->geFrameFence(mSyncObjIndex);
+    VkCommandBuffer commandBuffer = mCommand->get(mSyncObjIndex);
 
     vkWaitForFences(mLogicalDevice, 1, &fence, VK_TRUE, UINT64_MAX);
     vkResetFences(mLogicalDevice, 1, &fence);
 
     uint32_t imageIndex;
-    vkAcquireNextImageKHR(mLogicalDevice, mSwapChain->get(), UINT64_MAX, mSyncObjectManager->getSemaphore("BackBufferAvailable"), VK_NULL_HANDLE, &imageIndex);
+
+    VkSemaphore backBufferAvailableSemaphore = mSyncObjectManager->getBackBufferReadySemaphore(mSyncObjIndex);
+    vkAcquireNextImageKHR(mLogicalDevice, mSwapChain->get(), UINT64_MAX, backBufferAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
     vkResetCommandBuffer(commandBuffer, /*VkCommandBufferResetFlagBits*/ 0);
-    mCommand->recordCommandBuffer(mSwapChain, mFrameBuffer, mManagers, imageIndex);
+    mCommand->recordCommandBuffer(commandBuffer, mSwapChain, mFrameBuffer, mManagers, imageIndex);
     
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-    VkSemaphore waitSemaphores[] = { mSyncObjectManager->getSemaphore("BackBufferAvailable") };
+    VkSemaphore waitSemaphores[] = { backBufferAvailableSemaphore };
     VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
     submitInfo.waitSemaphoreCount = 1;
     submitInfo.pWaitSemaphores = waitSemaphores;
@@ -125,7 +130,7 @@ void Device::drawFrame()
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
 
-    VkSemaphore signalSemaphores[] = { mSyncObjectManager->getSemaphore("RenderFinish") };
+    VkSemaphore signalSemaphores[] = { mSyncObjectManager->getPresentReadySemaphore(mSyncObjIndex) };
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
@@ -146,6 +151,8 @@ void Device::drawFrame()
     presentInfo.pImageIndices = &imageIndex;
 
     vkQueuePresentKHR(mPresentQueue->get(), &presentInfo);
+
+    mSyncObjIndex = (mSyncObjIndex + 1) % mMaxFramesInFligt;
 }
 
 void Device::waitIdle()

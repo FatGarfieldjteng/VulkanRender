@@ -5,27 +5,58 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 class SyncObjectManager
 {
 public:
 
-    SyncObjectManager(VkDevice logicalDevice);
+    SyncObjectManager(VkDevice logicalDevice,
+        unsigned int maxFramesInFligt = 2);
 
     ~SyncObjectManager();
 
 public:
     void createSyncObjects();
 
-    void addSemaphore(const std::string& ID, VkSemaphore semaphore);
-    void addFence(const std::string& ID, VkFence fence);
+    VkSemaphore getBackBufferReadySemaphore(size_t index)
+    {
+        if (index < 0 || index >= mMaxFramesInFligt)
+        {
+            return VK_NULL_HANDLE;
+        }
 
-    VkSemaphore getSemaphore(const std::string& ID);
-    VkFence getFence(const std::string& ID);
+        return  mBackBufferReadySemaphore[index];
+    }
+
+    VkSemaphore getPresentReadySemaphore(size_t index)
+    {
+        if (index < 0 || index >= mMaxFramesInFligt)
+        {
+            return VK_NULL_HANDLE;
+        }
+
+        return  mPresentReadySemaphore[index];
+    }
+
+    VkFence geFrameFence(size_t index)
+    {
+        if (index < 0 || index >= mMaxFramesInFligt)
+        {
+            return VK_NULL_HANDLE;
+        }
+
+        return  mFrameFence[index];
+    }
+
+private:
+    void createFrameLevelSyncObjects();
   
 private:
     
+    unsigned int mMaxFramesInFligt = 2;
     VkDevice mLogicalDevice = VK_NULL_HANDLE;
-    std::map<std::string, VkSemaphore> mIDToSemaphore;
-    std::map<std::string, VkFence > mIDToFence;
+    std::vector<VkSemaphore> mBackBufferReadySemaphore;
+    std::vector<VkSemaphore> mPresentReadySemaphore;
+    std::vector<VkFence> mFrameFence;
 };
