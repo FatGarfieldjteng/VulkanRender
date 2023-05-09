@@ -13,4 +13,5 @@ public:
 
 private:
 	VertexFormat* mFormat = nullptr;
+	VkBuffer vertexBuffer = VK_NULL_HANDLE;
 };
