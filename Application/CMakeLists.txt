@@ -24,6 +24,7 @@ set(HEADER_FILES
 	Mesh.h
 	TriangleMesh.h
 	Scene.h
+	SimpleScene.h
 )
 
 set(SOURCE_FILES 
@@ -49,6 +50,7 @@ set(SOURCE_FILES
 	Mesh.cpp
 	TriangleMesh.cpp
 	Scene.cpp
+	SimpleScene.cpp
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")

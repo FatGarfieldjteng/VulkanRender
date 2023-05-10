@@ -13,6 +13,6 @@ public:
 	Scene();
 	~Scene();
 
-private:
-	std::vector<Mesh*> meshes;
+public:
+	virtual void init() = 0;
 };

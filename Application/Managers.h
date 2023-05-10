@@ -33,6 +33,11 @@ public:
         return mPipelineManager;
     }
 
+    FormatManager* getFormatManager()
+    {
+        return mFormatManager;
+    }
+
 private:
     void createManagers();
 

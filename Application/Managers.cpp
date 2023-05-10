@@ -43,9 +43,9 @@ void Managers::createManagers()
 	// passmanager
 	mPassManager = new PassManager(mLogicalDevice, mSwapChain);
 
-	// pipelinemanager
-	mPipelineManager = new PipelineManager(mLogicalDevice, this);
-
 	// vertex format manager
 	mFormatManager = new FormatManager();
+
+	// pipelinemanager
+	mPipelineManager = new PipelineManager(mLogicalDevice, this);
 }

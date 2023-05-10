@@ -10,4 +10,7 @@ public:
 	TriangleMesh();
 	~TriangleMesh();
 
+public:
+	virtual void init();
+
 };

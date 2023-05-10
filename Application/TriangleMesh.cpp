@@ -9,3 +9,8 @@ TriangleMesh::~TriangleMesh()
 {
  
 }
+
+void TriangleMesh::init()
+{
+
+}

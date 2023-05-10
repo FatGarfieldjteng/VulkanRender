@@ -2,6 +2,8 @@
 #include "Managers.h"
 #include "Shadermanager.h"
 #include "PassManager.h"
+#include "FormatManager.h"
+#include "PCVertexFormat.h"
 
 #include <vector>
 #include <stdexcept>
@@ -29,10 +31,18 @@ void Pipeline::create(VkDevice logicalDevice, Managers* managers)
 
     // vertex input layout
     // vertex data is hard-coded in shader, thus no information needed here
+
+    // 
+    FormatManager* formatManager = managers->getFormatManager();
+    PCVertexFormat* format = (PCVertexFormat*)formatManager->getFormat("PCFormat");
+
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
     vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    vertexInputInfo.vertexBindingDescriptionCount = 0;
-    vertexInputInfo.vertexAttributeDescriptionCount = 0;
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.pVertexBindingDescriptions = &(format->mBinding);
+
+    vertexInputInfo.vertexAttributeDescriptionCount = (uint32_t)format->mAttribute.size();
+    vertexInputInfo.pVertexAttributeDescriptions = format->mAttribute.data();
 
     // IA
     VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
