@@ -4,13 +4,23 @@
 #include <GLFW/glfw3.h>
 
 class VertexBuffer;
+class Device;
 
 class Mesh
 {
 public:
-	Mesh();
+	Mesh(Device* device);
 	~Mesh();
 
-private:
+public:
+	virtual void init() = 0;
+
+	VertexBuffer* getVB()
+	{
+		return mVertexBuffer;
+	}
+
+protected:
+	Device* mDevice = nullptr;
 	VertexBuffer* mVertexBuffer = nullptr;
 };

@@ -15,6 +15,7 @@ class Managers;
 class FrameBuffer;
 class Command;
 class SyncObjectManager;
+class Scene;
 
 class Device
 {
@@ -30,6 +31,19 @@ public:
 	void drawFrame();
 	void waitIdle();
 
+
+	VkPhysicalDevice getPhysicalDevice()
+	{
+		return mPhysicalDevice;
+	}
+
+	VkDevice getLogicalDevice()
+	{
+		return mLogicalDevice;
+	}
+
+	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
 private:
 	void createSurface(GLFWwindow* window);
 	void createPhysicalDevice();
@@ -39,6 +53,7 @@ private:
 	void createFrameBuffer();
 	void createCommand();
 	void createSyncObjectManager();
+	void createScene();
 
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
@@ -69,6 +84,8 @@ private:
 	Command* mCommand = nullptr;
 
 	SyncObjectManager* mSyncObjectManager = nullptr;
+
+	Scene* mScene = nullptr;
 
 	uint32_t mSyncObjIndex = 0;
 

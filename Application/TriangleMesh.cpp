@@ -1,8 +1,10 @@
 #include "TriangleMesh.h"
+#include "TriangleVertexBuffer.h"
 
-TriangleMesh::TriangleMesh()
+TriangleMesh::TriangleMesh(Device* device)
+    :Mesh(device)
 {
-    
+    init();
 }
 
 TriangleMesh::~TriangleMesh()
@@ -12,5 +14,5 @@ TriangleMesh::~TriangleMesh()
 
 void TriangleMesh::init()
 {
-
+    mVertexBuffer = new TriangleVertexBuffer(mDevice);
 }

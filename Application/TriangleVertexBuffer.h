@@ -10,7 +10,9 @@ class VertexFormat;
 class TriangleVertexBuffer : public VertexBuffer
 {
 public:
-	TriangleVertexBuffer();
+	TriangleVertexBuffer(Device* device);
 	~TriangleVertexBuffer();
 
+public:
+	virtual void init();
 };

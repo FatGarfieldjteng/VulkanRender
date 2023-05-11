@@ -7,15 +7,17 @@
 
 class Mesh;
 
+
 class SimpleScene : public Scene
 {
 public:
-	SimpleScene();
-	~SimpleScene();
+	SimpleScene(Device* device);
+	virtual ~SimpleScene();
 
 public:
 	virtual void init();
 
 private:
+	
 	std::vector<Mesh*> meshes;
 };

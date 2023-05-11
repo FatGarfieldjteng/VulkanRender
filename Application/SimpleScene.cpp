@@ -1,8 +1,10 @@
 #include "SimpleScene.h"
+#include "TriangleMesh.h"
 
-SimpleScene::SimpleScene()
+SimpleScene::SimpleScene(Device* device)
+    :Scene(device)
 {
-    
+    init();
 }
 
 SimpleScene::~SimpleScene()
@@ -12,5 +14,6 @@ SimpleScene::~SimpleScene()
 
 void SimpleScene::init()
 {
-
+    TriangleMesh* mesh;
+    mesh = new TriangleMesh(mDevice);
 }

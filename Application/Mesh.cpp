@@ -1,11 +1,15 @@
 #include "Mesh.h"
 
-Mesh::Mesh()
+Mesh::Mesh(Device* device)
+    :mDevice(device)
 {
-    
+
 }
 
 Mesh::~Mesh()
 {
- 
+  if(mVertexBuffer)
+  {
+      delete mVertexBuffer;
+  }
 }

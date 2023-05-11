@@ -6,13 +6,17 @@
 #include <vector>
 
 class Mesh;
+class Device;
 
 class Scene
 {
 public:
-	Scene();
-	~Scene();
+	Scene(Device* device);
+	virtual ~Scene();
 
 public:
 	virtual void init() = 0;
+
+protected:
+	Device* mDevice = nullptr;
 };

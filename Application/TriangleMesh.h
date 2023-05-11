@@ -4,10 +4,12 @@
 #include <GLFW/glfw3.h>
 #include "Mesh.h"
 
+class Device;
+
 class TriangleMesh : public Mesh
 {
 public:
-	TriangleMesh();
+	TriangleMesh(Device* device);
 	~TriangleMesh();
 
 public:

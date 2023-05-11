@@ -1,8 +1,9 @@
 #include "Scene.h"
 
-Scene::Scene()
+Scene::Scene(Device* device)
+    :mDevice(device)
 {
-    
+
 }
 
 Scene::~Scene()

@@ -40,6 +40,7 @@ private:
     void cleanup();
 
     void drawFrame();
+   
 
 private:
     
@@ -52,6 +53,8 @@ private:
     VkInstance mVkInstance = VK_NULL_HANDLE;
 
     Device* mDevice = nullptr;
+
+    
 
 #ifdef NDEBUG
     const bool mEnableValidationLayers = false;

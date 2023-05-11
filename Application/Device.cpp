@@ -8,6 +8,7 @@
 #include "FrameBuffer.h"
 #include "Command.h"
 #include "SyncObjectManager.h"
+#include "SimpleScene.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -59,6 +60,11 @@ Device::~Device()
         delete mPresentQueue;
     }
 
+    if (mScene)
+    {
+        delete mScene;
+    }
+
     vkDestroyDevice(mLogicalDevice, nullptr);
     vkDestroySurfaceKHR(mVkInstance, mSurface, nullptr);
 }
@@ -74,6 +80,7 @@ void Device::create(VkInstance instance, GLFWwindow* window)
     createFrameBuffer();
     createCommand();
     createSyncObjectManager();
+    createScene();
 }
 
 void Device::acquireQueue(Queue::Type type, VkQueue* queue)
@@ -158,6 +165,20 @@ void Device::drawFrame()
 void Device::waitIdle()
 {
     vkDeviceWaitIdle(mLogicalDevice);
+}
+
+uint32_t Device::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+{
+    VkPhysicalDeviceMemoryProperties memoryProperties;
+    vkGetPhysicalDeviceMemoryProperties(mPhysicalDevice, &memoryProperties);
+
+    for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) {
+        if ((typeFilter & (1 << i)) && (memoryProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+            return i;
+        }
+    }
+
+    throw std::runtime_error("failed to find suitable memory type!");
 }
 
 void Device::createSurface(GLFWwindow* window)
@@ -274,6 +295,11 @@ void Device::createCommand()
 void Device::createSyncObjectManager()
 {
     mSyncObjectManager = new SyncObjectManager(mLogicalDevice);
+}
+
+void Device::createScene()
+{
+    mScene = new SimpleScene(this);
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)

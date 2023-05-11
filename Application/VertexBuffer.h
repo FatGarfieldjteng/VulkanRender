@@ -4,14 +4,20 @@
 #include <GLFW/glfw3.h>
 
 class VertexFormat;
+class Device;
 
 class VertexBuffer
 {
 public:
-	VertexBuffer();
+	VertexBuffer(Device* device);
 	~VertexBuffer();
 
-private:
-	VertexFormat* mFormat = nullptr;
-	VkBuffer vertexBuffer = VK_NULL_HANDLE;
+public:
+	virtual void init() = 0;
+
+	Device* mDevice = nullptr;
+	VkBuffer mVertexBuffer = VK_NULL_HANDLE;
+	VkDeviceMemory mVertexBufferMemory = VK_NULL_HANDLE;
+
+	uint32_t mSize = 0;
 };
