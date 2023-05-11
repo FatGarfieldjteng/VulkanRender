@@ -10,7 +10,7 @@ class Mesh
 {
 public:
 	Mesh(Device* device);
-	~Mesh();
+	virtual ~Mesh();
 
 public:
 	virtual void init() = 0;

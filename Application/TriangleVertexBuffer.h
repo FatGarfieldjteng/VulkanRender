@@ -11,7 +11,7 @@ class TriangleVertexBuffer : public VertexBuffer
 {
 public:
 	TriangleVertexBuffer(Device* device);
-	~TriangleVertexBuffer();
+	virtual ~TriangleVertexBuffer();
 
 public:
 	virtual void init();

@@ -10,7 +10,7 @@ class TriangleMesh : public Mesh
 {
 public:
 	TriangleMesh(Device* device);
-	~TriangleMesh();
+	virtual ~TriangleMesh();
 
 public:
 	virtual void init();

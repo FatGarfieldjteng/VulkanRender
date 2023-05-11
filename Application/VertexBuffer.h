@@ -10,7 +10,7 @@ class VertexBuffer
 {
 public:
 	VertexBuffer(Device* device);
-	~VertexBuffer();
+	virtual ~VertexBuffer();
 
 public:
 	virtual void init() = 0;

@@ -13,7 +13,6 @@ TriangleVertexBuffer::TriangleVertexBuffer(Device* device)
 
 TriangleVertexBuffer::~TriangleVertexBuffer()
 {
- 
 }
 
 void TriangleVertexBuffer::init()
