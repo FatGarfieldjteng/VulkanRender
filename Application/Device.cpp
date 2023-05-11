@@ -123,7 +123,7 @@ void Device::drawFrame()
     vkAcquireNextImageKHR(mLogicalDevice, mSwapChain->get(), UINT64_MAX, backBufferAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
     vkResetCommandBuffer(commandBuffer, /*VkCommandBufferResetFlagBits*/ 0);
-    mCommand->recordCommandBuffer(commandBuffer, mSwapChain, mFrameBuffer, mManagers, imageIndex);
+    mCommand->recordCommandBuffer(commandBuffer, mScene, mSwapChain, mFrameBuffer, mManagers, imageIndex);
     
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

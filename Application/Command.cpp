@@ -7,6 +7,9 @@
 #include "PassManager.h"
 #include "PipelineManager.h"
 #include "Pipeline.h"
+#include "SimpleScene.h"
+#include "Mesh.h"
+#include "VertexBuffer.h"
 #include <stdexcept>
 
 Command::Command(VkPhysicalDevice physicalDevice,
@@ -23,6 +26,7 @@ Command::Command(VkPhysicalDevice physicalDevice,
 
 Command::~Command()
 {
+    vkDestroyCommandPool(mLogicalDevice, mCommandPool, nullptr);
 
 }
 
@@ -62,6 +66,7 @@ void Command::create()
 }
 
 void Command::recordCommandBuffer(VkCommandBuffer commandBuffer,
+    Scene* scene,
     SwapChain* swapChain,
     FrameBuffer* frameBuffer,
     Managers* managers,
@@ -107,11 +112,15 @@ void Command::recordCommandBuffer(VkCommandBuffer commandBuffer,
     scissor.extent = extent;
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-    VkBuffer vertexBuffers[] = { vertexBuffer };
+    Mesh* mesh = scene->getMesh(0);
+
+    VertexBuffer* vb = mesh->getVB();
+
+    VkBuffer vertexBuffers[] = { vb->mVertexBuffer };
     VkDeviceSize offsets[] = { 0 };
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-    vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+    vkCmdDraw(commandBuffer, vb->mSize, 1, 0, 0);
 
     vkCmdEndRenderPass(commandBuffer);
 

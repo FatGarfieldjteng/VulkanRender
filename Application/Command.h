@@ -8,6 +8,7 @@
 class SwapChain;
 class FrameBuffer;
 class Managers;
+class Scene;
 
 class Command
 {
@@ -21,6 +22,7 @@ public:
 public:
 	void create();
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, 
+		Scene* scene,
 		SwapChain* swapChain,
 		FrameBuffer* frameBuffer,
 		Managers *managers,
