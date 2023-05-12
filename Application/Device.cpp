@@ -65,6 +65,8 @@ Device::~Device()
         delete mScene;
     }
 
+    vkDestroyCommandPool(mLogicalDevice, mCopyCommandPool, nullptr);
+
     vkDestroyDevice(mLogicalDevice, nullptr);
     vkDestroySurfaceKHR(mVkInstance, mSurface, nullptr);
 }
@@ -165,6 +167,71 @@ void Device::drawFrame()
 void Device::waitIdle()
 {
     vkDeviceWaitIdle(mLogicalDevice);
+}
+
+void Device::createBuffer(VkDeviceSize size,
+    VkBufferUsageFlags usage,
+    VkMemoryPropertyFlags properties,
+    VkBuffer& buffer,
+    VkDeviceMemory& bufferMemory)
+{
+    VkBufferCreateInfo bufferCreateInfo{};
+    bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferCreateInfo.size = size;
+    bufferCreateInfo.usage = usage;
+    bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    if (vkCreateBuffer(mLogicalDevice, 
+        &bufferCreateInfo, 
+        nullptr, 
+        &buffer) != VK_SUCCESS) 
+    {
+        throw std::runtime_error("failed to create buffer!");
+    }
+
+    VkMemoryRequirements memoryRequirements;
+    vkGetBufferMemoryRequirements(mLogicalDevice, buffer, &memoryRequirements);
+
+    VkMemoryAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memoryRequirements.size;
+    allocInfo.memoryTypeIndex = findMemoryType(memoryRequirements.memoryTypeBits, properties);
+
+    if (vkAllocateMemory(mLogicalDevice, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) 
+    {
+        throw std::runtime_error("failed to allocate buffer memory!");
+    }
+
+    vkBindBufferMemory(mLogicalDevice, buffer, bufferMemory, 0);
+}
+
+void Device::copyBuffer(VkBuffer srcBuffer,
+    VkBuffer dstBuffer,
+    VkDeviceSize size)
+{
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+    vkBeginCommandBuffer(mCopyCommandBuffer, &beginInfo);
+
+    VkBufferCopy copyRegion{};
+    copyRegion.size = size;
+    vkCmdCopyBuffer(mCopyCommandBuffer, 
+        srcBuffer, 
+        dstBuffer, 
+        1, 
+        &copyRegion);
+
+    vkEndCommandBuffer(mCopyCommandBuffer);
+
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &mCopyCommandBuffer;
+
+    vkQueueSubmit(mGraphicsQueue->get(), 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(mGraphicsQueue->get());
 }
 
 uint32_t Device::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
@@ -290,6 +357,35 @@ void Device::createFrameBuffer()
 void Device::createCommand()
 {
     mCommand = new Command(mPhysicalDevice, mLogicalDevice, mSurface);
+
+    // create copy command
+    Queue::QueueFamilyIndices queueFamilyIndices = Queue::findQueueFamilies(mPhysicalDevice, mSurface);
+
+    VkCommandPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+
+    if (vkCreateCommandPool(mLogicalDevice,
+        &poolInfo,
+        nullptr,
+        &mCopyCommandPool) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create copy command pool!");
+    }
+
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = mCopyCommandPool;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = 1;
+
+    if (vkAllocateCommandBuffers(mLogicalDevice,
+        &allocInfo,
+        &mCopyCommandBuffer) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to allocate copy command buffer!");
+    }
 }
 
 void Device::createSyncObjectManager()

@@ -13,11 +13,11 @@ public:
 	virtual ~VertexBuffer();
 
 public:
-	virtual void init() = 0;
+	virtual void init(uint32_t vertices = 0, VkDeviceSize bufferSize = 0, void* bufferData = nullptr);
 
 	Device* mDevice = nullptr;
 	VkBuffer mVertexBuffer = VK_NULL_HANDLE;
 	VkDeviceMemory mVertexBufferMemory = VK_NULL_HANDLE;
 
-	uint32_t mSize = 0;
+	uint32_t mVertices = 0;
 };

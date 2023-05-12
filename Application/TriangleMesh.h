@@ -13,6 +13,11 @@ public:
 	virtual ~TriangleMesh();
 
 public:
-	virtual void init();
+	virtual void init(uint32_t vertices = 0,
+		VkDeviceSize vBufferSize = 0,
+		void* vBufferData = nullptr,
+		uint32_t indices = 0,
+		VkDeviceSize iBufferSize = 0,
+		void* iBbufferData = nullptr);
 
 };

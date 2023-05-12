@@ -42,7 +42,16 @@ public:
 		return mLogicalDevice;
 	}
 
-	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+	void createBuffer(VkDeviceSize size, 
+		VkBufferUsageFlags usage, 
+		VkMemoryPropertyFlags properties, 
+		VkBuffer& buffer, 
+		VkDeviceMemory& bufferMemory);
+
+	void copyBuffer(VkBuffer srcBuffer,
+		VkBuffer dstBuffer,
+		VkDeviceSize size);
+	
 
 private:
 	void createSurface(GLFWwindow* window);
@@ -58,6 +67,8 @@ private:
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+
+	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 private:
 	unsigned int mMaxFramesInFligt = 2;
@@ -88,6 +99,10 @@ private:
 	Scene* mScene = nullptr;
 
 	uint32_t mSyncObjIndex = 0;
+
+	// copy CommandPool and CopyCommand
+	VkCommandPool mCopyCommandPool = VK_NULL_HANDLE;
+	VkCommandBuffer mCopyCommandBuffer = VK_NULL_HANDLE;
 
 	// swap chain extension
 	const std::vector<const char*> mSwapChainExtensionName = 

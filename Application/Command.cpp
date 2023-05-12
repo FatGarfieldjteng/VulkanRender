@@ -10,6 +10,7 @@
 #include "SimpleScene.h"
 #include "Mesh.h"
 #include "VertexBuffer.h"
+#include "IndexBuffer.h"
 #include <stdexcept>
 
 Command::Command(VkPhysicalDevice physicalDevice,
@@ -120,7 +121,12 @@ void Command::recordCommandBuffer(VkCommandBuffer commandBuffer,
     VkDeviceSize offsets[] = { 0 };
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-    vkCmdDraw(commandBuffer, vb->mSize, 1, 0, 0);
+    IndexBuffer* ib = mesh->getIB();
+    vkCmdBindIndexBuffer(commandBuffer, ib->mIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+    vkCmdDrawIndexed(commandBuffer, ib->mIndices, 1, 0, 0, 0);
+
+    //vkCmdDraw(commandBuffer, vb->mVertices, 1, 0, 0);
 
     vkCmdEndRenderPass(commandBuffer);
 

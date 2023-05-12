@@ -14,5 +14,5 @@ public:
 	virtual ~TriangleVertexBuffer();
 
 public:
-	virtual void init();
+	virtual void init(uint32_t vertices = 0, VkDeviceSize bufferSize = 0, void* bufferData = nullptr);
 };

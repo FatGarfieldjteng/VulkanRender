@@ -1,5 +1,7 @@
 #include "SimpleScene.h"
 #include "TriangleMesh.h"
+#include "Mesh.h"
+#include "PCVertexFormat.h"
 #include <stdexcept>
 
 SimpleScene::SimpleScene(Device* device)
@@ -19,8 +21,39 @@ SimpleScene::~SimpleScene()
 
 void SimpleScene::init()
 {
-    TriangleMesh* mesh;
-    mesh = new TriangleMesh(mDevice);
+    /*TriangleMesh* mesh;
+    mesh = new TriangleMesh(mDevice);*/
+
+    const std::vector<PCVertexFormat::Vertex> vertices = 
+    {
+        {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+    };
+
+    const std::vector<uint32_t> indices = 
+    {
+        0, 1, 2, 2, 3, 0
+    };
+
+    // QUAD mesh
+    Mesh* mesh = new Mesh(mDevice);
+
+    uint32_t vertexCount = static_cast<uint32_t>(vertices.size());
+    VkDeviceSize vBufferSize = static_cast< VkDeviceSize>(sizeof(PCVertexFormat::Vertex) * vertexCount);
+
+    uint32_t indexCount = static_cast<uint32_t>(indices.size());
+    VkDeviceSize iBufferSize = static_cast <VkDeviceSize>(sizeof(uint32_t) * indexCount);
+
+    mesh->init(vertexCount,
+        vBufferSize,
+        (void*)vertices.data(),
+        indexCount,
+        iBufferSize,
+        (void*)indices.data()
+    );
+
     mMeshes.push_back(mesh);
 }
 

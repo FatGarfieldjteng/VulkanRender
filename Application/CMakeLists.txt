@@ -20,6 +20,7 @@ set(HEADER_FILES
 	FormatManager.h
 	VertexBuffer.h
 	TriangleVertexBuffer.h
+	IndexBuffer.h
 	PCVertexFormat.h
 	Mesh.h
 	TriangleMesh.h
@@ -46,6 +47,7 @@ set(SOURCE_FILES
 	FormatManager.cpp
 	VertexBuffer.cpp
 	TriangleVertexBuffer.cpp
+	IndexBuffer.cpp
 	PCVertexFormat.cpp
 	Mesh.cpp
 	TriangleMesh.cpp
