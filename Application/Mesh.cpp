@@ -1,5 +1,4 @@
 #include "Mesh.h"
-#include "TriangleVertexBuffer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 

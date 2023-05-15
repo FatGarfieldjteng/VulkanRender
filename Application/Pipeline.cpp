@@ -3,6 +3,8 @@
 #include "Shadermanager.h"
 #include "PassManager.h"
 #include "FormatManager.h"
+#include "ConstantBufferManager.h"
+#include "ConstantBuffer.h"
 #include "PCVertexFormat.h"
 
 #include <vector>
@@ -107,7 +109,11 @@ void Pipeline::create(VkDevice logicalDevice, Managers* managers)
     // root signature
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 0;
+    pipelineLayoutInfo.setLayoutCount = 1;
+
+    ConstantBufferManager* constantBufferManager = managers->getConstantBufferManager();
+    pipelineLayoutInfo.pSetLayouts = &(constantBufferManager->getConstantBuffer("WVP")->mDescriptorSetLayout);
+
     pipelineLayoutInfo.pushConstantRangeCount = 0;
     
     if (vkCreatePipelineLayout(logicalDevice, 

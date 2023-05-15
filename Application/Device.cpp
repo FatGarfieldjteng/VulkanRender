@@ -8,6 +8,7 @@
 #include "FrameBuffer.h"
 #include "Command.h"
 #include "SyncObjectManager.h"
+#include "ConstantBufferManager.h"
 #include "SimpleScene.h"
 
 #include <stdexcept>
@@ -113,18 +114,26 @@ void Device::acquireQueue(Queue::Type type, VkQueue* queue)
 
 void Device::drawFrame()
 {
-    VkFence fence = mSyncObjectManager->geFrameFence(mSyncObjIndex);
-    VkCommandBuffer commandBuffer = mCommand->get(mSyncObjIndex);
+    VkFence fence = mSyncObjectManager->geFrameFence(mFrameIndex);
+    VkCommandBuffer commandBuffer = mCommand->get(mFrameIndex);
 
     vkWaitForFences(mLogicalDevice, 1, &fence, VK_TRUE, UINT64_MAX);
     vkResetFences(mLogicalDevice, 1, &fence);
 
     uint32_t imageIndex;
 
-    VkSemaphore backBufferAvailableSemaphore = mSyncObjectManager->getBackBufferReadySemaphore(mSyncObjIndex);
+    VkSemaphore backBufferAvailableSemaphore = mSyncObjectManager->getBackBufferReadySemaphore(mFrameIndex);
     vkAcquireNextImageKHR(mLogicalDevice, mSwapChain->get(), UINT64_MAX, backBufferAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
-    vkResetCommandBuffer(commandBuffer, /*VkCommandBufferResetFlagBits*/ 0);
+    // update WVP matrix constant buffer
+    static auto startTime = std::chrono::high_resolution_clock::now();
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+    ConstantBufferManager* constantBufferManager = mManagers->getConstantBufferManager();
+    constantBufferManager->updateWVPConstantBuffer(mFrameIndex, time, mSwapChain->getExtent());
+
+    vkResetCommandBuffer(commandBuffer, 0);
     mCommand->recordCommandBuffer(commandBuffer, mScene, mSwapChain, mFrameBuffer, mManagers, imageIndex);
     
     VkSubmitInfo submitInfo{};
@@ -139,7 +148,7 @@ void Device::drawFrame()
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
 
-    VkSemaphore signalSemaphores[] = { mSyncObjectManager->getPresentReadySemaphore(mSyncObjIndex) };
+    VkSemaphore signalSemaphores[] = { mSyncObjectManager->getPresentReadySemaphore(mFrameIndex) };
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
@@ -161,7 +170,7 @@ void Device::drawFrame()
 
     vkQueuePresentKHR(mPresentQueue->get(), &presentInfo);
 
-    mSyncObjIndex = (mSyncObjIndex + 1) % mMaxFramesInFligt;
+    mFrameIndex = (mFrameIndex + 1) % mMaxFramesInFligt;
 }
 
 void Device::waitIdle()
@@ -346,7 +355,7 @@ void Device::createSwapChain()
 
 void Device::createManagers()
 {
-    mManagers = new Managers(mLogicalDevice, mSwapChain);
+    mManagers = new Managers(this, mSwapChain);
 }
 
 void Device::createFrameBuffer()

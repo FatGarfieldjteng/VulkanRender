@@ -13,6 +13,8 @@ set(HEADER_FILES
 	PassManager.h
 	PipelineManager.h
 	SyncObjectManager.h
+	ConstantBufferManager.h
+	ConstantBuffer.h
 	Managers.h
 	FrameBuffer.h
 	Command.h
@@ -40,6 +42,8 @@ set(SOURCE_FILES
 	PassManager.cpp
 	PipelineManager.cpp
 	SyncObjectManager.cpp
+	ConstantBufferManager.cpp
+	ConstantBuffer.cpp
 	Managers.cpp
 	FrameBuffer.cpp
 	Command.cpp

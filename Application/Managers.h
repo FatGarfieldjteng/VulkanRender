@@ -8,12 +8,14 @@ class ShaderManager;
 class PassManager;
 class PipelineManager;
 class FormatManager;
+class ConstantBufferManager;
+class Device;
 
 class Managers
 {
 public:
 
-    Managers(VkDevice logicalDevice, SwapChain* swapChain);
+    Managers(Device* device, SwapChain* swapChain);
 
     ~Managers();
 
@@ -38,15 +40,21 @@ public:
         return mFormatManager;
     }
 
+    ConstantBufferManager* getConstantBufferManager()
+    {
+        return mConstantBufferManager;
+    }
+
 private:
     void createManagers();
 
 private:
-    VkDevice mLogicalDevice = VK_NULL_HANDLE;
+    Device* mDevice = nullptr;
     SwapChain* mSwapChain = nullptr;
 
     ShaderManager*      mShaderManager = nullptr;
     PassManager*        mPassManager = nullptr;
     PipelineManager*    mPipelineManager = nullptr;
     FormatManager*      mFormatManager = nullptr;
+    ConstantBufferManager* mConstantBufferManager = nullptr;
 };

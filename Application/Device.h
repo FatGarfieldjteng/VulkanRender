@@ -98,7 +98,7 @@ private:
 
 	Scene* mScene = nullptr;
 
-	uint32_t mSyncObjIndex = 0;
+	uint32_t mFrameIndex = 0;
 
 	// copy CommandPool and CopyCommand
 	VkCommandPool mCopyCommandPool = VK_NULL_HANDLE;
