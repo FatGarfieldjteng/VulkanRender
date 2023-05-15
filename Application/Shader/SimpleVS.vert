@@ -1,6 +1,6 @@
 #version 450
 
-layout(binding = 0) uniform WVPUniform
+layout(binding = 0) uniform UniformBufferObject 
 {
     mat4 model;
     mat4 view;
@@ -13,6 +13,6 @@ layout(location = 1) in vec3 inColor;
 layout(location = 0) out vec3 fragColor;
 
 void main() {
-    gl_Position = WVPUniform.proj * WVPUniform.view * WVPUniform.model * vec4(inPosition, 0.0, 1.0);
+    gl_Position = VVP.projection * VVP.view * VVP.model * vec4(inPosition, 0.0, 1.0);
     fragColor = inColor;
 }

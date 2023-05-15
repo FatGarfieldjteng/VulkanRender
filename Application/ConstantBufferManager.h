@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <string>
 #include <map>
+#include <vector>
 
 class Device;
 class ConstantBuffer;
@@ -31,9 +32,9 @@ public:
 
     void updateWVPConstantBuffer(uint32_t frameIndex, float timePassed, VkExtent2D extent);
 
-    void addConstantBuffer(const std::string& ID, ConstantBuffer* constantBuffer);
-    
     ConstantBuffer* getConstantBuffer(const std::string& ID);
+
+    VkDescriptorSetLayout getDescriptorSetLayout(const std::string& ID);
     
 private:
     void createWVPConstantBuffer();
@@ -42,10 +43,15 @@ private:
 
     void createDescriptorPool();
 
+    void addConstantBuffer(const std::string& ID, ConstantBuffer* constantBuffer);
+
+    void addDescriptorSets(const std::string& ID, const std::vector<VkDescriptorSet>& descriptorSets);
+
 private:
     
     Device* mDevice = nullptr;
     VkDescriptorPool mDescriptorPool = VK_NULL_HANDLE;
     unsigned int mMaxFramesInFligt = 2;
     std::map<std::string, ConstantBuffer*> mIDToConstantBuffer;
+    std::map < std::string, std::vector<VkDescriptorSet>> mIDToDescriptorSets;
 };
