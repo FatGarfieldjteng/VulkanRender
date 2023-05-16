@@ -20,9 +20,9 @@ void TriangleVertexBuffer::init(uint32_t /*vertices*/, VkDeviceSize /*bufferSize
     // constant data, this is a triangle
     const std::vector<PCVertexFormat::Vertex> vertices = 
     {
-        {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-        {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+        {{0.0f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+        {{-0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}}
     };
 
     mVertices = static_cast<uint32_t>(vertices.size());

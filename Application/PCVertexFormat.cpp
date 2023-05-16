@@ -20,7 +20,7 @@ void PCVertexFormat::init()
     mAttribute.resize(2);
     mAttribute[0].binding = 0;
     mAttribute[0].location = 0;
-    mAttribute[0].format = VK_FORMAT_R32G32_SFLOAT;
+    mAttribute[0].format = VK_FORMAT_R32G32B32_SFLOAT;
     mAttribute[0].offset = offsetof(Vertex, pos);
 
     mAttribute[1].binding = 0;
