@@ -7,12 +7,13 @@
 #include <string>
 
 class SwapChain;
+class DepthStencilBuffer;
 
 class PassManager
 {
 public:
 
-    PassManager(VkDevice logicalDevice, SwapChain* swapChain);
+    PassManager(VkDevice logicalDevice, SwapChain* swapChain, DepthStencilBuffer* depthStencilBuffer);
 
     ~PassManager();
 
@@ -31,5 +32,6 @@ private:
     
     VkDevice mLogicalDevice = VK_NULL_HANDLE;
     SwapChain* mSwapChain = nullptr;
+    DepthStencilBuffer* mDepthStencilBuffer = nullptr;
     std::map<std::string, VkRenderPass> mIDToPass;
 };

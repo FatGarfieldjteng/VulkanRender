@@ -5,6 +5,9 @@
 #include <stdexcept>
 
 #define GLM_FORCE_RADIANS
+
+// use depth range [0.0, 1.0] in projection matrix, this is Vulkan sepc
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/gtc/matrix_transform.hpp>
 
 ConstantBufferManager::ConstantBufferManager(Device* device,

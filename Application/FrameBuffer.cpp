@@ -1,14 +1,17 @@
 #include "FrameBuffer.h"
 #include "SwapChain.h"
+#include "DepthStencilBuffer.h"
 #include "Managers.h"
 #include "PassManager.h"
 #include <stdexcept>
 
 FrameBuffer::FrameBuffer(VkDevice logicalDevice, 
     SwapChain* swapChain,
+    DepthStencilBuffer* depthStencilBuffer,
     Managers* managers)
     :mLogicalDevice(logicalDevice)
     , mSwapChain(swapChain)
+    , mDepthStencilBuffer(depthStencilBuffer)
     , mManagers(managers)
 {
     createFramebuffers();
@@ -33,13 +36,14 @@ void FrameBuffer::createFramebuffers()
     {
         VkImageView attachments[] =
         {
-            mSwapChain->getView(i)
+            mSwapChain->getView(i),
+            mDepthStencilBuffer->getView()
         };
 
         VkFramebufferCreateInfo framebufferInfo{};
         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         framebufferInfo.renderPass = mManagers->getPassManager()->getPass("SimplePass");
-        framebufferInfo.attachmentCount = 1;
+        framebufferInfo.attachmentCount = 2;
         framebufferInfo.pAttachments = attachments;
         framebufferInfo.width = extent.width;
         framebufferInfo.height = extent.height;

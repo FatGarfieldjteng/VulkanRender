@@ -5,11 +5,13 @@
 #include "FormatManager.h"
 #include "ConstantBufferManager.h"
 #include "SwapChain.h"
+#include "DepthStencilBuffer.h"
 #include "Device.h"
 
-Managers::Managers(Device* mDevice, SwapChain* swapChain)
+Managers::Managers(Device* mDevice, SwapChain* swapChain, DepthStencilBuffer* depthStencilBuffer)
 	:mDevice(mDevice)
 	, mSwapChain(swapChain)
+	, mDepthStencilBuffer(depthStencilBuffer)
 {
 	createManagers();
 }
@@ -48,7 +50,7 @@ void Managers::createManagers()
 	mShaderManager = new ShaderManager(mDevice->getLogicalDevice());
 
 	// passmanager
-	mPassManager = new PassManager(mDevice->getLogicalDevice(), mSwapChain);
+	mPassManager = new PassManager(mDevice->getLogicalDevice(), mSwapChain, mDepthStencilBuffer);
 
 	// vertex format manager
 	mFormatManager = new FormatManager();

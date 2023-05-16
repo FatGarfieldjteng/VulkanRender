@@ -11,6 +11,7 @@
 
 class Validation;
 class SwapChain;
+class DepthStencilBuffer;
 class Managers;
 class FrameBuffer;
 class Command;
@@ -30,7 +31,7 @@ public:
 	void acquireQueue(Queue::Type type, VkQueue* queue);
 	void drawFrame();
 	void waitIdle();
-
+	VkFormat findDepthFormat();
 
 	VkPhysicalDevice getPhysicalDevice()
 	{
@@ -51,6 +52,20 @@ public:
 	void copyBuffer(VkBuffer srcBuffer,
 		VkBuffer dstBuffer,
 		VkDeviceSize size);
+
+	void createImage(uint32_t width,
+		uint32_t height,
+		VkFormat format,
+		VkImageTiling tiling,
+		VkImageUsageFlags usage,
+		VkMemoryPropertyFlags properties,
+		VkImage& image,
+		VkDeviceMemory& imageMemory);
+
+	VkImageView createImageView(VkImage image, 
+		VkFormat format, 
+		VkImageAspectFlags aspectFlags);
+
 	
 
 private:
@@ -58,6 +73,7 @@ private:
 	void createPhysicalDevice();
 	void createLogicalDevice();
 	void createSwapChain();
+	void createDepthStencilBuffer();
 	void createManagers();
 	void createFrameBuffer();
 	void createCommand();
@@ -69,6 +85,8 @@ private:
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 
 	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
+	VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
 private:
 	unsigned int mMaxFramesInFligt = 2;
@@ -87,6 +105,8 @@ private:
 	Queue* mPresentQueue = nullptr;
 
 	SwapChain* mSwapChain = nullptr;
+
+	DepthStencilBuffer* mDepthStencilBuffer = nullptr;
 
 	Managers* mManagers = nullptr;
 

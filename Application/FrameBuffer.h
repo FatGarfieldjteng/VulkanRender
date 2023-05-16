@@ -6,6 +6,7 @@
 #include <vector>
 
 class SwapChain;
+class DepthStencilBuffer;
 class Managers;
 
 class FrameBuffer
@@ -13,6 +14,7 @@ class FrameBuffer
 public:
 	FrameBuffer(VkDevice logicalDevice, 
 		SwapChain* swapChain,
+		DepthStencilBuffer* depthStencilBuffer,
 		Managers* managers);
 	~FrameBuffer();
 
@@ -27,6 +29,7 @@ private:
 private:
 	VkDevice mLogicalDevice = VK_NULL_HANDLE;
 	SwapChain* mSwapChain = nullptr;
+	DepthStencilBuffer* mDepthStencilBuffer = nullptr;
 	Managers* mManagers;
 	std::vector<VkFramebuffer> mFramebuffers;
 };

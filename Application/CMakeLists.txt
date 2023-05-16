@@ -8,6 +8,7 @@ set(HEADER_FILES
 	Device.h
 	Queue.h
 	SwapChain.h
+	DepthStencilBuffer.h
 	ShaderManager.h
 	Pipeline.h
 	PassManager.h
@@ -39,6 +40,7 @@ set(SOURCE_FILES
 	SwapChain.cpp
 	ShaderManager.cpp
 	Pipeline.cpp
+	DepthStencilBuffer.cpp
 	PassManager.cpp
 	PipelineManager.cpp
 	SyncObjectManager.cpp

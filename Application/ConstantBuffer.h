@@ -24,8 +24,6 @@ public:
 	
 	VkDescriptorSetLayout mDescriptorSetLayout = VK_NULL_HANDLE;
 
-	
-
 	std::vector<VkBuffer> mUniformBuffers;
 	std::vector<VkDeviceMemory> mUniformBuffersMemory;
 	std::vector<void*> mMappedData;

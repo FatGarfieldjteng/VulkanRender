@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 class SwapChain;
+class DepthStencilBuffer;
 class ShaderManager;
 class PassManager;
 class PipelineManager;
@@ -15,7 +16,7 @@ class Managers
 {
 public:
 
-    Managers(Device* device, SwapChain* swapChain);
+    Managers(Device* device, SwapChain* swapChain, DepthStencilBuffer* depthStencilBuffer);
 
     ~Managers();
 
@@ -51,6 +52,7 @@ private:
 private:
     Device* mDevice = nullptr;
     SwapChain* mSwapChain = nullptr;
+    DepthStencilBuffer* mDepthStencilBuffer = nullptr;
 
     ShaderManager*      mShaderManager = nullptr;
     PassManager*        mPassManager = nullptr;
