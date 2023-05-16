@@ -79,7 +79,6 @@ void SimpleScene::loadScene()
     }
 
     std::unordered_map<PCVertexFormat::Vertex, uint32_t> uniqueVertices{};
-    
 
     for (const auto& shape : shapes) {
 
@@ -124,6 +123,11 @@ void SimpleScene::loadScene()
 
         mMeshes.push_back(mesh);
     }
+}
+
+int SimpleScene::getMeshCount()
+{
+    return static_cast<int>(mMeshes.size());
 }
 
 Mesh* SimpleScene::getMesh(int index)

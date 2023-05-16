@@ -120,30 +120,35 @@ void Command::recordCommandBuffer(VkCommandBuffer commandBuffer,
     scissor.extent = extent;
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-    Mesh* mesh = scene->getMesh(0);
-
-    VertexBuffer* vb = mesh->getVB();
-
-    VkBuffer vertexBuffers[] = { vb->mVertexBuffer };
-    VkDeviceSize offsets[] = { 0 };
-    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-
-    IndexBuffer* ib = mesh->getIB();
-    vkCmdBindIndexBuffer(commandBuffer, ib->mIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+    int meshCount = scene->getMeshCount();
 
     // update WVP constant buffer
     ConstantBufferManager* constantBufferManager = managers->getConstantBufferManager();
 
-    vkCmdBindDescriptorSets(commandBuffer, 
-        VK_PIPELINE_BIND_POINT_GRAPHICS, 
+    vkCmdBindDescriptorSets(commandBuffer,
+        VK_PIPELINE_BIND_POINT_GRAPHICS,
         pipeline->getPipelineLayout(),
-        0, 
-        1, 
+        0,
+        1,
         &(constantBufferManager->getDescriptorSets("WVP")[frameIndex]),
-        0, 
+        0,
         nullptr);
 
-    vkCmdDrawIndexed(commandBuffer, ib->mIndices, 1, 0, 0, 0);
+    for (int meshIndex = 0; meshIndex < meshCount; ++meshIndex)
+    {
+        Mesh* mesh = scene->getMesh(meshIndex);
+
+        VertexBuffer* vb = mesh->getVB();
+
+        VkBuffer vertexBuffers[] = { vb->mVertexBuffer };
+        VkDeviceSize offsets[] = { 0 };
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+        IndexBuffer* ib = mesh->getIB();
+        vkCmdBindIndexBuffer(commandBuffer, ib->mIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+        vkCmdDrawIndexed(commandBuffer, ib->mIndices, 1, 0, 0, 0);
+    }
 
     //vkCmdDraw(commandBuffer, vb->mVertices, 1, 0, 0);
 
