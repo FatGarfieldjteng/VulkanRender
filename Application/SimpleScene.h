@@ -16,6 +16,7 @@ public:
 
 public:
 	virtual void init();
+	virtual void loadScene();
 	virtual Mesh* getMesh(int index);
 
 private:

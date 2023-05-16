@@ -22,13 +22,12 @@ set(HEADER_FILES
 	VertexFormat.h
 	FormatManager.h
 	VertexBuffer.h
-	TriangleVertexBuffer.h
 	IndexBuffer.h
 	PCVertexFormat.h
 	Mesh.h
-	TriangleMesh.h
 	Scene.h
 	SimpleScene.h
+	tinyobjloader/tiny_obj_loader.h
 )
 
 set(SOURCE_FILES 
@@ -52,11 +51,9 @@ set(SOURCE_FILES
 	VertexFormat.cpp
 	FormatManager.cpp
 	VertexBuffer.cpp
-	TriangleVertexBuffer.cpp
 	IndexBuffer.cpp
 	PCVertexFormat.cpp
 	Mesh.cpp
-	TriangleMesh.cpp
 	Scene.cpp
 	SimpleScene.cpp
 )

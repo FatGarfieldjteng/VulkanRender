@@ -16,6 +16,7 @@ public:
 
 public:
 	virtual void init() = 0;
+	virtual void loadScene() = 0;
 	virtual Mesh* getMesh(int index) = 0;
 
 protected:
