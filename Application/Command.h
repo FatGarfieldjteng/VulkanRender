@@ -26,7 +26,8 @@ public:
 		SwapChain* swapChain,
 		FrameBuffer* frameBuffer,
 		Managers *managers,
-		size_t imageIndex);
+		size_t imageIndex,
+		size_t frameIndex);
 
 
 	VkCommandBuffer get(size_t index)

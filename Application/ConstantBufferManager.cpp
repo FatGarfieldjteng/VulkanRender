@@ -96,18 +96,18 @@ void ConstantBufferManager::createWVPDescriptorSets()
 		bufferInfo.offset = 0;
 		bufferInfo.range = sizeof(MVPConstantBuffer);
 
-		VkWriteDescriptorSet descriptorWrite{};
-		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrite.dstSet = descriptorSets[i];
-		descriptorWrite.dstBinding = 0;
-		descriptorWrite.dstArrayElement = 0;
-		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		descriptorWrite.descriptorCount = 1;
-		descriptorWrite.pBufferInfo = &bufferInfo;
+		VkWriteDescriptorSet writeDescriptor{};
+		writeDescriptor.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		writeDescriptor.dstSet = descriptorSets[i];
+		writeDescriptor.dstBinding = 0;
+		writeDescriptor.dstArrayElement = 0;
+		writeDescriptor.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		writeDescriptor.descriptorCount = 1;
+		writeDescriptor.pBufferInfo = &bufferInfo;
 
 		vkUpdateDescriptorSets(mDevice->getLogicalDevice(), 
 			1, 
-			&descriptorWrite, 
+			&writeDescriptor,
 			0, 
 			nullptr);
 	}
@@ -147,5 +147,19 @@ ConstantBuffer* ConstantBufferManager::getConstantBuffer(const std::string& ID)
 	else
 	{
 		return nullptr;
+	}
+}
+
+std::vector<VkDescriptorSet>& ConstantBufferManager::getDescriptorSets(const std::string& ID)
+{
+	std::map<std::string, std::vector<VkDescriptorSet> >::iterator it = mIDToDescriptorSets.find(ID);
+
+	if (it != mIDToDescriptorSets.end())
+	{
+		return  it->second;
+	}
+	else
+	{
+		throw std::runtime_error("wrong ID for DescriptorSets!");
 	}
 }

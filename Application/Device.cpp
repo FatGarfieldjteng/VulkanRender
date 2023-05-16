@@ -134,7 +134,13 @@ void Device::drawFrame()
     constantBufferManager->updateWVPConstantBuffer(mFrameIndex, time, mSwapChain->getExtent());
 
     vkResetCommandBuffer(commandBuffer, 0);
-    mCommand->recordCommandBuffer(commandBuffer, mScene, mSwapChain, mFrameBuffer, mManagers, imageIndex);
+    mCommand->recordCommandBuffer(commandBuffer, 
+        mScene, 
+        mSwapChain, 
+        mFrameBuffer, 
+        mManagers, 
+        imageIndex, 
+        mFrameIndex);
     
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

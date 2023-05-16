@@ -34,8 +34,8 @@ public:
 
     ConstantBuffer* getConstantBuffer(const std::string& ID);
 
-    VkDescriptorSetLayout getDescriptorSetLayout(const std::string& ID);
-    
+    std::vector<VkDescriptorSet>& getDescriptorSets(const std::string& ID);
+   
 private:
     void createWVPConstantBuffer();
 

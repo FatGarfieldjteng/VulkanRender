@@ -66,7 +66,7 @@ void Pipeline::create(VkDevice logicalDevice, Managers* managers)
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
     rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-    rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
     rasterizer.depthBiasEnable = VK_FALSE;
 
     // multisample
@@ -147,7 +147,12 @@ void Pipeline::create(VkDevice logicalDevice, Managers* managers)
     }
 }
 
-VkPipeline Pipeline::get()
+VkPipeline Pipeline::getPipeline()
 {
     return mPipeline;
+}
+
+VkPipelineLayout Pipeline::getPipelineLayout()
+{
+    return mPipelineLayout;
 }

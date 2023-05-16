@@ -6,6 +6,7 @@
 #include "Managers.h"
 #include "PassManager.h"
 #include "PipelineManager.h"
+#include "ConstantBufferManager.h"
 #include "Pipeline.h"
 #include "SimpleScene.h"
 #include "Mesh.h"
@@ -71,7 +72,8 @@ void Command::recordCommandBuffer(VkCommandBuffer commandBuffer,
     SwapChain* swapChain,
     FrameBuffer* frameBuffer,
     Managers* managers,
-    size_t imageIndex)
+    size_t imageIndex,
+    size_t frameIndex)
 {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -93,11 +95,13 @@ void Command::recordCommandBuffer(VkCommandBuffer commandBuffer,
     renderPassInfo.clearValueCount = 1;
     renderPassInfo.pClearValues = &clearColor;
 
+    Pipeline* pipeline = managers->getPipelineManager()->getPipeline("SimplePipeline");
+
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
     vkCmdBindPipeline(commandBuffer,
         VK_PIPELINE_BIND_POINT_GRAPHICS, 
-        managers->getPipelineManager()->getPipeline("SimplePipeline")->get());
+        pipeline->getPipeline());
 
     VkViewport viewport{};
     viewport.x = 0.0f;
@@ -123,6 +127,18 @@ void Command::recordCommandBuffer(VkCommandBuffer commandBuffer,
 
     IndexBuffer* ib = mesh->getIB();
     vkCmdBindIndexBuffer(commandBuffer, ib->mIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+    // update WVP constant buffer
+    ConstantBufferManager* constantBufferManager = managers->getConstantBufferManager();
+
+    vkCmdBindDescriptorSets(commandBuffer, 
+        VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline->getPipelineLayout(),
+        0, 
+        1, 
+        &(constantBufferManager->getDescriptorSets("WVP")[frameIndex]),
+        0, 
+        nullptr);
 
     vkCmdDrawIndexed(commandBuffer, ib->mIndices, 1, 0, 0, 0);
 
