@@ -25,6 +25,8 @@ ConstantBufferManager::~ConstantBufferManager()
 	{
 		delete it->second;
 	}
+
+	vkDestroyDescriptorPool(mDevice->getLogicalDevice(), mDescriptorPool, nullptr);
 }
 
 void ConstantBufferManager::createDescriptorPool()
