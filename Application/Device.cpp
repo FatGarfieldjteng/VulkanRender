@@ -360,6 +360,7 @@ void Device::createLogicalDevice()
     }
 
     VkPhysicalDeviceFeatures deviceFeatures{};
+    deviceFeatures.samplerAnisotropy = VK_TRUE;
 
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -466,6 +467,7 @@ bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)
     VkPhysicalDeviceProperties deviceProperties;
     VkPhysicalDeviceFeatures deviceFeatures;
     vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+    vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
 
     Queue::QueueFamilyIndices indices = Queue::findQueueFamilies(physicalDevice, mSurface);
 
@@ -480,7 +482,8 @@ bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)
     return (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU 
         && indices.isComplete() 
         && extensionsSupported
-        && swapChainAdequate);
+        && swapChainAdequate
+        && deviceFeatures.samplerAnisotropy);
 }
 
 bool Device::checkDeviceExtensionSupport(VkPhysicalDevice device)

@@ -1,9 +1,12 @@
+
 #include "Texture.h"
 #include "Device.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 #include <stdexcept>
+#include <iostream>
+#include <filesystem>
 
 Texture::Texture(Device* device)
     :mDevice(device)
@@ -30,6 +33,8 @@ Texture::~Texture()
 
 void Texture::load(const std::string& file)
 {
+    std::cout <<  std::filesystem::current_path();
+
     // load image
     stbi_uc* pixels = stbi_load(file.c_str(),
         &mWidth, 

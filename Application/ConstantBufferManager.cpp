@@ -34,14 +34,18 @@ ConstantBufferManager::~ConstantBufferManager()
 
 void ConstantBufferManager::createDescriptorPool()
 {
-	VkDescriptorPoolSize poolSize{};
-	poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSize.descriptorCount = static_cast<uint32_t>(mMaxFramesInFligt);
+	VkDescriptorPoolSize poolSizes[2];
+
+	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	poolSizes[0].descriptorCount = static_cast<uint32_t>(mMaxFramesInFligt);
+
+	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	poolSizes[1].descriptorCount = static_cast<uint32_t>(mMaxFramesInFligt);
 
 	VkDescriptorPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	poolInfo.poolSizeCount = 1;
-	poolInfo.pPoolSizes = &poolSize;
+	poolInfo.poolSizeCount = 2;
+	poolInfo.pPoolSizes = poolSizes;
 	poolInfo.maxSets = static_cast<uint32_t>(mMaxFramesInFligt);
 
 	if (vkCreateDescriptorPool(mDevice->getLogicalDevice(), 
@@ -101,14 +105,27 @@ void ConstantBufferManager::createWVPDescriptorSets()
 		bufferInfo.offset = 0;
 		bufferInfo.range = sizeof(MVPConstantBuffer);
 
-		VkWriteDescriptorSet writeDescriptor{};
-		writeDescriptor.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		writeDescriptor.dstSet = descriptorSets[i];
-		writeDescriptor.dstBinding = 0;
-		writeDescriptor.dstArrayElement = 0;
-		writeDescriptor.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		writeDescriptor.descriptorCount = 1;
-		writeDescriptor.pBufferInfo = &bufferInfo;
+		VkDescriptorImageInfo imageInfo{};
+		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		imageInfo.imageView = textureImageView;
+		imageInfo.sampler = textureSampler;
+
+		VkWriteDescriptorSet writeDescriptor[2];
+		writeDescriptor[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		writeDescriptor[0].dstSet = descriptorSets[i];
+		writeDescriptor[0].dstBinding = 0;
+		writeDescriptor[0].dstArrayElement = 0;
+		writeDescriptor[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		writeDescriptor[0].descriptorCount = 1;
+		writeDescriptor[0].pBufferInfo = &bufferInfo;
+
+		writeDescriptor[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		writeDescriptor[1].dstSet = descriptorSets[i];
+		writeDescriptor[1].dstBinding = 1;
+		writeDescriptor[1].dstArrayElement = 0;
+		writeDescriptor[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		writeDescriptor[1].descriptorCount = 1;
+		writeDescriptor[1].pImageInfo = &imageInfo;
 
 		vkUpdateDescriptorSets(mDevice->getLogicalDevice(), 
 			1, 

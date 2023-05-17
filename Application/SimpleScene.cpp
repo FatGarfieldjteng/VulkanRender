@@ -17,11 +17,18 @@ SimpleScene::SimpleScene(Device* device)
 
 SimpleScene::~SimpleScene()
 {
+    for (size_t i = 0; i < mTextures.size(); ++i)
+    {
+        Texture* texture = mTextures[i];
+        delete texture;
+    }
+
     for (size_t i = 0; i < mMeshes.size(); ++i)
     {
         Mesh* mesh = mMeshes[i];
         delete mesh;
     }
+
 }
 
 void SimpleScene::init()
@@ -69,7 +76,7 @@ void SimpleScene::init()
 
 
     Texture* texture = new Texture(mDevice);
-    texture->load("e:\\texture.jpg");
+    texture->load("../../Asset/texture.jpg");
     mTextures.push_back(texture);
 }
 
