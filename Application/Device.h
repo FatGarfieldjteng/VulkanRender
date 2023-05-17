@@ -66,7 +66,17 @@ public:
 		VkFormat format, 
 		VkImageAspectFlags aspectFlags);
 
-	
+	VkSampler createSampler();
+
+	void transitImageLayout(VkImage image, 
+		VkFormat format, 
+		VkImageLayout oldLayout, 
+		VkImageLayout newLayout);
+
+	void copyBufferToImage(VkBuffer buffer, 
+		VkImage image, 
+		uint32_t width, 
+		uint32_t height);
 
 private:
 	void createSurface(GLFWwindow* window);
@@ -87,6 +97,9 @@ private:
 	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 	VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+
+	void beginCopyCommand();
+	void endCopyCommand();
 
 private:
 	unsigned int mMaxFramesInFligt = 2;

@@ -1,5 +1,6 @@
 #include "SimpleScene.h"
 #include "Mesh.h"
+#include "Texture.h"
 #include "PCVertexFormat.h"
 #include <unordered_map>
 #include <stdexcept>
@@ -10,8 +11,8 @@
 SimpleScene::SimpleScene(Device* device)
     :Scene(device)
 {
-    //init();
-    loadScene();
+    init();
+    //loadScene();
 }
 
 SimpleScene::~SimpleScene()
@@ -65,6 +66,11 @@ void SimpleScene::init()
     );
 
     mMeshes.push_back(mesh);
+
+
+    Texture* texture = new Texture(mDevice);
+    texture->load("e:\\texture.jpg");
+    mTextures.push_back(texture);
 }
 
 void SimpleScene::loadScene()

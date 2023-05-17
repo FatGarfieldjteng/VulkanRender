@@ -16,6 +16,7 @@ set(HEADER_FILES
 	SyncObjectManager.h
 	ConstantBufferManager.h
 	ConstantBuffer.h
+	Texture.h
 	Managers.h
 	FrameBuffer.h
 	Command.h
@@ -28,6 +29,7 @@ set(HEADER_FILES
 	Scene.h
 	SimpleScene.h
 	tinyobjloader/tiny_obj_loader.h
+	stb/stb_image.h
 )
 
 set(SOURCE_FILES 
@@ -45,6 +47,7 @@ set(SOURCE_FILES
 	SyncObjectManager.cpp
 	ConstantBufferManager.cpp
 	ConstantBuffer.cpp
+	Texture.cpp
 	Managers.cpp
 	FrameBuffer.cpp
 	Command.cpp
