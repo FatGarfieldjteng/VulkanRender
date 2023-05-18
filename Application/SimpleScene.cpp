@@ -13,7 +13,7 @@ SimpleScene::SimpleScene(Device* device)
     :Scene(device)
 {
     init();
-    //loadScene();
+    loadScene();
 }
 
 SimpleScene::~SimpleScene()
@@ -77,7 +77,7 @@ void SimpleScene::init()
 
 
     Texture* texture = new Texture(mDevice);
-    texture->load("../../Asset/texture.jpg");
+    texture->load("../../Asset/viking_room.png");
     mTextures.push_back(texture);
 }
 
@@ -88,7 +88,7 @@ void SimpleScene::loadScene()
     std::vector<tinyobj::material_t> materials;
     std::string warn, err;
 
-    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, "e:\\viking_room.obj")) {
+    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, "../../Asset/viking_room.obj")) {
         throw std::runtime_error(warn + err);
     }
 
@@ -114,7 +114,7 @@ void SimpleScene::loadScene()
             vertex.texCoord = 
             {
                 attrib.texcoords[2 * index.texcoord_index + 0],
-                1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+                1.0 - attrib.texcoords[2 * index.texcoord_index + 1]
              };
 
             if (uniqueVertices.count(vertex) == 0) {
@@ -128,7 +128,7 @@ void SimpleScene::loadScene()
         Mesh* mesh = new Mesh(mDevice);
 
         uint32_t vertexCount = static_cast<uint32_t>(vertices.size());
-        VkDeviceSize vBufferSize = static_cast<VkDeviceSize>(sizeof(PCVertexFormat::Vertex) * vertexCount);
+        VkDeviceSize vBufferSize = static_cast<VkDeviceSize>(sizeof(PCTVertexFormat::Vertex) * vertexCount);
 
         uint32_t indexCount = static_cast<uint32_t>(indices.size());
         VkDeviceSize iBufferSize = static_cast <VkDeviceSize>(sizeof(uint32_t) * indexCount);
