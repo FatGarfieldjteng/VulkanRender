@@ -20,6 +20,8 @@ public:
 	virtual void loadScene();
 	virtual int getMeshCount();
 	virtual Mesh* getMesh(int index);
+	virtual int getTextureCount();
+	virtual Texture* getTexture(int index);
 
 private:
 	std::vector<Mesh*> mMeshes;

@@ -25,6 +25,7 @@ set(HEADER_FILES
 	VertexBuffer.h
 	IndexBuffer.h
 	PCVertexFormat.h
+	PCTVertexFormat.h
 	Mesh.h
 	Scene.h
 	SimpleScene.h
@@ -56,6 +57,7 @@ set(SOURCE_FILES
 	VertexBuffer.cpp
 	IndexBuffer.cpp
 	PCVertexFormat.cpp
+	PCTVertexFormat.cpp
 	Mesh.cpp
 	Scene.cpp
 	SimpleScene.cpp

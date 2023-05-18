@@ -86,11 +86,15 @@ void Device::create(VkInstance instance, GLFWwindow* window)
     createLogicalDevice();
     createSwapChain();
     createDepthStencilBuffer();
-    createManagers();
-    createFrameBuffer();
     createCommand();
-    createSyncObjectManager();
+
     createScene();
+
+    createManagers();
+    
+    
+    createFrameBuffer();
+    createSyncObjectManager();
 }
 
 void Device::acquireQueue(Queue::Type type, VkQueue* queue)
@@ -410,7 +414,7 @@ void Device::createDepthStencilBuffer()
 
 void Device::createManagers()
 {
-    mManagers = new Managers(this, mSwapChain, mDepthStencilBuffer);
+    mManagers = new Managers(this, mSwapChain, mDepthStencilBuffer, mScene);
 }
 
 void Device::createFrameBuffer()

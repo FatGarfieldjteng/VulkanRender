@@ -11,12 +11,16 @@ class PipelineManager;
 class FormatManager;
 class ConstantBufferManager;
 class Device;
+class Scene;
 
 class Managers
 {
 public:
 
-    Managers(Device* device, SwapChain* swapChain, DepthStencilBuffer* depthStencilBuffer);
+    Managers(Device* device, 
+        SwapChain* swapChain, 
+        DepthStencilBuffer* depthStencilBuffer,
+        Scene* scene);
 
     ~Managers();
 
@@ -53,6 +57,7 @@ private:
     Device* mDevice = nullptr;
     SwapChain* mSwapChain = nullptr;
     DepthStencilBuffer* mDepthStencilBuffer = nullptr;
+    Scene* mScene = nullptr;
 
     ShaderManager*      mShaderManager = nullptr;
     PassManager*        mPassManager = nullptr;

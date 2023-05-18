@@ -6,6 +6,7 @@
 #include "ConstantBufferManager.h"
 #include "ConstantBuffer.h"
 #include "PCVertexFormat.h"
+#include "PCTVertexFormat.h"
 
 #include <vector>
 #include <stdexcept>
@@ -36,7 +37,7 @@ void Pipeline::create(VkDevice logicalDevice, Managers* managers)
 
     // 
     FormatManager* formatManager = managers->getFormatManager();
-    PCVertexFormat* format = (PCVertexFormat*)formatManager->getFormat("PCFormat");
+    PCTVertexFormat* format = (PCTVertexFormat*)formatManager->getFormat("PCTFormat");
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
     vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;

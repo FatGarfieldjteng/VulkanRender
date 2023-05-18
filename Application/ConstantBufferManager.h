@@ -8,6 +8,7 @@
 #include <vector>
 
 class Device;
+class Scene;
 class ConstantBuffer;
 
 class ConstantBufferManager
@@ -15,6 +16,7 @@ class ConstantBufferManager
 public:
 
     ConstantBufferManager(Device* device,
+        Scene* scene,
         unsigned int maxFramesInFligt = 2);
 
     ~ConstantBufferManager();
@@ -50,6 +52,7 @@ private:
 private:
     
     Device* mDevice = nullptr;
+    Scene* mScene = nullptr;
     VkDescriptorPool mDescriptorPool = VK_NULL_HANDLE;
     unsigned int mMaxFramesInFligt = 2;
     std::map<std::string, ConstantBuffer*> mIDToConstantBuffer;

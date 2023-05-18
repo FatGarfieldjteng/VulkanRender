@@ -2,6 +2,7 @@
 #include "Mesh.h"
 #include "Texture.h"
 #include "PCVertexFormat.h"
+#include "PCTVertexFormat.h"
 #include <unordered_map>
 #include <stdexcept>
 
@@ -36,17 +37,17 @@ void SimpleScene::init()
     /*TriangleMesh* mesh;
     mesh = new TriangleMesh(mDevice);*/
 
-    const std::vector<PCVertexFormat::Vertex> vertices = 
+    const std::vector<PCTVertexFormat::Vertex> vertices =
     {
-        {{-0.5f, -0.5f, 0.0f}, {0.5f, 0.5f, 0.0f}},
-        {{0.5f, -0.5f, 0.0f}, {0.5f, 0.5f, 0.0f}},
-        {{0.5f, 0.5f, 0.0f}, {0.5f, 0.5f, 1.0f}},
-        {{-0.5f, 0.5f, 0.0f}, {0.5f, 0.5f, 1.0f}},
+        {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+        {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+        {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
 
-        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}}
+        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
     };
 
     const std::vector<uint32_t> indices = 
@@ -59,7 +60,7 @@ void SimpleScene::init()
     Mesh* mesh = new Mesh(mDevice);
 
     uint32_t vertexCount = static_cast<uint32_t>(vertices.size());
-    VkDeviceSize vBufferSize = static_cast< VkDeviceSize>(sizeof(PCVertexFormat::Vertex) * vertexCount);
+    VkDeviceSize vBufferSize = static_cast< VkDeviceSize>(sizeof(PCTVertexFormat::Vertex) * vertexCount);
 
     uint32_t indexCount = static_cast<uint32_t>(indices.size());
     VkDeviceSize iBufferSize = static_cast <VkDeviceSize>(sizeof(uint32_t) * indexCount);
@@ -91,16 +92,16 @@ void SimpleScene::loadScene()
         throw std::runtime_error(warn + err);
     }
 
-    std::unordered_map<PCVertexFormat::Vertex, uint32_t> uniqueVertices{};
+    std::unordered_map<PCTVertexFormat::Vertex, uint32_t> uniqueVertices{};
 
     for (const auto& shape : shapes) {
 
         std::vector<uint32_t> indices;
-        std::vector<PCVertexFormat::Vertex> vertices;
+        std::vector<PCTVertexFormat::Vertex> vertices;
 
         for (const auto& index : shape.mesh.indices) 
         {
-            PCVertexFormat::Vertex vertex{};
+            PCTVertexFormat::Vertex vertex{};
 
             vertex.pos = {
                 attrib.vertices[3 * index.vertex_index + 0],
@@ -108,7 +109,13 @@ void SimpleScene::loadScene()
                 attrib.vertices[3 * index.vertex_index + 2]
             };
 
-             vertex.color = { 1.0f, 0.5f, 1.0f };
+            vertex.color = { 1.0f, 0.5f, 1.0f };
+
+            vertex.texCoord = 
+            {
+                attrib.texcoords[2 * index.texcoord_index + 0],
+                1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+             };
 
             if (uniqueVertices.count(vertex) == 0) {
                 uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
@@ -150,4 +157,18 @@ Mesh* SimpleScene::getMesh(int index)
         throw std::runtime_error("mesh index out of range!");
     }
     return mMeshes[index];
+}
+
+int SimpleScene::getTextureCount()
+{
+    return (int)mTextures.size();
+}
+
+Texture* SimpleScene::getTexture(int index)
+{
+    if (index < 0 || index >(int)mTextures.size())
+    {
+        throw std::runtime_error("mesh index out of range!");
+    }
+    return mTextures[index];
 }

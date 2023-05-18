@@ -1,5 +1,6 @@
 #include "FormatManager.h"
 #include "PCVertexFormat.h"
+#include "PCTVertexFormat.h"
 
 FormatManager::FormatManager()
 {
@@ -14,6 +15,7 @@ FormatManager::~FormatManager()
 void FormatManager::createFormats()
 {
 	createPCFormat();
+	createPCTFormat();
 }
 
 
@@ -23,6 +25,14 @@ void FormatManager::createPCFormat()
 	format->init();
 
 	mIDToVF["PCFormat"] = format;
+}
+
+void FormatManager::createPCTFormat()
+{
+	PCTVertexFormat* format = new PCTVertexFormat();
+	format->init();
+
+	mIDToVF["PCTFormat"] = format;
 }
 
 VertexFormat* FormatManager::getFormat(const std::string& ID)
