@@ -12,7 +12,7 @@
 SimpleScene::SimpleScene(Device* device)
     :Scene(device)
 {
-    init();
+    //init();
     loadScene();
 }
 
@@ -111,11 +111,14 @@ void SimpleScene::loadScene()
 
             vertex.color = { 1.0f, 0.5f, 1.0f };
 
-            vertex.texCoord = 
+            if (index.texcoord_index >= 0)
             {
-                attrib.texcoords[2 * index.texcoord_index + 0],
-                1.0 - attrib.texcoords[2 * index.texcoord_index + 1]
-             };
+                vertex.texCoord =
+                {
+                    attrib.texcoords[2 * index.texcoord_index + 0],
+                    1.0 - attrib.texcoords[2 * index.texcoord_index + 1]
+                };
+            }
 
             if (uniqueVertices.count(vertex) == 0) {
                 uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
@@ -143,6 +146,10 @@ void SimpleScene::loadScene()
 
         mMeshes.push_back(mesh);
     }
+
+    Texture* texture = new Texture(mDevice);
+    texture->load("../../Asset/viking_room.png");
+    mTextures.push_back(texture);
 }
 
 int SimpleScene::getMeshCount()
@@ -168,7 +175,7 @@ Texture* SimpleScene::getTexture(int index)
 {
     if (index < 0 || index >(int)mTextures.size())
     {
-        throw std::runtime_error("mesh index out of range!");
+        throw std::runtime_error("texture index out of range!");
     }
     return mTextures[index];
 }

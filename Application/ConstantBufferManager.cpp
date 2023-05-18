@@ -152,6 +152,7 @@ void ConstantBufferManager::updateWVPConstantBuffer(uint32_t frameIndex, float t
 	WVP.projection = glm::perspective(glm::radians(45.0f), extent.width / (float)extent.height, 0.1f, 10.0f);
 	WVP.projection[1][1] *= -1;
 
+
 	getConstantBuffer("WVP")->update(frameIndex, &WVP, sizeof(WVP));
 }
 
