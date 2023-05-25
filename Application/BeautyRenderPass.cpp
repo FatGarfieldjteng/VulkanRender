@@ -1,8 +1,8 @@
 #include "BeautyRenderPass.h"
 #include "Device.h"
 
-BeautyRenderPass::BeautyRenderPass(Device* device)
-    :RenderPass(device)
+BeautyRenderPass::BeautyRenderPass(Device* device, PassInfo* passinfo)
+    :RenderPass(device, passinfo)
 {
     
 }
@@ -10,4 +10,14 @@ BeautyRenderPass::BeautyRenderPass(Device* device)
 BeautyRenderPass::~BeautyRenderPass()
 {
  
+}
+
+void BeautyRenderPass::buildPass()
+{
+
+}
+
+void BeautyRenderPass::recordCommand()
+{
+
 }

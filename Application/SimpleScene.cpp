@@ -9,6 +9,11 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tinyobjloader/tiny_obj_loader.h"
 
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/cimport.h>
+#include <assimp/version.h>
+
 SimpleScene::SimpleScene(Device* device)
     :Scene(device)
 {
@@ -83,6 +88,12 @@ void SimpleScene::init()
 
 void SimpleScene::loadScene()
 {
+    //loadObjScene();
+    loadGLTFScene();
+}
+
+void SimpleScene::loadObjScene()
+{
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
@@ -99,7 +110,7 @@ void SimpleScene::loadScene()
         std::vector<uint32_t> indices;
         std::vector<PCTVertexFormat::Vertex> vertices;
 
-        for (const auto& index : shape.mesh.indices) 
+        for (const auto& index : shape.mesh.indices)
         {
             PCTVertexFormat::Vertex vertex{};
 
@@ -150,6 +161,21 @@ void SimpleScene::loadScene()
     Texture* texture = new Texture(mDevice);
     texture->load("../../Asset/viking_room.png");
     mTextures.push_back(texture);
+}
+
+void SimpleScene::loadGLTFScene()
+{
+    const aiScene* scene = aiImportFile("../../Asset/ABeautifulGame/glTF/ABeautifulGame.gltf", aiProcess_Triangulate);
+
+    if (!scene || !scene->HasMeshes())
+    {
+        throw std::runtime_error("Can't find ABeautifulGame.gltf");
+    }
+
+    unsigned int mesheCount = scene->mNumMeshes;
+
+    const aiMesh* mesh = scene->mMeshes[0];
+    
 }
 
 int SimpleScene::getMeshCount()

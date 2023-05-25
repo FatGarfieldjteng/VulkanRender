@@ -24,6 +24,10 @@ public:
 	virtual Texture* getTexture(int index);
 
 private:
+	void loadObjScene();
+	void loadGLTFScene();
+
+private:
 	std::vector<Mesh*> mMeshes;
 	std::vector<Texture*> mTextures;
 };
