@@ -82,5 +82,6 @@ void ConstantBuffer::init(VkDeviceSize bufferSize)
 
 void ConstantBuffer::update(uint32_t frameIndex, void* data, size_t size)
 {
+
     std::memcpy(mMappedData[frameIndex], data, size);
 }

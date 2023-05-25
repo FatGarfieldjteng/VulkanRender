@@ -29,6 +29,10 @@ set(HEADER_FILES
 	Mesh.h
 	Scene.h
 	SimpleScene.h
+	RenderPass.h
+	BeautyRenderPass.h
+	ShadowRenderPass.h
+	RenderPassManager.h
 	tinyobjloader/tiny_obj_loader.h
 	stb/stb_image.h
 )
@@ -61,6 +65,10 @@ set(SOURCE_FILES
 	Mesh.cpp
 	Scene.cpp
 	SimpleScene.cpp
+	RenderPass.cpp
+	BeautyRenderPass.cpp
+	ShadowRenderPass.cpp
+	RenderPassManager.cpp
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")
@@ -69,6 +77,13 @@ add_executable( ${TARGET_NAME} WIN32
 	${HEADER_FILES}
     ${SOURCE_FILES}
 )
+
+find_package(assimp REQUIRED)
+if (assimp_FOUND)
+    link_directories(${ASSIMP_LIBRARY_DIRS})
+    include_directories(${ASSIMP_INCLUDE_DIRS})
+    target_link_libraries (VulkanRenderApp ${ASSIMP_LIBRARIES})
+endif(assimp_FOUND)
 
 find_package(Vulkan REQUIRED)
 

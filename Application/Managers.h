@@ -10,6 +10,7 @@ class PassManager;
 class PipelineManager;
 class FormatManager;
 class ConstantBufferManager;
+class RenderPassManager;
 class Device;
 class Scene;
 
@@ -50,6 +51,11 @@ public:
         return mConstantBufferManager;
     }
 
+    RenderPassManager* getRenderPassManager()
+    {
+        return mRenderPassManager;
+    }
+
 private:
     void createManagers();
 
@@ -59,9 +65,10 @@ private:
     DepthStencilBuffer* mDepthStencilBuffer = nullptr;
     Scene* mScene = nullptr;
 
-    ShaderManager*      mShaderManager = nullptr;
-    PassManager*        mPassManager = nullptr;
-    PipelineManager*    mPipelineManager = nullptr;
-    FormatManager*      mFormatManager = nullptr;
-    ConstantBufferManager* mConstantBufferManager = nullptr;
+    ShaderManager*          mShaderManager = nullptr;
+    PassManager*            mPassManager = nullptr;
+    PipelineManager*        mPipelineManager = nullptr;
+    FormatManager*          mFormatManager = nullptr;
+    ConstantBufferManager*  mConstantBufferManager = nullptr;
+    RenderPassManager*      mRenderPassManager = nullptr;
 };

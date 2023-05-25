@@ -4,6 +4,7 @@
 #include "PipelineManager.h"
 #include "FormatManager.h"
 #include "ConstantBufferManager.h"
+#include "RenderPassManager.h"
 #include "SwapChain.h"
 #include "DepthStencilBuffer.h"
 #include "Device.h"
@@ -46,6 +47,11 @@ Managers::~Managers()
 	{
 		delete mConstantBufferManager;
 	}
+
+	if (mRenderPassManager)
+	{
+		delete mRenderPassManager;
+	}
 }
 
 void Managers::createManagers()
@@ -64,4 +70,7 @@ void Managers::createManagers()
 
 	// pipelinemanager
 	mPipelineManager = new PipelineManager(mDevice->getLogicalDevice(), this);
+
+	//renderpassmanager
+	mRenderPassManager = new RenderPassManager(mDevice);
 }
