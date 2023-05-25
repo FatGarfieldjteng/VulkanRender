@@ -21,6 +21,7 @@ set(HEADER_FILES
 	FrameBuffer.h
 	Command.h
 	VertexFormat.h
+	PBRVertexFormat.h
 	FormatManager.h
 	VertexBuffer.h
 	IndexBuffer.h
@@ -57,6 +58,7 @@ set(SOURCE_FILES
 	FrameBuffer.cpp
 	Command.cpp
 	VertexFormat.cpp
+	PBRVertexFormat.cpp
 	FormatManager.cpp
 	VertexBuffer.cpp
 	IndexBuffer.cpp

@@ -25,6 +25,7 @@ private:
 
     void createPCFormat();
     void createPCTFormat();
+    void createPBRVertexFormat();
 
 private:
     std::map<std::string, VertexFormat*> mIDToVF;

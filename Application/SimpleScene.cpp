@@ -3,6 +3,7 @@
 #include "Texture.h"
 #include "PCVertexFormat.h"
 #include "PCTVertexFormat.h"
+#include "PBRVertexFormat.h"
 #include <unordered_map>
 #include <stdexcept>
 
@@ -172,9 +173,68 @@ void SimpleScene::loadGLTFScene()
         throw std::runtime_error("Can't find ABeautifulGame.gltf");
     }
 
-    unsigned int mesheCount = scene->mNumMeshes;
+    for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
+    {
+        aiMesh* originalMesh = scene->mMeshes[meshIndex];
 
-    const aiMesh* mesh = scene->mMeshes[0];
+        if (!originalMesh->HasPositions() ||
+            !originalMesh->HasFaces() )
+        {
+            continue;
+        }
+        
+        std::vector<PBRVertexFormat::Vertex> vertices;
+        vertices.reserve(originalMesh->mNumVertices);
+        std::vector<uint32_t> indices;
+        indices.reserve(originalMesh->mNumFaces * 3);
+
+        for (unsigned vertexIndex = 0; vertexIndex < originalMesh->mNumVertices; ++vertexIndex)
+        {
+            PBRVertexFormat::Vertex vertex{};
+
+            const aiVector3D v = originalMesh->mVertices[vertexIndex];
+            vertex.pos = { v.x, v.y, v.z };
+
+            if (originalMesh->HasNormals())
+            {
+                const aiVector3D n = originalMesh->mNormals[vertexIndex];
+                vertex.normal = {n.x, n.y, n.z};
+            }
+
+            if (originalMesh->HasTextureCoords(0))
+            {
+                const aiVector3D t = originalMesh->mTextureCoords[0][vertexIndex];
+                vertex.texCoord = {t.x, 1.0f - t.y};
+            }
+        }
+
+        for (unsigned int faceIndex = 0; faceIndex < originalMesh->mNumFaces; ++faceIndex)
+        {
+            aiFace &face = originalMesh->mFaces[faceIndex];
+            indices.push_back(face.mIndices[0]);
+            indices.push_back(face.mIndices[1]);
+            indices.push_back(face.mIndices[2]);
+        }
+
+        Mesh* mesh = new Mesh(mDevice);
+
+        uint32_t vertexCount = static_cast<uint32_t>(vertices.size());
+        VkDeviceSize vBufferSize = static_cast<VkDeviceSize>(sizeof(PBRVertexFormat::Vertex) * vertexCount);
+
+        uint32_t indexCount = static_cast<uint32_t>(indices.size());
+        VkDeviceSize iBufferSize = static_cast <VkDeviceSize>(sizeof(uint32_t) * indexCount);
+
+        mesh->init(vertexCount,
+            vBufferSize,
+            (void*)vertices.data(),
+            indexCount,
+            iBufferSize,
+            (void*)indices.data()
+        );
+
+        mMeshes.push_back(mesh);
+
+    } // for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
     
 }
 
