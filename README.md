@@ -16,3 +16,5 @@ git clone https://github.com/assimp/assimp.git
 2. cd assimp, CMake CMakeLists.txt
 
 3. Open Assimp.sln, built solution, then build INSTALL project.
+
+4. Copy assimp-vc143-mtd.dll to the running folder.
