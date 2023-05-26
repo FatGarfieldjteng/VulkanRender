@@ -18,7 +18,7 @@ IndexBuffer::~IndexBuffer()
         nullptr);
 }
 
-void IndexBuffer::init(uint32_t indices, VkDeviceSize bufferSize, void* bufferData)
+void IndexBuffer::init(uint32_t indices, VkDeviceSize bufferSize, const void* bufferData)
 {
     mIndices = indices;
 

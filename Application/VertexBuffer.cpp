@@ -18,7 +18,7 @@ VertexBuffer::~VertexBuffer()
         nullptr);
 }
 
-void VertexBuffer::init(uint32_t vertices, VkDeviceSize bufferSize, void* bufferData)
+void VertexBuffer::init(uint32_t vertices, VkDeviceSize bufferSize, const void* bufferData)
 {    
     mVertices = vertices;
     

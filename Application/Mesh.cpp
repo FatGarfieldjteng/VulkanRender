@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "BoundingBox.h"
 
 Mesh::Mesh(Device* device)
     :mDevice(device)
@@ -23,11 +24,13 @@ Mesh::~Mesh()
 
 void Mesh::init(uint32_t vertices,
 	VkDeviceSize vBufferSize,
-	void* vBufferData,
+	const void* vBufferData,
 	uint32_t indices,
 	VkDeviceSize iBufferSize,
-	void* iBbufferData)
+	const void* iBbufferData,
+	const BoundingBox* bbox)
 {
+	
 	if (vertices > 0 && vBufferSize > 0 && vBufferData)
 	{
 		mVertexBuffer = new VertexBuffer(mDevice);
@@ -38,5 +41,10 @@ void Mesh::init(uint32_t vertices,
 	{
 		mIndexBuffer = new IndexBuffer(mDevice);
 		mIndexBuffer->init(indices, iBufferSize, iBbufferData);
+	}
+
+	if (bbox != nullptr)
+	{
+		mBBox = new BoundingBox(*bbox);
 	}
 }

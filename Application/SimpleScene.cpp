@@ -4,6 +4,7 @@
 #include "PCVertexFormat.h"
 #include "PCTVertexFormat.h"
 #include "PBRVertexFormat.h"
+#include "BoundingBox.h"
 #include <unordered_map>
 #include <stdexcept>
 
@@ -187,6 +188,7 @@ void SimpleScene::loadGLTFScene()
         vertices.reserve(originalMesh->mNumVertices);
         std::vector<uint32_t> indices;
         indices.reserve(originalMesh->mNumFaces * 3);
+        BoundingBox bbox;
 
         for (unsigned vertexIndex = 0; vertexIndex < originalMesh->mNumVertices; ++vertexIndex)
         {
@@ -194,6 +196,8 @@ void SimpleScene::loadGLTFScene()
 
             const aiVector3D v = originalMesh->mVertices[vertexIndex];
             vertex.pos = { v.x, v.y, v.z };
+
+            bbox.update(vertex.pos);
 
             if (originalMesh->HasNormals())
             {
@@ -229,13 +233,23 @@ void SimpleScene::loadGLTFScene()
             (void*)vertices.data(),
             indexCount,
             iBufferSize,
-            (void*)indices.data()
+            (void*)indices.data(),
+            &bbox
         );
 
         mMeshes.push_back(mesh);
 
     } // for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
     
+    updateBBox();
+}
+
+void SimpleScene::updateBBox()
+{
+    for (size_t meshIndex = 0; meshIndex < mMeshes.size(); ++meshIndex)
+    {
+        mBBox->update(mMeshes[meshIndex]->getBBox());
+    }
 }
 
 int SimpleScene::getMeshCount()

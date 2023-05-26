@@ -139,9 +139,7 @@ void ConstantBufferManager::createWVPDescriptorSets()
 			nullptr);
 	}
 
-
 	addDescriptorSets("WVP", descriptorSets);
-
 }
 
 void ConstantBufferManager::updateWVPConstantBuffer(uint32_t frameIndex, float timePassed, VkExtent2D extent)

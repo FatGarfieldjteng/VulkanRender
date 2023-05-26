@@ -12,7 +12,7 @@ public:
 	virtual ~IndexBuffer();
 
 public:
-	virtual void init(uint32_t indices = 0, VkDeviceSize bufferSize = 0, void* bufferData = nullptr);
+	virtual void init(uint32_t indices = 0, VkDeviceSize bufferSize = 0, const void* bufferData = nullptr);
 
 	Device* mDevice = nullptr;
 	VkBuffer mIndexBuffer = VK_NULL_HANDLE;

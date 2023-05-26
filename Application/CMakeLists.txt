@@ -28,6 +28,7 @@ set(HEADER_FILES
 	PCVertexFormat.h
 	PCTVertexFormat.h
 	Mesh.h
+	BoundingBox.h
 	Scene.h
 	SimpleScene.h
 	RenderPass.h
@@ -65,6 +66,7 @@ set(SOURCE_FILES
 	PCVertexFormat.cpp
 	PCTVertexFormat.cpp
 	Mesh.cpp
+	BoundingBox.cpp
 	Scene.cpp
 	SimpleScene.cpp
 	RenderPass.cpp

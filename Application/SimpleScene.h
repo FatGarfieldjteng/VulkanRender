@@ -26,6 +26,7 @@ public:
 private:
 	void loadObjScene();
 	void loadGLTFScene();
+	void updateBBox();
 
 private:
 	std::vector<Mesh*> mMeshes;

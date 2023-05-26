@@ -2,12 +2,12 @@
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-
 #include <vector>
 
 class Mesh;
 class Device;
 class Texture;
+class BoundingBox;
 
 class Scene
 {
@@ -25,4 +25,5 @@ public:
 
 protected:
 	Device* mDevice = nullptr;
+	BoundingBox* mBBox;
 };
