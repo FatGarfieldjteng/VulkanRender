@@ -18,6 +18,8 @@ void Camera::setupLookAt(const glm::vec3& eye,
 	mEye = eye;
 	mCenter = center;
 	mUp = up;
+
+	computeView();
 }
 
 void Camera::setupPespective(float FOV,
@@ -29,6 +31,7 @@ void Camera::setupPespective(float FOV,
 	mAspect = aspect;
 	mNear = near;
 	mFar = far;
+	computeProj();
 }
 
 void Camera::computeView()

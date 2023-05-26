@@ -96,6 +96,7 @@ void Device::create(VkInstance instance, GLFWwindow* window)
     createCommand();
 
     createScene();
+    createCamera();
 
     createManagers();
     
@@ -481,10 +482,15 @@ void Device::createCamera()
     glm::vec3 center = mScene->getBBox()->center();
     glm::vec3 extent = mScene->getBBox()->extent();
     glm::vec3 eye = center - glm::vec3(0.0f, 2.0f * extent.y, 0.0f);
-    glm::vec3 up = center - glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
     
-
     mCamera->setupLookAt(eye, center, up);
+
+    VkExtent2D windowSize = mSwapChain->getExtent();
+
+    mCamera->setupPespective(90.0f, windowSize.width / (float)windowSize.height, 0.1f, 100000.0f);
+
+    mCamera->computeViewProj();
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)
