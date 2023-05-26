@@ -11,6 +11,8 @@
 #include "SyncObjectManager.h"
 #include "ConstantBufferManager.h"
 #include "SimpleScene.h"
+#include "Camera.h"
+#include "BoundingBox.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -70,6 +72,11 @@ Device::~Device()
     if (mScene)
     {
         delete mScene;
+    }
+
+    if (mCamera)
+    {
+        delete mCamera;
     }
 
     vkDestroyCommandPool(mLogicalDevice, mCopyCommandPool, nullptr);
@@ -464,6 +471,20 @@ void Device::createSyncObjectManager()
 void Device::createScene()
 {
     mScene = new SimpleScene(this);
+}
+
+void Device::createCamera()
+{
+    mCamera = new Camera();
+
+        
+    glm::vec3 center = mScene->getBBox()->center();
+    glm::vec3 extent = mScene->getBBox()->extent();
+    glm::vec3 eye = center - glm::vec3(0.0f, 2.0f * extent.y, 0.0f);
+    glm::vec3 up = center - glm::vec3(0.0f, 1.0f, 0.0f);
+    
+
+    mCamera->setupLookAt(eye, center, up);
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)

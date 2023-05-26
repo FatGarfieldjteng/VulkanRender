@@ -26,3 +26,13 @@ void BoundingBox::update(const BoundingBox* bbox)
 	update(bbox->mMinCorner);
 	update(bbox->mMaxCorner);
 }
+
+glm::vec3 BoundingBox::center()
+{
+	return (mMinCorner + mMaxCorner) * 0.5f;
+}
+
+glm::vec3 BoundingBox::extent()
+{
+	return (mMaxCorner - mMinCorner);
+}

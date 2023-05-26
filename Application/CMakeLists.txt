@@ -30,6 +30,7 @@ set(HEADER_FILES
 	Mesh.h
 	BoundingBox.h
 	Scene.h
+	Camera.h
 	SimpleScene.h
 	RenderPass.h
 	BeautyRenderPass.h
@@ -68,6 +69,7 @@ set(SOURCE_FILES
 	Mesh.cpp
 	BoundingBox.cpp
 	Scene.cpp
+	Camera.cpp
 	SimpleScene.cpp
 	RenderPass.cpp
 	BeautyRenderPass.cpp

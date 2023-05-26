@@ -17,6 +17,7 @@ class FrameBuffer;
 class Command;
 class SyncObjectManager;
 class Scene;
+class Camera;
 
 class Device
 {
@@ -89,6 +90,7 @@ private:
 	void createCommand();
 	void createSyncObjectManager();
 	void createScene();
+	void createCamera();
 
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
@@ -130,6 +132,8 @@ private:
 	SyncObjectManager* mSyncObjectManager = nullptr;
 
 	Scene* mScene = nullptr;
+
+	Camera* mCamera = nullptr;
 
 	uint32_t mFrameIndex = 0;
 

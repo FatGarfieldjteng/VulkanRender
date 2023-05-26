@@ -23,6 +23,12 @@ public:
 	virtual int getTextureCount() = 0;
 	virtual Texture* getTexture(int index) = 0;
 
+public:
+	BoundingBox* getBBox()
+	{
+		return mBBox;
+	}
+
 protected:
 	Device* mDevice = nullptr;
 	BoundingBox* mBBox;
