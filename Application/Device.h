@@ -79,6 +79,8 @@ public:
 		uint32_t width, 
 		uint32_t height);
 
+	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 private:
 	void createSurface(GLFWwindow* window);
 	void createPhysicalDevice();

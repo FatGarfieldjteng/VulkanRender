@@ -85,8 +85,29 @@ Device::~Device()
     vkDestroySurfaceKHR(mVkInstance, mSurface, nullptr);
 }
 
+void Device::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    switch (key)
+    {
+        case GLFW_KEY_W:
+            
+            break;
+        case GLFW_KEY_A:
+            break;
+        case GLFW_KEY_S:
+            break;
+        case GLFW_KEY_D:
+            break;
+        default:
+            break;
+    }
+            
+}
+
 void Device::create(VkInstance instance, GLFWwindow* window)
 {
+    glfwSetKeyCallback(window, Device::keyCallback);
+
     mVkInstance = instance;
     createSurface(window);
     createPhysicalDevice();
@@ -481,7 +502,7 @@ void Device::createCamera()
         
     glm::vec3 center = mScene->getBBox()->center();
     glm::vec3 extent = mScene->getBBox()->extent();
-    glm::vec3 eye = center - glm::vec3(0.0f, 0.0f, 2.0f * extent.z);
+    glm::vec3 eye = center - glm::vec3(0.0f, 0.0f, 1.5f * extent.z);
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
     
     mCamera->setupLookAt(eye, center, up);

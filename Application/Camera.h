@@ -21,6 +21,11 @@ public:
 	void computeProj();
 	void computeViewProj();
 
+	void moveLeft();
+	void moveRight();
+	void moveForward();
+	void moveBackward();
+
 	glm::mat4 getViewProj()
 	{
 		return mViewProj;
@@ -40,4 +45,6 @@ private:
 	glm::mat4 mView;
 	glm::mat4 mProj;
 	glm::mat4 mViewProj;
+
+	float mMoveSpeed = 1.0f;
 };

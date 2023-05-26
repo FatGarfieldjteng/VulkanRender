@@ -49,3 +49,23 @@ void Camera::computeViewProj()
 {
 	mViewProj = mProj * mView;
 }
+
+void Camera::moveLeft()
+{
+
+}
+
+void Camera::moveRight()
+{
+
+}
+
+void Camera::moveForward()
+{
+
+}
+
+void Camera::moveBackward()
+{
+
+}
