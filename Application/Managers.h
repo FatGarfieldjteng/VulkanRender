@@ -13,6 +13,7 @@ class ConstantBufferManager;
 class RenderPassManager;
 class Device;
 class Scene;
+class Camera;
 
 class Managers
 {
@@ -21,6 +22,7 @@ public:
     Managers(Device* device, 
         SwapChain* swapChain, 
         DepthStencilBuffer* depthStencilBuffer,
+        Camera* camera,
         Scene* scene);
 
     ~Managers();
@@ -64,6 +66,7 @@ private:
     SwapChain* mSwapChain = nullptr;
     DepthStencilBuffer* mDepthStencilBuffer = nullptr;
     Scene* mScene = nullptr;
+    Camera* mCamera = nullptr;
 
     ShaderManager*          mShaderManager = nullptr;
     PassManager*            mPassManager = nullptr;

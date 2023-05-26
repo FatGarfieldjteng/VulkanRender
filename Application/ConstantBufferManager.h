@@ -9,6 +9,7 @@
 
 class Device;
 class Scene;
+class Camera;
 class ConstantBuffer;
 
 class ConstantBufferManager
@@ -16,6 +17,7 @@ class ConstantBufferManager
 public:
 
     ConstantBufferManager(Device* device,
+        Camera* camera,
         Scene* scene,
         unsigned int maxFramesInFligt = 2);
 
@@ -24,9 +26,7 @@ public:
     // WVP constant buffer
     struct MVPConstantBuffer
     {
-        glm::mat4 model;
-        glm::mat4 view;
-        glm::mat4 projection;
+        glm::mat4 mvp;
     };
 
 public:
@@ -53,6 +53,7 @@ private:
     
     Device* mDevice = nullptr;
     Scene* mScene = nullptr;
+    Camera* mCamera = nullptr;
     VkDescriptorPool mDescriptorPool = VK_NULL_HANDLE;
     unsigned int mMaxFramesInFligt = 2;
     std::map<std::string, ConstantBuffer*> mIDToConstantBuffer;

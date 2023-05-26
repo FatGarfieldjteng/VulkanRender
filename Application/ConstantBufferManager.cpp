@@ -2,6 +2,7 @@
 #include "ConstantBuffer.h"
 #include "Device.h"
 #include "Scene.h"
+#include "Camera.h"
 #include "Texture.h"
 
 #include <stdexcept>
@@ -13,10 +14,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 ConstantBufferManager::ConstantBufferManager(Device* device,
+	Camera* camera,
 	Scene* scene,
 	unsigned int maxFramesInFligt)
 	: mDevice(device),
 	mScene(scene),
+	mCamera(camera),
 	mMaxFramesInFligt(maxFramesInFligt)
 	
 {
@@ -145,11 +148,8 @@ void ConstantBufferManager::createWVPDescriptorSets()
 void ConstantBufferManager::updateWVPConstantBuffer(uint32_t frameIndex, float timePassed, VkExtent2D extent)
 {
 	MVPConstantBuffer WVP{};
-	WVP.model = glm::rotate(glm::mat4(1.0f), timePassed * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	WVP.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	WVP.projection = glm::perspective(glm::radians(45.0f), extent.width / (float)extent.height, 0.1f, 10.0f);
-	WVP.projection[1][1] *= -1;
-
+	
+	WVP.mvp = mCamera->getViewProj();
 
 	getConstantBuffer("WVP")->update(frameIndex, &WVP, sizeof(WVP));
 }

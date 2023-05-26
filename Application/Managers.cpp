@@ -12,10 +12,12 @@
 Managers::Managers(Device* mDevice, 
 	SwapChain* swapChain, 
 	DepthStencilBuffer* depthStencilBuffer,
+	Camera* camera,
 	Scene* scene)
 	:mDevice(mDevice)
 	, mSwapChain(swapChain)
 	, mDepthStencilBuffer(depthStencilBuffer)
+	, mCamera(camera)
 	, mScene(scene)
 {
 	createManagers();
@@ -66,7 +68,7 @@ void Managers::createManagers()
 	mFormatManager = new FormatManager();
 
 	// constant buffer manager
-	mConstantBufferManager = new ConstantBufferManager(mDevice, mScene);
+	mConstantBufferManager = new ConstantBufferManager(mDevice, mCamera, mScene);
 
 	// pipelinemanager
 	mPipelineManager = new PipelineManager(mDevice->getLogicalDevice(), this);

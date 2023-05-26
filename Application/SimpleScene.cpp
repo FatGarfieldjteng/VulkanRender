@@ -90,8 +90,8 @@ void SimpleScene::init()
 
 void SimpleScene::loadScene()
 {
-    //loadObjScene();
-    loadGLTFScene();
+    loadObjScene();
+    //loadGLTFScene();
 }
 
 void SimpleScene::loadObjScene()
@@ -112,6 +112,8 @@ void SimpleScene::loadObjScene()
         std::vector<uint32_t> indices;
         std::vector<PCTVertexFormat::Vertex> vertices;
 
+        BoundingBox bbox;
+
         for (const auto& index : shape.mesh.indices)
         {
             PCTVertexFormat::Vertex vertex{};
@@ -121,6 +123,8 @@ void SimpleScene::loadObjScene()
                 attrib.vertices[3 * index.vertex_index + 1],
                 attrib.vertices[3 * index.vertex_index + 2]
             };
+
+            bbox.update(vertex.pos);
 
             vertex.color = { 1.0f, 0.5f, 1.0f };
 
@@ -154,11 +158,14 @@ void SimpleScene::loadObjScene()
             (void*)vertices.data(),
             indexCount,
             iBufferSize,
-            (void*)indices.data()
+            (void*)indices.data(),
+            &bbox
         );
 
         mMeshes.push_back(mesh);
     }
+
+    updateBBox();
 
     Texture* texture = new Texture(mDevice);
     texture->load("../../Asset/viking_room.png");

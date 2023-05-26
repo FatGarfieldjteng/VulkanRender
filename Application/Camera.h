@@ -21,6 +21,11 @@ public:
 	void computeProj();
 	void computeViewProj();
 
+	glm::mat4 getViewProj()
+	{
+		return mViewProj;
+	}
+
 private:
 	
 	glm::vec3 mEye;

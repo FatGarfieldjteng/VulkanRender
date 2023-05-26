@@ -422,7 +422,7 @@ void Device::createDepthStencilBuffer()
 
 void Device::createManagers()
 {
-    mManagers = new Managers(this, mSwapChain, mDepthStencilBuffer, mScene);
+    mManagers = new Managers(this, mSwapChain, mDepthStencilBuffer, mCamera, mScene);
 }
 
 void Device::createFrameBuffer()
@@ -481,7 +481,7 @@ void Device::createCamera()
         
     glm::vec3 center = mScene->getBBox()->center();
     glm::vec3 extent = mScene->getBBox()->extent();
-    glm::vec3 eye = center - glm::vec3(0.0f, 2.0f * extent.y, 0.0f);
+    glm::vec3 eye = center - glm::vec3(0.0f, 0.0f, 2.0f * extent.z);
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
     
     mCamera->setupLookAt(eye, center, up);
