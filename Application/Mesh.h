@@ -21,7 +21,8 @@ public:
 		uint32_t indices = 0,
 		VkDeviceSize iBufferSize = 0,
 		const void* iBbufferData = nullptr,
-		const BoundingBox* bbox = nullptr);
+		const BoundingBox* bbox = nullptr,
+		unsigned int materialIndex = 0);
 
 	VertexBuffer* getVB()
 	{
@@ -43,4 +44,5 @@ protected:
 	BoundingBox* mBBox = nullptr;
 	VertexBuffer* mVertexBuffer = nullptr;
 	IndexBuffer* mIndexBuffer = nullptr;
+	unsigned int mMaterialIndex = 0;
 };

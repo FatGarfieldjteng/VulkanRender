@@ -5,7 +5,6 @@
 #include "BeautyRenderPass.h"
 #include "FinalRenderPass.h"
 
-
 #include <stdexcept>
 
 RenderPassManager::RenderPassManager(Device* device)
@@ -37,6 +36,8 @@ void RenderPassManager::createClearRenderPass()
 	passInfo.isFirstPass = true;
 
 	ClearRenderPass* pass = new ClearRenderPass(mDevice, passInfo);
+
+	addPass("clear", pass);
 }
 
 void RenderPassManager::createBeautyRenderPass()
@@ -44,10 +45,18 @@ void RenderPassManager::createBeautyRenderPass()
 	RenderPass::PassInfo passInfo;
 	
 	BeautyRenderPass *pass = new BeautyRenderPass(mDevice, passInfo);
+
+	addPass("beauty", pass);
 }
 
 void RenderPassManager::createFinalRenderPass()
 {
+	RenderPass::PassInfo passInfo;
+	passInfo.isLastPass = true;
+
+	FinalRenderPass* pass = new FinalRenderPass(mDevice, passInfo);
+
+	addPass("final", pass);
 
 }
 

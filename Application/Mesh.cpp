@@ -28,7 +28,8 @@ void Mesh::init(uint32_t vertices,
 	uint32_t indices,
 	VkDeviceSize iBufferSize,
 	const void* iBbufferData,
-	const BoundingBox* bbox)
+	const BoundingBox* bbox,
+	unsigned int materialIndex)
 {
 	
 	if (vertices > 0 && vBufferSize > 0 && vBufferData)
@@ -47,4 +48,6 @@ void Mesh::init(uint32_t vertices,
 	{
 		mBBox = new BoundingBox(*bbox);
 	}
+
+	mMaterialIndex = materialIndex;
 }

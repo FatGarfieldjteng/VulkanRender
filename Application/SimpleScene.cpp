@@ -15,6 +15,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/cimport.h>
 #include <assimp/version.h>
+#include <assimp/pbrmaterial.h>
 
 SimpleScene::SimpleScene(Device* device)
     :Scene(device)
@@ -90,8 +91,8 @@ void SimpleScene::init()
 
 void SimpleScene::loadScene()
 {
-    loadObjScene();
-    //loadGLTFScene();
+    //loadObjScene();
+    loadGLTFScene();
 }
 
 void SimpleScene::loadObjScene()
@@ -241,12 +242,40 @@ void SimpleScene::loadGLTFScene()
             indexCount,
             iBufferSize,
             (void*)indices.data(),
-            &bbox
+            &bbox,
+            originalMesh->mMaterialIndex
         );
-
+       
         mMeshes.push_back(mesh);
 
     } // for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
+
+    aiReturn result;
+
+    for (unsigned int materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex)
+    {
+        
+
+        aiString mapBaseColor, mapMetallicRoughness, mapNormal;
+        aiColor4D baseColorFactor, metallicFactor;
+
+        aiMaterial* material = scene->mMaterials[materialIndex];
+               
+        result = material->GetTexture(AI_MATKEY_BASE_COLOR_TEXTURE, &mapBaseColor);
+        
+        result = material->Get(AI_MATKEY_BASE_COLOR, baseColorFactor);
+
+        result = material->GetTexture(AI_MATKEY_METALLIC_TEXTURE, &mapMetallicRoughness);
+
+        result = material->Get(AI_MATKEY_METALLIC_FACTOR, metallicFactor);
+
+        result = material->GetTexture(AI_MATKEY_CLEARCOAT_NORMAL_TEXTURE, &mapNormal);
+        
+
+        int aa = 100;
+
+    }
+    
     
     updateBBox();
 }

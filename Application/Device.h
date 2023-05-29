@@ -44,6 +44,11 @@ public:
 		return mLogicalDevice;
 	}
 
+	Managers* getManagers()
+	{
+		return mManagers;
+	}
+
 	void createBuffer(VkDeviceSize size, 
 		VkBufferUsageFlags usage, 
 		VkMemoryPropertyFlags properties, 
