@@ -5,6 +5,7 @@
 #include "PCTVertexFormat.h"
 #include "PBRVertexFormat.h"
 #include "BoundingBox.h"
+#include "PBRMaterial.h"
 #include <unordered_map>
 #include <stdexcept>
 
@@ -16,6 +17,7 @@
 #include <assimp/cimport.h>
 #include <assimp/version.h>
 #include <assimp/pbrmaterial.h>
+#include <assimp/material.h>
 
 SimpleScene::SimpleScene(Device* device)
     :Scene(device)
@@ -38,6 +40,11 @@ SimpleScene::~SimpleScene()
         delete mesh;
     }
 
+    for (size_t i = 0; i < mPBRMaterials.size(); ++i)
+    {
+        PBRMaterial* mesh = mPBRMaterials[i];
+        delete mesh;
+    }
 }
 
 void SimpleScene::init()
@@ -252,25 +259,64 @@ void SimpleScene::loadGLTFScene()
 
     aiReturn result;
 
+    Texture* texture = nullptr;
+    PBRMaterial* pbrMaterial = nullptr;
+    
+    std::string strTextureFileBase("../../Asset/ABeautifulGame/glTF/");
+
     for (unsigned int materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex)
     {
         
-
         aiString mapBaseColor, mapMetallicRoughness, mapNormal;
-        aiColor4D baseColorFactor, metallicFactor;
+        aiColor4D baseColorFactor;
+        ai_real metallicFactor, roughnessFactor;
 
         aiMaterial* material = scene->mMaterials[materialIndex];
-               
-        result = material->GetTexture(AI_MATKEY_BASE_COLOR_TEXTURE, &mapBaseColor);
+
+        pbrMaterial = new PBRMaterial();
         
-        result = material->Get(AI_MATKEY_BASE_COLOR, baseColorFactor);
+        // Albedo
+        if (material->GetTexture(AI_MATKEY_BASE_COLOR_TEXTURE, &mapBaseColor) == AI_SUCCESS)
+        {
+            texture = new Texture(mDevice);
 
-        result = material->GetTexture(AI_MATKEY_METALLIC_TEXTURE, &mapMetallicRoughness);
+            std::string file = strTextureFileBase + mapBaseColor.C_Str();
+            texture->load(file.c_str());
+            mTextures.push_back(texture);
 
-        result = material->Get(AI_MATKEY_METALLIC_FACTOR, metallicFactor);
-
-        result = material->GetTexture(AI_MATKEY_CLEARCOAT_NORMAL_TEXTURE, &mapNormal);
+            pbrMaterial->mTexAlbedo = texture;
+        }
         
+        if (material->Get(AI_MATKEY_BASE_COLOR, baseColorFactor) == AI_SUCCESS)
+        {
+            pbrMaterial->mAlbedoFactor = glm::vec4(baseColorFactor.r, baseColorFactor.g, baseColorFactor.b, baseColorFactor.a);
+        }
+
+        // MetallicRoughness
+        if (material->GetTexture(AI_MATKEY_METALLIC_TEXTURE, &mapMetallicRoughness) == AI_SUCCESS)
+        {
+            texture = new Texture(mDevice);
+            texture->load("../../Asset/viking_room.png");
+            mTextures.push_back(texture);
+
+            pbrMaterial->mTexMetalRoughness = texture;
+        }
+
+        if (material->Get(AI_MATKEY_METALLIC_FACTOR, metallicFactor) == AI_SUCCESS)
+        {
+            pbrMaterial->mMetalRoughnessFactor = metallicFactor;
+        }
+
+        // Normal map
+        if (material->Get(AI_MATKEY_TEXTURE(aiTextureType_NORMALS, 0), mapNormal) == AI_SUCCESS)
+        {
+            texture = new Texture(mDevice);
+            texture->load("../../Asset/viking_room.png");
+            mTextures.push_back(texture);
+
+            pbrMaterial->mTexNormal = texture;
+        }
+
 
         int aa = 100;
 

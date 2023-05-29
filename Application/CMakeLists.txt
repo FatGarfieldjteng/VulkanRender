@@ -30,6 +30,7 @@ set(HEADER_FILES
 	Mesh.h
 	BoundingBox.h
 	Scene.h
+	PBRMaterial.h
 	Camera.h
 	SimpleScene.h
 	RenderPass.h
@@ -72,6 +73,7 @@ set(SOURCE_FILES
 	Mesh.cpp
 	BoundingBox.cpp
 	Scene.cpp
+	PBRMaterial.cpp
 	Camera.cpp
 	SimpleScene.cpp
 	RenderPass.cpp

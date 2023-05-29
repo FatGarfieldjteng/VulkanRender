@@ -8,6 +8,7 @@
 
 class Mesh;
 class Texture;
+class PBRMaterial;
 
 class SimpleScene : public Scene
 {
@@ -31,4 +32,5 @@ private:
 private:
 	std::vector<Mesh*> mMeshes;
 	std::vector<Texture*> mTextures;
+	std::vector< PBRMaterial*> mPBRMaterials;
 };
