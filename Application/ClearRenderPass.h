@@ -1,16 +1,20 @@
 #pragma once
+
+#define GLFW_INCLUDE_VULKAN
 #include "RenderPass.h"
 
 class Device;
+class Scene;
 
-class ShadowRenderPass : public RenderPass
+class ClearRenderPass: public RenderPass
 {
 public:
-	ShadowRenderPass(Device* device, 
+	ClearRenderPass(Device* device,
 		RenderPass::PassInfo passinfo);
-	virtual ~ShadowRenderPass();
+	virtual ~ClearRenderPass();
 
 public:
+	
 	virtual void buildPass();
 	virtual void recordCommand();
 };

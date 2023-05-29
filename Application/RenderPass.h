@@ -16,17 +16,18 @@ public:
 	};
 
 public:
-	RenderPass(Device* device, PassInfo* passinfo);
+	RenderPass(Device* device,
+		PassInfo passinfo);
 	virtual ~RenderPass();
 
 public:
 	
-	virtual void buildPass(Scene* scene) = 0;
+	virtual void buildPass() = 0;
 	virtual void recordCommand() = 0;
 
 protected:
 	Device* mDevice = nullptr;
-	PassInfo* mPassInfo = nullptr;
+	PassInfo mPassInfo;
 
 	// Vulkan objects
 	VkRenderPass mRenderPass = nullptr;

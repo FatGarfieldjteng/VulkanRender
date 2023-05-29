@@ -33,6 +33,9 @@ set(HEADER_FILES
 	Camera.h
 	SimpleScene.h
 	RenderPass.h
+	ClearRenderPass.h
+	BeautyRenderPass.h
+	FinalRenderPass.h
 	BeautyRenderPass.h
 	ShadowRenderPass.h
 	RenderPassManager.h
@@ -72,7 +75,9 @@ set(SOURCE_FILES
 	Camera.cpp
 	SimpleScene.cpp
 	RenderPass.cpp
+	ClearRenderPass.cpp
 	BeautyRenderPass.cpp
+	FinalRenderPass.cpp
 	ShadowRenderPass.cpp
 	RenderPassManager.cpp
 )

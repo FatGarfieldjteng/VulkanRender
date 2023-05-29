@@ -25,10 +25,12 @@ public:
     RenderPass* getPass(const std::string& ID);
 
 private:
-    void createSimplePass();
+    void createClearRenderPass();
+    void createBeautyRenderPass();
+    void createFinalRenderPass();
     
 private:
     Device* mDevice = nullptr;
 
-    std::map<std::string, RenderPass*> mIDToPass;
+    std::map<std::string, RenderPass*> mIDToRenderPass;
 };

@@ -6,7 +6,8 @@ class Device;
 class BeautyRenderPass : public RenderPass
 {
 public:
-	BeautyRenderPass(Device* device, PassInfo* passinfo);
+	BeautyRenderPass(Device* device, 
+		PassInfo passinfo);
 	virtual ~BeautyRenderPass();
 
 public:

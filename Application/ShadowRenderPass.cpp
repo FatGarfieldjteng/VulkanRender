@@ -1,7 +1,8 @@
 #include "ShadowRenderPass.h"
 #include "Device.h"
 
-ShadowRenderPass::ShadowRenderPass(Device* device, PassInfo* passinfo)
+ShadowRenderPass::ShadowRenderPass(Device* device, 
+    RenderPass::PassInfo passinfo)
     :RenderPass(device, passinfo)
 {
     

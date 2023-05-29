@@ -3,12 +3,12 @@
 
 class Device;
 
-class ShadowRenderPass : public RenderPass
+class FinalRenderPass : public RenderPass
 {
 public:
-	ShadowRenderPass(Device* device, 
+	FinalRenderPass(Device* device, 
 		RenderPass::PassInfo passinfo);
-	virtual ~ShadowRenderPass();
+	virtual ~FinalRenderPass();
 
 public:
 	virtual void buildPass();
