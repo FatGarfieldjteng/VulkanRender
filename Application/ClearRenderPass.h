@@ -17,4 +17,5 @@ public:
 	
 	virtual void buildPass();
 	virtual void recordCommand();
+		
 };

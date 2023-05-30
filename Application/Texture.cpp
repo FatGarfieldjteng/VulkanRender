@@ -33,8 +33,6 @@ Texture::~Texture()
 
 void Texture::load(const std::string& file)
 {
-    std::cout <<  std::filesystem::current_path();
-
     // load image
     stbi_uc* pixels = stbi_load(file.c_str(),
         &mWidth, 

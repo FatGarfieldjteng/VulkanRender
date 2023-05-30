@@ -266,7 +266,6 @@ void SimpleScene::loadGLTFScene()
 
     for (unsigned int materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex)
     {
-        
         aiString mapBaseColor, mapMetallicRoughness, mapNormal;
         aiColor4D baseColorFactor;
         ai_real metallicFactor, roughnessFactor;
@@ -296,7 +295,8 @@ void SimpleScene::loadGLTFScene()
         if (material->GetTexture(AI_MATKEY_METALLIC_TEXTURE, &mapMetallicRoughness) == AI_SUCCESS)
         {
             texture = new Texture(mDevice);
-            texture->load("../../Asset/viking_room.png");
+            std::string file = strTextureFileBase + mapMetallicRoughness.C_Str();
+            texture->load(file.c_str());
             mTextures.push_back(texture);
 
             pbrMaterial->mTexMetalRoughness = texture;
@@ -311,17 +311,15 @@ void SimpleScene::loadGLTFScene()
         if (material->Get(AI_MATKEY_TEXTURE(aiTextureType_NORMALS, 0), mapNormal) == AI_SUCCESS)
         {
             texture = new Texture(mDevice);
-            texture->load("../../Asset/viking_room.png");
+            std::string file = strTextureFileBase + mapNormal.C_Str();
+            texture->load(file.c_str());
             mTextures.push_back(texture);
 
             pbrMaterial->mTexNormal = texture;
         }
 
-
-        int aa = 100;
-
+        mPBRMaterials.push_back(pbrMaterial);
     }
-    
     
     updateBBox();
 }

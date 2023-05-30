@@ -15,7 +15,7 @@ ClearRenderPass::~ClearRenderPass()
 
 void ClearRenderPass::buildPass()
 {
-
+    mDevice->createRenderPassVkRenderPass(true, false, true, true, &mRenderPass);
 }
 
 void ClearRenderPass::recordCommand()

@@ -49,6 +49,11 @@ public:
 		return mManagers;
 	}
 
+	DepthStencilBuffer* getDepthStencilBuffer()
+	{
+		return mDepthStencilBuffer;
+	}
+
 	void createBuffer(VkDeviceSize size, 
 		VkBufferUsageFlags usage, 
 		VkMemoryPropertyFlags properties, 
@@ -83,6 +88,16 @@ public:
 		VkImage image, 
 		uint32_t width, 
 		uint32_t height);
+
+	void createRenderPassVkRenderPass(int firstPass, 
+		int lastPass, 
+		bool clearColor,
+		bool clearDepth,
+		VkRenderPass* renderPass);
+
+	void createRenderPassFrameBuffer(VkRenderPass renderPass, 
+		VkImageView depthImageView, 
+		std::vector<VkFramebuffer>& swapchainFramebuffers);
 
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 

@@ -29,7 +29,6 @@ void DepthStencilBuffer::init(VkExtent2D extent)
     mImageView = mDevice->createImageView(mImage, 
         mFormat, 
         VK_IMAGE_ASPECT_DEPTH_BIT);
-
 }
 
 VkFormat DepthStencilBuffer::getFormat()

@@ -5,6 +5,7 @@
 
 class Device;
 class Scene;
+class FrameBuffer;
 
 class RenderPass
 {
@@ -14,7 +15,6 @@ public:
 		bool isFirstPass = false;
 		bool isLastPass = false;
 	};
-
 public:
 	RenderPass(Device* device,
 		PassInfo passinfo);
@@ -33,4 +33,6 @@ protected:
 	VkRenderPass mRenderPass = nullptr;
 	VkPipelineLayout mPipelineLayout = nullptr;
 	VkPipeline mipeline = nullptr;
+
+	FrameBuffer* mFrameBuffer = nullptr;
 };
