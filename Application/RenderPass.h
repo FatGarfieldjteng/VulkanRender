@@ -3,9 +3,10 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+#include <vector>
+
 class Device;
 class Scene;
-class FrameBuffer;
 
 class RenderPass
 {
@@ -30,9 +31,10 @@ protected:
 	PassInfo mPassInfo;
 
 	// Vulkan objects
-	VkRenderPass mRenderPass = nullptr;
-	VkPipelineLayout mPipelineLayout = nullptr;
-	VkPipeline mipeline = nullptr;
+	VkRenderPass mRenderPass = VK_NULL_HANDLE;
+	VkPipelineLayout mPipelineLayout = VK_NULL_HANDLE;
+	VkPipeline mPipeline = VK_NULL_HANDLE;
 
-	FrameBuffer* mFrameBuffer = nullptr;
+protected:
+	std::vector<VkFramebuffer> mFramebuffers;
 };

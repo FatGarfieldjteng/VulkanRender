@@ -12,7 +12,7 @@ ClearRenderPass::ClearRenderPass(Device* device,
 
 ClearRenderPass::~ClearRenderPass()
 {
- 
+	buildPass();
 }
 
 void ClearRenderPass::buildPass()

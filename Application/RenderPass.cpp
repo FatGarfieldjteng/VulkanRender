@@ -11,5 +11,10 @@ RenderPass::RenderPass(Device* device,
 
 RenderPass::~RenderPass()
 {
- 
+    for (auto framebuffer : mFramebuffers)
+    {
+        vkDestroyFramebuffer(mDevice->getLogicalDevice(), framebuffer, nullptr);
+    }
+
+    vkDestroyRenderPass(mDevice->getLogicalDevice(), mRenderPass, nullptr);
 }
