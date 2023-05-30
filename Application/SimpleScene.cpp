@@ -6,6 +6,7 @@
 #include "PBRVertexFormat.h"
 #include "BoundingBox.h"
 #include "PBRMaterial.h"
+#include "Device.h"
 #include <unordered_map>
 #include <stdexcept>
 
@@ -322,6 +323,8 @@ void SimpleScene::loadGLTFScene()
     }
     
     updateBBox();
+
+    createPBRDescriptorLayout();
 }
 
 void SimpleScene::updateBBox()
@@ -330,6 +333,36 @@ void SimpleScene::updateBBox()
     {
         mBBox->update(mMeshes[meshIndex]->getBBox());
     }
+}
+
+void SimpleScene::createPBRDescriptorLayout()
+{
+    std::vector<VkDescriptorSetLayoutBinding> bindings;
+    bindings.resize(7);
+    
+    bindings[0].binding = 0;
+    bindings[0].descriptorCount = 1;
+    bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    bindings[0].pImmutableSamplers = nullptr;
+    bindings[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+
+    for (int i = 1; i < 7; i++)
+    {
+        bindings[i].binding = i;
+        bindings[i].descriptorCount = 1;
+        bindings[i].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[i].pImmutableSamplers = nullptr;
+        bindings[i].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo{};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.pNext = nullptr;
+    layoutInfo.flags = 0;
+    layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+    layoutInfo.pBindings = bindings.data();
+
+    vkCreateDescriptorSetLayout(mDevice->getLogicalDevice(), &layoutInfo, nullptr, &mPBRDescriptorSetLayout);
 }
 
 int SimpleScene::getMeshCount()

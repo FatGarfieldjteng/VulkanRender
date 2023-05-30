@@ -28,9 +28,10 @@ private:
 	void loadObjScene();
 	void loadGLTFScene();
 	void updateBBox();
-
+	void createPBRDescriptorLayout();
 private:
 	std::vector<Mesh*> mMeshes;
 	std::vector<Texture*> mTextures;
 	std::vector< PBRMaterial*> mPBRMaterials;
+	VkDescriptorSetLayout mPBRDescriptorSetLayout = VK_NULL_HANDLE;
 };

@@ -17,6 +17,6 @@ public:
 public:
 	
 	virtual void buildPass();
-	virtual void recordCommand(VkCommandBuffer commandBuffer, size_t frameIndex);
+	virtual void recordCommand(VkCommandBuffer commandBuffer, size_t frameIndex, Scene* scene = nullptr);
 
 };
