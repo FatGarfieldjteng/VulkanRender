@@ -814,11 +814,11 @@ void Device::createRenderPassVkRenderPass(int firstPass,
 
 void Device::createRenderPassFrameBuffer(VkRenderPass renderPass,
     VkImageView depthImageView,
-    std::vector<VkFramebuffer>& swapchainFramebuffers)
+    std::vector<VkFramebuffer>& framebuffers)
 {
     size_t viewCount = mSwapChain->getViewsCount();
 
-    swapchainFramebuffers.resize(mSwapChain->getViewsCount());
+    framebuffers.resize(mSwapChain->getViewsCount());
     VkExtent2D extent = mSwapChain->getExtent();
 
     for (size_t i = 0; i < viewCount; ++i) 
@@ -841,7 +841,7 @@ void Device::createRenderPassFrameBuffer(VkRenderPass renderPass,
         framebufferInfo.layers = 1;
         
 
-        vkCreateFramebuffer(mLogicalDevice, &framebufferInfo, nullptr, &swapchainFramebuffers[i]);
+        vkCreateFramebuffer(mLogicalDevice, &framebufferInfo, nullptr, &framebuffers[i]);
     }
     
 }

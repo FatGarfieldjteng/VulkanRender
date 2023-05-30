@@ -18,7 +18,7 @@ void FinalRenderPass::buildPass()
 
 }
 
-void FinalRenderPass::recordCommand()
+void FinalRenderPass::recordCommand(VkCommandBuffer commandBuffer, size_t frameIndex)
 {
 
 }

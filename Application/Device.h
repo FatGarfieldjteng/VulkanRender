@@ -54,6 +54,11 @@ public:
 		return mDepthStencilBuffer;
 	}
 
+	SwapChain* getSwapChain()
+	{
+		return mSwapChain;
+	}
+
 	void createBuffer(VkDeviceSize size, 
 		VkBufferUsageFlags usage, 
 		VkMemoryPropertyFlags properties, 
@@ -97,7 +102,7 @@ public:
 
 	void createRenderPassFrameBuffer(VkRenderPass renderPass, 
 		VkImageView depthImageView, 
-		std::vector<VkFramebuffer>& swapchainFramebuffers);
+		std::vector<VkFramebuffer>& framebuffers);
 
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 

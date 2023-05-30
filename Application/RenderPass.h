@@ -23,7 +23,7 @@ public:
 public:
 	
 	virtual void buildPass() = 0;
-	virtual void recordCommand() = 0;
+	virtual void recordCommand(VkCommandBuffer commandBuffer, size_t frameIndex) = 0;
 
 protected:
 	Device* mDevice = nullptr;

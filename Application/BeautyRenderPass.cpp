@@ -18,7 +18,7 @@ void BeautyRenderPass::buildPass()
 
 }
 
-void BeautyRenderPass::recordCommand()
+void BeautyRenderPass::recordCommand(VkCommandBuffer commandBuffer, size_t frameIndex)
 {
 
 }
