@@ -12,7 +12,6 @@ ClearRenderPass::ClearRenderPass(Device* device,
 
 ClearRenderPass::~ClearRenderPass()
 {
-	buildPass();
 }
 
 void ClearRenderPass::buildPass()
@@ -27,7 +26,7 @@ void ClearRenderPass::buildPass()
 void ClearRenderPass::recordCommand(VkCommandBuffer commandBuffer, size_t frameIndex)
 {
 	VkClearValue clearValues[2];
-	clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
+	clearValues[0].color = { {0.0f, 1.0f, 0.0f, 1.0f} };
 	clearValues[1].depthStencil = { 1.0f, 0 };
 
 	VkExtent2D extent = mDevice->getSwapChain()->getExtent();

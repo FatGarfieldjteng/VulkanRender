@@ -31,6 +31,7 @@ public:
 	void create(VkInstance VkInstance, GLFWwindow* window);
 	void acquireQueue(Queue::Type type, VkQueue* queue);
 	void drawFrame();
+	void drawFrame1();
 	void waitIdle();
 	VkFormat findDepthFormat();
 

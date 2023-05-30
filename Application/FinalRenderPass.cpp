@@ -16,7 +16,7 @@ FinalRenderPass::~FinalRenderPass()
 
 void FinalRenderPass::buildPass()
 {
-    mDevice->createRenderPassVkRenderPass(true, false, true, true, &mRenderPass);
+    mDevice->createRenderPassVkRenderPass(false, true, false, false, &mRenderPass);
 
     mDevice->createRenderPassFrameBuffer(mRenderPass,
         mDevice->getDepthStencilBuffer()->getView(),
@@ -25,11 +25,6 @@ void FinalRenderPass::buildPass()
 
 void FinalRenderPass::recordCommand(VkCommandBuffer commandBuffer, size_t frameIndex)
 {
-
-	VkClearValue clearValues[2];
-	clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
-	clearValues[1].depthStencil = { 1.0f, 0 };
-
 	VkExtent2D extent = mDevice->getSwapChain()->getExtent();
 
 	VkRenderPassBeginInfo renderPassInfo{};

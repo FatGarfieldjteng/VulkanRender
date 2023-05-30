@@ -4,12 +4,13 @@
 #include "DepthStencilBuffer.h"
 #include "ShaderManager.h"
 #include "Pipeline.h"
-#include "PassManager.h"
+#include "RenderPassManager.h"
 #include "Managers.h"
 #include "FrameBuffer.h"
 #include "Command.h"
 #include "SyncObjectManager.h"
 #include "ConstantBufferManager.h"
+#include "PassManager.h"
 #include "SimpleScene.h"
 #include "Camera.h"
 #include "BoundingBox.h"
@@ -184,6 +185,93 @@ void Device::drawFrame()
         imageIndex, 
         mFrameIndex);
     
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+    VkSemaphore waitSemaphores[] = { backBufferAvailableSemaphore };
+    VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+    submitInfo.waitSemaphoreCount = 1;
+    submitInfo.pWaitSemaphores = waitSemaphores;
+    submitInfo.pWaitDstStageMask = waitStages;
+
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffer;
+
+    VkSemaphore signalSemaphores[] = { mSyncObjectManager->getPresentReadySemaphore(mFrameIndex) };
+    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.pSignalSemaphores = signalSemaphores;
+
+    if (vkQueueSubmit(mGraphicsQueue->get(), 1, &submitInfo, fence) != VK_SUCCESS) {
+        throw std::runtime_error("failed to submit draw command buffer!");
+    }
+
+    VkPresentInfoKHR presentInfo{};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = signalSemaphores;
+
+    VkSwapchainKHR swapChains[] = { mSwapChain->get() };
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = swapChains;
+
+    presentInfo.pImageIndices = &imageIndex;
+
+    vkQueuePresentKHR(mPresentQueue->get(), &presentInfo);
+
+    mFrameIndex = (mFrameIndex + 1) % mMaxFramesInFligt;
+}
+
+void Device::drawFrame1()
+{
+    VkFence fence = mSyncObjectManager->geFrameFence(mFrameIndex);
+    VkCommandBuffer commandBuffer = mCommand->get(mFrameIndex);
+
+    vkWaitForFences(mLogicalDevice, 1, &fence, VK_TRUE, UINT64_MAX);
+    vkResetFences(mLogicalDevice, 1, &fence);
+
+    uint32_t imageIndex;
+
+    VkSemaphore backBufferAvailableSemaphore = mSyncObjectManager->getBackBufferReadySemaphore(mFrameIndex);
+    vkAcquireNextImageKHR(mLogicalDevice, mSwapChain->get(), UINT64_MAX, backBufferAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+
+    // update WVP matrix constant buffer
+    static auto startTime = std::chrono::high_resolution_clock::now();
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+    /*ConstantBufferManager* constantBufferManager = mManagers->getConstantBufferManager();
+    constantBufferManager->updateWVPConstantBuffer(mFrameIndex, time, mSwapChain->getExtent());*/
+
+    vkResetCommandBuffer(commandBuffer, 0);
+
+    // here, record pass using RenderPass
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.pNext = nullptr;
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+    beginInfo.pInheritanceInfo = nullptr;
+    
+    vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+    RenderPassManager* renderPassManager = mManagers->getRenderPassManager();
+
+    RenderPass * clearPass = renderPassManager->getPass("clear");
+    clearPass->recordCommand(commandBuffer, imageIndex);
+
+    RenderPass* finalPass = renderPassManager->getPass("final");
+    finalPass->recordCommand(commandBuffer, imageIndex);
+
+    vkEndCommandBuffer(commandBuffer);
+
+    /*mCommand->recordCommandBuffer(commandBuffer,
+        mScene,
+        mSwapChain,
+        mFrameBuffer,
+        mManagers,
+        imageIndex,
+        mFrameIndex);*/
+
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -771,7 +859,7 @@ void Device::createRenderPassVkRenderPass(int firstPass,
     depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
     VkAttachmentReference depthAttachmentRef{};
-    depthAttachmentRef.attachment;
+    depthAttachmentRef.attachment = 1;
     depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
     VkSubpassDependency dependencies{};
