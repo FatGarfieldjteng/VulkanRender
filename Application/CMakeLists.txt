@@ -17,6 +17,8 @@ set(HEADER_FILES
 	ConstantBufferManager.h
 	ConstantBuffer.h
 	Texture.h
+	CubeTexture.h
+	GLITexture.h
 	Managers.h
 	FrameBuffer.h
 	Command.h
@@ -40,6 +42,7 @@ set(HEADER_FILES
 	BeautyRenderPass.h
 	ShadowRenderPass.h
 	RenderPassManager.h
+	Bitmap.h
 	tinyobjloader/tiny_obj_loader.h
 	stb/stb_image.h
 )
@@ -60,6 +63,8 @@ set(SOURCE_FILES
 	ConstantBufferManager.cpp
 	ConstantBuffer.cpp
 	Texture.cpp
+	CubeTexture.cpp
+	GLITexture.cpp
 	Managers.cpp
 	FrameBuffer.cpp
 	Command.cpp

@@ -1,6 +1,8 @@
 #include "SimpleScene.h"
 #include "Mesh.h"
 #include "Texture.h"
+#include "CubeTexture.h"
+#include "GLITexture.h"
 #include "PCVertexFormat.h"
 #include "PCTVertexFormat.h"
 #include "PBRVertexFormat.h"
@@ -9,6 +11,7 @@
 #include "Device.h"
 #include <unordered_map>
 #include <stdexcept>
+#include <array>
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tinyobjloader/tiny_obj_loader.h"
@@ -322,9 +325,34 @@ void SimpleScene::loadGLTFScene()
         mPBRMaterials.push_back(pbrMaterial);
     }
     
+    loadIBLTextures();
+
     updateBBox();
 
+    createUniformBuffers();
+
     createPBRDescriptorLayout();
+
+    createDescriptorPool(mPBRMaterials.size(), 1, 6, 2);
+
+    createDescriptorSet(2);
+}
+
+void SimpleScene::loadIBLTextures()
+{
+    std::string strTextureFileBase("../../Asset/");
+
+    mEnvTexture = new CubeTexture(mDevice);
+    std::string strEnvTexture = strTextureFileBase + "piazza_bologni_1k.hdr";
+    mEnvTexture->load(strEnvTexture.c_str());
+
+    mEnvIrrTexture = new CubeTexture(mDevice);
+    std::string strEnvIrrTexture = strTextureFileBase + "piazza_bologni_1k_irradiance.hdr";
+    mEnvIrrTexture->load(strEnvIrrTexture.c_str());
+
+    mLUTTexture = new GLITexture(mDevice);
+    std::string strLUTTexture = strTextureFileBase + "brdfLUT.ktx";
+    mLUTTexture->load(strLUTTexture.c_str());
 }
 
 void SimpleScene::updateBBox()
@@ -332,6 +360,31 @@ void SimpleScene::updateBBox()
     for (size_t meshIndex = 0; meshIndex < mMeshes.size(); ++meshIndex)
     {
         mBBox->update(mMeshes[meshIndex]->getBBox());
+    }
+}
+
+void SimpleScene::createUniformBuffers(int frameInFlight)
+{
+    VkDeviceSize bufferSize = sizeof(MVPCameraPosConstantBuffer);
+
+    mUniformBuffers.resize(frameInFlight);
+    mUniformBuffersMemory.resize(frameInFlight);
+    mMappedData.resize(frameInFlight);
+
+    for (size_t i = 0; i < frameInFlight; i++)
+    {
+        mDevice->createBuffer(bufferSize,
+            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            mUniformBuffers[i],
+            mUniformBuffersMemory[i]);
+
+        vkMapMemory(mDevice->getLogicalDevice(),
+            mUniformBuffersMemory[i],
+            0,
+            bufferSize,
+            0,
+            &mMappedData[i]);
     }
 }
 
@@ -363,6 +416,166 @@ void SimpleScene::createPBRDescriptorLayout()
     layoutInfo.pBindings = bindings.data();
 
     vkCreateDescriptorSetLayout(mDevice->getLogicalDevice(), &layoutInfo, nullptr, &mPBRDescriptorSetLayout);
+}
+
+void SimpleScene::createDescriptorPool(int materialCount, int uniformBufferCount, int samplerCount, int frameInFlight)
+{
+    int materials = (int)mPBRMaterials.size();
+
+    std::vector<VkDescriptorPoolSize> poolSizes;
+
+    if(uniformBufferCount > 0)
+    {
+        VkDescriptorPoolSize uniformPoolSize{};
+        uniformPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        uniformPoolSize.descriptorCount = frameInFlight * materialCount * uniformBufferCount;
+        poolSizes.push_back(uniformPoolSize);
+    }
+
+    if (samplerCount > 0)
+    {
+        VkDescriptorPoolSize samplerPoolSize{};
+        samplerPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        samplerPoolSize.descriptorCount = frameInFlight * materialCount * samplerCount;
+        poolSizes.push_back(samplerPoolSize);
+    }
+
+    VkDescriptorPoolCreateInfo poolCreateInfo{};
+    poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    poolCreateInfo.pNext = nullptr;
+    poolCreateInfo.flags = 0;
+    poolCreateInfo.maxSets = static_cast<uint32_t>(frameInFlight * materialCount),
+    poolCreateInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+    poolCreateInfo.pPoolSizes = poolSizes.empty() ? nullptr : poolSizes.data();
+
+    vkCreateDescriptorPool(mDevice->getLogicalDevice(), &poolCreateInfo, nullptr, &mDescriptorPool);
+
+}
+
+void SimpleScene::createDescriptorSet(int frameInFlight)
+{
+    int materials = (int)mPBRMaterials.size();
+
+    std::vector<VkDescriptorSetLayout> layouts(frameInFlight * materials, mPBRDescriptorSetLayout);
+
+    VkDescriptorSetAllocateInfo allocInfo{};
+
+    allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    allocInfo.pNext = nullptr;
+    allocInfo.descriptorPool = mDescriptorPool;
+    allocInfo.descriptorSetCount = static_cast<uint32_t>(frameInFlight * materials);
+    allocInfo.pSetLayouts = layouts.data();
+
+    mDescriptorSets.resize(frameInFlight * materials);
+
+    // allocate descriptor sets
+    vkAllocateDescriptorSets(mDevice->getLogicalDevice(), &allocInfo, mDescriptorSets.data());
+
+    for (int frameIndex = 0; frameIndex < frameInFlight; ++frameIndex)
+    {
+        for (int materialIndex = 0; materialIndex < materials; ++materials)
+        {
+            int descriptorIndex = frameIndex * materials + materialIndex;
+            VkDescriptorSet ds = mDescriptorSets[descriptorIndex];
+
+            VkDescriptorBufferInfo bufferInfo{};
+            bufferInfo.buffer = mUniformBuffers[frameIndex];
+            bufferInfo.offset = 0;
+            bufferInfo.range = sizeof(MVPCameraPosConstantBuffer);
+
+            PBRMaterial* mat = mPBRMaterials[materialIndex];
+
+            VkDescriptorImageInfo imageInfoAlbedo{};
+            imageInfoAlbedo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            imageInfoAlbedo.imageView = mat->mTexAlbedo->mImageView;
+            imageInfoAlbedo.sampler = mat->mTexAlbedo->mSampler;
+
+            VkDescriptorImageInfo imageInfoMeR{};
+            imageInfoMeR.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            imageInfoMeR.imageView = mat->mTexMetalRoughness->mImageView;
+            imageInfoMeR.sampler = mat->mTexMetalRoughness->mSampler;
+
+            VkDescriptorImageInfo imageInfoNormal{};
+            imageInfoNormal.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            imageInfoNormal.imageView = mat->mTexNormal->mImageView;
+            imageInfoNormal.sampler = mat->mTexNormal->mSampler;
+
+            VkDescriptorImageInfo imageInfoEnv{};
+            imageInfoEnv.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            imageInfoEnv.imageView = mEnvTexture->mImageView;
+            imageInfoEnv.sampler = mEnvTexture->mSampler;
+
+            VkDescriptorImageInfo imageInfoEnvIrr{};
+            imageInfoEnvIrr.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            imageInfoEnvIrr.imageView = mEnvIrrTexture->mImageView;
+            imageInfoEnvIrr.sampler = mEnvIrrTexture->mSampler;
+
+            VkDescriptorImageInfo imageInfoLUT{};
+            imageInfoLUT.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            imageInfoLUT.imageView = mLUTTexture->mImageView;
+            imageInfoLUT.sampler = mLUTTexture->mSampler;
+
+            std::array<VkWriteDescriptorSet, 7> writeDescriptors;
+
+            writeDescriptors[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            writeDescriptors[0].dstSet = ds;
+            writeDescriptors[0].dstBinding = 0;
+            writeDescriptors[0].dstArrayElement = 0;
+            writeDescriptors[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            writeDescriptors[0].descriptorCount = 1;
+            writeDescriptors[0].pBufferInfo = &bufferInfo;
+
+            writeDescriptors[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            writeDescriptors[1].dstSet = ds;
+            writeDescriptors[1].dstBinding = 1;
+            writeDescriptors[1].dstArrayElement = 0;
+            writeDescriptors[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+            writeDescriptors[1].descriptorCount = 1;
+            writeDescriptors[1].pImageInfo = &imageInfoAlbedo;
+
+            writeDescriptors[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            writeDescriptors[2].dstSet = ds;
+            writeDescriptors[2].dstBinding = 2;
+            writeDescriptors[2].dstArrayElement = 0;
+            writeDescriptors[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+            writeDescriptors[2].descriptorCount = 1;
+            writeDescriptors[2].pImageInfo = &imageInfoMeR;
+
+            writeDescriptors[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            writeDescriptors[3].dstSet = ds;
+            writeDescriptors[3].dstBinding = 3;
+            writeDescriptors[3].dstArrayElement = 0;
+            writeDescriptors[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+            writeDescriptors[3].descriptorCount = 1;
+            writeDescriptors[3].pImageInfo = &imageInfoNormal;
+
+            writeDescriptors[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            writeDescriptors[4].dstSet = ds;
+            writeDescriptors[4].dstBinding = 4;
+            writeDescriptors[4].dstArrayElement = 0;
+            writeDescriptors[4].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+            writeDescriptors[4].descriptorCount = 1;
+            writeDescriptors[4].pImageInfo = &imageInfoEnv;
+
+            writeDescriptors[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            writeDescriptors[5].dstSet = ds;
+            writeDescriptors[5].dstBinding = 5;
+            writeDescriptors[5].dstArrayElement = 0;
+            writeDescriptors[5].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+            writeDescriptors[5].descriptorCount = 1;
+            writeDescriptors[5].pImageInfo = &imageInfoEnvIrr;
+
+            writeDescriptors[6].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            writeDescriptors[6].dstSet = ds;
+            writeDescriptors[6].dstBinding = 6;
+            writeDescriptors[6].dstArrayElement = 0;
+            writeDescriptors[6].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+            writeDescriptors[6].descriptorCount = 1;
+            writeDescriptors[6].pImageInfo = &imageInfoLUT;
+
+            vkUpdateDescriptorSets(mDevice->getLogicalDevice(), static_cast<uint32_t>(writeDescriptors.size()), writeDescriptors.data(), 0, nullptr);
+        }
+    }
 }
 
 int SimpleScene::getMeshCount()

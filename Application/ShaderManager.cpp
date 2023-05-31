@@ -20,6 +20,8 @@ void ShaderManager::createShaders()
 	createSimpleVS();
 	createSimplePS();
 
+	createPBRVS();
+	createPBRPS();
 }
 
 void ShaderManager::createSimpleVS()
@@ -59,6 +61,45 @@ void ShaderManager::createSimplePS()
 	fragShaderStageInfo.pName = "main";
 
 	addPS("SimplePS", fragShaderStageInfo);
+}
+
+void ShaderManager::createPBRVS()
+{
+	std::string path = shaderPath();
+
+	std::string shaderPath = path + "PBR.vert.spv";
+	std::vector<char> bytecode = readFile(shaderPath);
+
+	VkShaderModule shaderModule = createShaderModule(bytecode);
+
+	mScratchPad.push_back(shaderModule);
+
+	VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
+	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+	vertShaderStageInfo.module = shaderModule;
+	vertShaderStageInfo.pName = "main";
+
+	addVS("PBRVS", vertShaderStageInfo);
+}
+
+void ShaderManager::createPBRPS()
+{
+	std::string path = shaderPath();
+
+	std::string shaderPath = path + "PBR.frag.spv";
+	std::vector<char> bytecode = readFile(shaderPath);
+	VkShaderModule shaderModule = createShaderModule(bytecode);
+
+	mScratchPad.push_back(shaderModule);
+
+	VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
+	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+	fragShaderStageInfo.module = shaderModule;
+	fragShaderStageInfo.pName = "main";
+
+	addPS("PBRPS", fragShaderStageInfo);
 }
 
 void ShaderManager::addVS(const std::string& ID, VkPipelineShaderStageCreateInfo vs)

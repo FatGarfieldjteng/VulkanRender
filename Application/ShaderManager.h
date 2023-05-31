@@ -34,6 +34,9 @@ private:
     void createSimpleVS();
     void createSimplePS();
 
+    void createPBRVS();
+    void createPBRPS();
+
     // helper functions
     std::vector<char> ShaderManager::readFile(const std::string& filename);
     VkShaderModule createShaderModule(const std::vector<char>& code);
