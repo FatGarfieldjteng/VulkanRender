@@ -70,11 +70,12 @@ public:
 		VkBuffer dstBuffer,
 		VkDeviceSize size);
 
-	void createImage(uint32_t width,
+	void create2DImage(uint32_t width,
 		uint32_t height,
 		VkFormat format,
 		VkImageTiling tiling,
 		VkImageUsageFlags usage,
+		VkImageCreateFlags flags,
 		VkMemoryPropertyFlags properties,
 		VkImage& image,
 		VkDeviceMemory& imageMemory);
@@ -88,12 +89,14 @@ public:
 	void transitImageLayout(VkImage image, 
 		VkFormat format, 
 		VkImageLayout oldLayout, 
-		VkImageLayout newLayout);
+		VkImageLayout newLayout,
+		uint32_t layerCount = 1);
 
 	void copyBufferToImage(VkBuffer buffer, 
 		VkImage image, 
 		uint32_t width, 
-		uint32_t height);
+		uint32_t height,
+		uint32_t layerCount = 1);
 
 	void createRenderPassVkRenderPass(int firstPass, 
 		int lastPass, 

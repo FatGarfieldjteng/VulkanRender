@@ -18,10 +18,11 @@ DepthStencilBuffer::~DepthStencilBuffer()
 void DepthStencilBuffer::init(VkExtent2D extent)
 {
     mFormat = mDevice->findDepthFormat();
-    mDevice->createImage(extent.width, extent.height,
+    mDevice->create2DImage(extent.width, extent.height,
         mFormat,
         VK_IMAGE_TILING_OPTIMAL,
         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+        0,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
         mImage,
         mDeviceMemory);

@@ -646,11 +646,12 @@ bool Device::checkDeviceExtensionSupport(VkPhysicalDevice device)
     return requiredExtensions.empty();
 }
 
-void Device::createImage(uint32_t width,
+void Device::create2DImage(uint32_t width,
     uint32_t height, 
     VkFormat format, 
     VkImageTiling tiling, 
-    VkImageUsageFlags usage, 
+    VkImageUsageFlags usage,
+    VkImageCreateFlags flags,
     VkMemoryPropertyFlags properties, 
     VkImage& image, 
     VkDeviceMemory& imageMemory) 
@@ -662,11 +663,12 @@ void Device::createImage(uint32_t width,
     imageInfo.extent.height = height;
     imageInfo.extent.depth = 1;
     imageInfo.mipLevels = 1;
-    imageInfo.arrayLayers = 1;
+    imageInfo.arrayLayers = (uint32_t)((flags == VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) ? 6 : 1),
     imageInfo.format = format;
     imageInfo.tiling = tiling;
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     imageInfo.usage = usage;
+    imageInfo.flags = flags;
     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
@@ -746,7 +748,8 @@ VkSampler Device::createSampler()
 void Device::transitImageLayout(VkImage image, 
     VkFormat format, 
     VkImageLayout oldLayout, 
-    VkImageLayout newLayout) 
+    VkImageLayout newLayout,
+    uint32_t layerCount)
 {
     beginCopyCommand();
 
@@ -761,7 +764,7 @@ void Device::transitImageLayout(VkImage image,
     barrier.subresourceRange.baseMipLevel = 0;
     barrier.subresourceRange.levelCount = 1;
     barrier.subresourceRange.baseArrayLayer = 0;
-    barrier.subresourceRange.layerCount = 1;
+    barrier.subresourceRange.layerCount = layerCount;
 
     VkPipelineStageFlags sourceStage;
     VkPipelineStageFlags destinationStage;
@@ -799,7 +802,8 @@ void Device::transitImageLayout(VkImage image,
 void Device::copyBufferToImage(VkBuffer buffer,
     VkImage image,
     uint32_t width,
-    uint32_t height)
+    uint32_t height,
+    uint32_t layerCount)
 {
     beginCopyCommand();
     VkBufferImageCopy region{};
@@ -809,7 +813,7 @@ void Device::copyBufferToImage(VkBuffer buffer,
     region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     region.imageSubresource.mipLevel = 0;
     region.imageSubresource.baseArrayLayer = 0;
-    region.imageSubresource.layerCount = 1;
+    region.imageSubresource.layerCount = layerCount;
     region.imageOffset = { 0, 0, 0 };
     region.imageExtent = {
         width,
