@@ -82,7 +82,9 @@ public:
 
 	VkImageView createImageView(VkImage image, 
 		VkFormat format, 
-		VkImageAspectFlags aspectFlags);
+		VkImageAspectFlags aspectFlags,
+		VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_2D,
+		uint32_t layerCount = 1);
 
 	VkSampler createSampler();
 

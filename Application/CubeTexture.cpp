@@ -107,5 +107,19 @@ void CubeTexture::load(const std::string& file)
         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
         VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
         layerCount);
+
+    vkDestroyBuffer(mDevice->getLogicalDevice(), stagingBuffer, nullptr);
+    vkFreeMemory(mDevice->getLogicalDevice(), stagingBufferMemory, nullptr);
+
+
+    // create image view
+    mImageView = mDevice->createImageView(mImage,
+        VK_FORMAT_R32G32B32A32_SFLOAT,
+        VK_IMAGE_ASPECT_COLOR_BIT,
+        VK_IMAGE_VIEW_TYPE_CUBE,
+        layerCount);
+
+    // crete sampler
+    mSampler = mDevice->createSampler();
 }
 

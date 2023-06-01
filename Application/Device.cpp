@@ -691,18 +691,22 @@ void Device::create2DImage(uint32_t width,
     vkBindImageMemory(mLogicalDevice, image, imageMemory, 0);
 }
 
-VkImageView Device::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) 
+VkImageView Device::createImageView(VkImage image, 
+    VkFormat format, 
+    VkImageAspectFlags aspectFlags,
+    VkImageViewType viewType,
+    uint32_t layerCount)
 {
     VkImageViewCreateInfo viewInfo{};
     viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     viewInfo.image = image;
-    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    viewInfo.viewType = viewType;
     viewInfo.format = format;
     viewInfo.subresourceRange.aspectMask = aspectFlags;
     viewInfo.subresourceRange.baseMipLevel = 0;
     viewInfo.subresourceRange.levelCount = 1;
     viewInfo.subresourceRange.baseArrayLayer = 0;
-    viewInfo.subresourceRange.layerCount = 1;
+    viewInfo.subresourceRange.layerCount = layerCount;
 
     VkImageView imageView;
     if (vkCreateImageView(mLogicalDevice, &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
