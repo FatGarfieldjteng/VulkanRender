@@ -26,8 +26,7 @@
 SimpleScene::SimpleScene(Device* device)
     :Scene(device)
 {
-    //init();
-    loadScene();
+    init();
 }
 
 SimpleScene::~SimpleScene()
@@ -52,6 +51,12 @@ SimpleScene::~SimpleScene()
 }
 
 void SimpleScene::init()
+{
+    createBox();
+    //loadScene();
+}
+
+void SimpleScene::createBox()
 {
     /*TriangleMesh* mesh;
     mesh = new TriangleMesh(mDevice);*/
@@ -84,16 +89,26 @@ void SimpleScene::init()
     uint32_t indexCount = static_cast<uint32_t>(indices.size());
     VkDeviceSize iBufferSize = static_cast <VkDeviceSize>(sizeof(uint32_t) * indexCount);
 
+    // compute bounding box
+    BoundingBox bbox;
+
+    for (size_t vertexIndex = 0; vertexIndex < vertices.size(); ++vertexIndex)
+    {
+        bbox.update(vertices[vertexIndex].pos);
+    }
+
     mesh->init(vertexCount,
         vBufferSize,
         (void*)vertices.data(),
         indexCount,
         iBufferSize,
-        (void*)indices.data()
+        (void*)indices.data(),
+        &bbox
     );
 
     mMeshes.push_back(mesh);
 
+    updateBBox();
 
     Texture* texture = new Texture(mDevice);
     texture->load("../../Asset/viking_room.png");

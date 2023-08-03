@@ -508,6 +508,12 @@ void Device::createLogicalDevice()
         throw std::runtime_error("failed to create logical device!");
     }
 
+    VkDevice mLogicalDevice1;
+
+    if (vkCreateDevice(mPhysicalDevice, &createInfo, nullptr, &mLogicalDevice1) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create logical device!");
+    }
+
     
     mGraphicsQueue = new Queue(Queue::Type::Graphics);
     mPresentQueue = new Queue(Queue::Type::Present);

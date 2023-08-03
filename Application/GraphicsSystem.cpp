@@ -129,7 +129,7 @@ void GraphicsSystem::cleanup()
 
 void GraphicsSystem::drawFrame()
 {
-    mDevice->drawFrame1();
+    mDevice->drawFrame();
 }
 
 

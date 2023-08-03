@@ -46,6 +46,7 @@ void Mesh::init(uint32_t vertices,
 
 	if (bbox != nullptr)
 	{
+		// if bounding box is precomputed
 		mBBox = new BoundingBox(*bbox);
 	}
 
