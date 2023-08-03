@@ -21,6 +21,8 @@
 #include <set>
 #include <array>
 
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 Device::Device(bool enableValidationLayers, 
     Validation* validation,
     unsigned int maxFramesInFligt)
@@ -77,10 +79,6 @@ Device::~Device()
         delete mScene;
     }
 
-    if (mCamera)
-    {
-        delete mCamera;
-    }
 
     vkDestroyCommandPool(mLogicalDevice, mCopyCommandPool, nullptr);
 
@@ -88,18 +86,23 @@ Device::~Device()
     vkDestroySurfaceKHR(mVkInstance, mSurface, nullptr);
 }
 
-void Device::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     switch (key)
     {
         case GLFW_KEY_W:
-            
+        {
+
+        }
             break;
         case GLFW_KEY_A:
+            std::cout << "A\n";
             break;
         case GLFW_KEY_S:
+            std::cout << "S\n";
             break;
         case GLFW_KEY_D:
+            std::cout << "D\n";
             break;
         default:
             break;
@@ -109,7 +112,7 @@ void Device::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 
 void Device::create(VkInstance instance, GLFWwindow* window)
 {
-    glfwSetKeyCallback(window, Device::keyCallback);
+    glfwSetKeyCallback(window, keyCallback);
 
     mVkInstance = instance;
     createSurface(window);
@@ -507,13 +510,6 @@ void Device::createLogicalDevice()
     if (vkCreateDevice(mPhysicalDevice, &createInfo, nullptr, &mLogicalDevice) != VK_SUCCESS) {
         throw std::runtime_error("failed to create logical device!");
     }
-
-    VkDevice mLogicalDevice1;
-
-    if (vkCreateDevice(mPhysicalDevice, &createInfo, nullptr, &mLogicalDevice1) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create logical device!");
-    }
-
     
     mGraphicsQueue = new Queue(Queue::Type::Graphics);
     mPresentQueue = new Queue(Queue::Type::Present);

@@ -64,7 +64,7 @@ void GraphicsSystem::createInstance()
     if (vkCreateInstance(&createInfo, nullptr, &mVkInstance) != VK_SUCCESS) {
         throw std::runtime_error("failed to create Vulkan instance!");
     }
-
+   
 }
 
 void GraphicsSystem::createDebugMessenger()
@@ -96,6 +96,8 @@ void GraphicsSystem::initVulkan()
     createInstance();
     createDebugMessenger();
     createDevice();
+
+  
 }
 
 void GraphicsSystem::mainLoop() 
