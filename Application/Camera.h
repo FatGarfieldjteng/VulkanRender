@@ -17,14 +17,25 @@ public:
 		float near, 
 		float far);
 
+	void setCameraMoveSpeed(glm::vec3 moveSpeed);
+
 	void computeView();
 	void computeProj();
 	void computeViewProj();
 
+	// move camera
 	void moveLeft();
 	void moveRight();
 	void moveForward();
 	void moveBackward();
+
+	// rotate camera
+
+	// rotate around right vector
+	void pitch(float direction);
+
+	// rotate around up vector
+	void yaw(float direction);
 
 	glm::mat4 getViewProj()
 	{
@@ -33,9 +44,20 @@ public:
 
 private:
 	
+	// initial parameter
 	glm::vec3 mEye;
 	glm::vec3 mCenter;
+
+	// coordinate frame
+	glm::vec3 mForward;
+	glm::vec3 mRight;
 	glm::vec3 mUp;
+
+	// move speed
+	glm::vec3 mMoveSpeed = glm::vec3(0.01f, 0.01f, 0.01f);
+
+	// rotate speed
+	glm::vec3 mRotateSpeed = glm::vec3(0.01f, 0.01f, 0.01f);
 
 	float mFOV = 45.0f;
 	float mAspect = 1.0f;
@@ -45,6 +67,5 @@ private:
 	glm::mat4 mView;
 	glm::mat4 mProj;
 	glm::mat4 mViewProj;
-
-	float mMoveSpeed = 1.0f;
+		
 };

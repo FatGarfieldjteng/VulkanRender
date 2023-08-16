@@ -60,6 +60,11 @@ public:
 		return mSwapChain;
 	}
 
+	Camera* getCamera()
+	{
+		return mCamera;
+	}
+
 	void createBuffer(VkDeviceSize size, 
 		VkBufferUsageFlags usage, 
 		VkMemoryPropertyFlags properties, 

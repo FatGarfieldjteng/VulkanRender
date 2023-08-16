@@ -88,30 +88,67 @@ Device::~Device()
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    Device* device = reinterpret_cast<Device*>(glfwGetWindowUserPointer(window));
+
     switch (key)
     {
+        // move
+
+        //
         case GLFW_KEY_W:
         {
-
+            device->getCamera()->moveForward();
         }
             break;
         case GLFW_KEY_A:
-            std::cout << "A\n";
+        {
+            device->getCamera()->moveLeft();
+        }
             break;
         case GLFW_KEY_S:
-            std::cout << "S\n";
+        {
+            device->getCamera()->moveBackward();
+        }
             break;
         case GLFW_KEY_D:
-            std::cout << "D\n";
+        {
+            device->getCamera()->moveRight();
+        }
             break;
+
+        // rotate 
+        case GLFW_KEY_LEFT:
+        {
+            device->getCamera()->pitch(-1.0f);
+        }
+            break;
+
+        case GLFW_KEY_RIGHT:
+        {
+            device->getCamera()->pitch(1.0f);
+        }
+        break;
+
+        case GLFW_KEY_UP:
+        {
+            device->getCamera()->yaw(-1.0f);
+        }
+        break;
+
+        case GLFW_KEY_DOWN:
+        {
+            device->getCamera()->yaw(1.0f);
+        }
+        break;
+
         default:
             break;
     }
-            
 }
 
 void Device::create(VkInstance instance, GLFWwindow* window)
 {
+    glfwSetWindowUserPointer(window, reinterpret_cast<void*>(this));
     glfwSetKeyCallback(window, keyCallback);
 
     mVkInstance = instance;
