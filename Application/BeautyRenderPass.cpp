@@ -58,10 +58,10 @@ void BeautyRenderPass::recordCommand(VkCommandBuffer commandBuffer, size_t frame
         IndexBuffer* ib = mesh->getIB();
         vkCmdBindIndexBuffer(commandBuffer, ib->mIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-        //vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, 
-        //    mPipelineLayout, 0, 1, 
-        //    &descriptorSets_[currentImage], 
-        //    0, nullptr);
+        /*vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+            mPipelineLayout, 0, 1, 
+            &descriptorSets_[currentImage], 
+            0, nullptr);*/
 
 
         vkCmdDrawIndexed(commandBuffer, ib->mIndices, 1, 0, 0, 0);

@@ -280,8 +280,8 @@ void Device::drawFrame1()
     auto currentTime = std::chrono::high_resolution_clock::now();
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-    /*ConstantBufferManager* constantBufferManager = mManagers->getConstantBufferManager();
-    constantBufferManager->updateWVPConstantBuffer(mFrameIndex, time, mSwapChain->getExtent());*/
+    ConstantBufferManager* constantBufferManager = mManagers->getConstantBufferManager();
+    constantBufferManager->updateWVPConstantBuffer(mFrameIndex, time, mSwapChain->getExtent());
 
     vkResetCommandBuffer(commandBuffer, 0);
 
@@ -299,6 +299,9 @@ void Device::drawFrame1()
     RenderPass * clearPass = renderPassManager->getPass("clear");
     clearPass->recordCommand(commandBuffer, imageIndex);
 
+    RenderPass* beautyPass = renderPassManager->getPass("beauty");
+    beautyPass->recordCommand(commandBuffer, imageIndex, mScene);
+    
     RenderPass* finalPass = renderPassManager->getPass("final");
     finalPass->recordCommand(commandBuffer, imageIndex);
 

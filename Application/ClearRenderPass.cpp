@@ -26,7 +26,7 @@ void ClearRenderPass::buildPass()
 void ClearRenderPass::recordCommand(VkCommandBuffer commandBuffer, size_t frameIndex, Scene* scene)
 {
 	VkClearValue clearValues[2];
-	clearValues[0].color = { {1.0f, 1.0f, 0.0f, 1.0f} };
+	clearValues[0].color = { {1.0f, 1.0f, 1.0f, 1.0f} };
 	clearValues[1].depthStencil = { 1.0f, 0 };
 
 	VkExtent2D extent = mDevice->getSwapChain()->getExtent();

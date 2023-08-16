@@ -52,8 +52,8 @@ SimpleScene::~SimpleScene()
 
 void SimpleScene::init()
 {
-    createBox();
-    //loadScene();
+    //createBox();
+    loadScene();
 }
 
 void SimpleScene::createBox()
@@ -442,7 +442,7 @@ void SimpleScene::createPBRDescriptorLayout()
     vkCreateDescriptorSetLayout(mDevice->getLogicalDevice(), &layoutInfo, nullptr, &mPBRDescriptorSetLayout);
 }
 
-void SimpleScene::createDescriptorPool(int materialCount, int uniformBufferCount, int samplerCount, int frameInFlight)
+void SimpleScene::createDescriptorPool(int materialCount, int uniformBufferCount, int textureCount, int frameInFlight)
 {
     int materials = (int)mPBRMaterials.size();
 
@@ -456,11 +456,11 @@ void SimpleScene::createDescriptorPool(int materialCount, int uniformBufferCount
         poolSizes.push_back(uniformPoolSize);
     }
 
-    if (samplerCount > 0)
+    if (textureCount > 0)
     {
         VkDescriptorPoolSize samplerPoolSize{};
-        samplerPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        samplerPoolSize.descriptorCount = frameInFlight * materialCount * samplerCount;
+        samplerPoolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        samplerPoolSize.descriptorCount = frameInFlight * materialCount * textureCount;
         poolSizes.push_back(samplerPoolSize);
     }
 
@@ -468,7 +468,7 @@ void SimpleScene::createDescriptorPool(int materialCount, int uniformBufferCount
     poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
     poolCreateInfo.pNext = nullptr;
     poolCreateInfo.flags = 0;
-    poolCreateInfo.maxSets = static_cast<uint32_t>(frameInFlight * materialCount),
+    poolCreateInfo.maxSets = static_cast<uint32_t>(frameInFlight),
     poolCreateInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
     poolCreateInfo.pPoolSizes = poolSizes.empty() ? nullptr : poolSizes.data();
 
@@ -487,10 +487,10 @@ void SimpleScene::createDescriptorSet(int frameInFlight)
     allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
     allocInfo.pNext = nullptr;
     allocInfo.descriptorPool = mDescriptorPool;
-    allocInfo.descriptorSetCount = static_cast<uint32_t>(frameInFlight * materials);
+    allocInfo.descriptorSetCount = frameInFlight;
     allocInfo.pSetLayouts = layouts.data();
 
-    mDescriptorSets.resize(frameInFlight * materials);
+    mDescriptorSets.resize(frameInFlight);
 
     // allocate descriptor sets
     vkAllocateDescriptorSets(mDevice->getLogicalDevice(), &allocInfo, mDescriptorSets.data());
@@ -502,13 +502,16 @@ void SimpleScene::createDescriptorSet(int frameInFlight)
             int descriptorIndex = frameIndex * materials + materialIndex;
             VkDescriptorSet ds = mDescriptorSets[descriptorIndex];
 
+            // view projection matrix and camera position uniform buffer
             VkDescriptorBufferInfo bufferInfo{};
             bufferInfo.buffer = mUniformBuffers[frameIndex];
             bufferInfo.offset = 0;
             bufferInfo.range = sizeof(MVPCameraPosConstantBuffer);
 
+            // textures for PBR material
             PBRMaterial* mat = mPBRMaterials[materialIndex];
 
+            // albedo map, eg. diffuse
             VkDescriptorImageInfo imageInfoAlbedo{};
             imageInfoAlbedo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             imageInfoAlbedo.imageView = mat->mTexAlbedo->mImageView;
@@ -519,21 +522,25 @@ void SimpleScene::createDescriptorSet(int frameInFlight)
             imageInfoMeR.imageView = mat->mTexMetalRoughness->mImageView;
             imageInfoMeR.sampler = mat->mTexMetalRoughness->mSampler;
 
+            // normal map
             VkDescriptorImageInfo imageInfoNormal{};
             imageInfoNormal.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             imageInfoNormal.imageView = mat->mTexNormal->mImageView;
             imageInfoNormal.sampler = mat->mTexNormal->mSampler;
 
+            // IBL environment map
             VkDescriptorImageInfo imageInfoEnv{};
             imageInfoEnv.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             imageInfoEnv.imageView = mEnvTexture->mImageView;
             imageInfoEnv.sampler = mEnvTexture->mSampler;
 
+            // IBL irradiance map
             VkDescriptorImageInfo imageInfoEnvIrr{};
             imageInfoEnvIrr.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             imageInfoEnvIrr.imageView = mEnvIrrTexture->mImageView;
             imageInfoEnvIrr.sampler = mEnvIrrTexture->mSampler;
 
+            // IBL LUT map
             VkDescriptorImageInfo imageInfoLUT{};
             imageInfoLUT.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             imageInfoLUT.imageView = mLUTTexture->mImageView;
@@ -597,7 +604,10 @@ void SimpleScene::createDescriptorSet(int frameInFlight)
             writeDescriptors[6].descriptorCount = 1;
             writeDescriptors[6].pImageInfo = &imageInfoLUT;
 
-            vkUpdateDescriptorSets(mDevice->getLogicalDevice(), static_cast<uint32_t>(writeDescriptors.size()), writeDescriptors.data(), 0, nullptr);
+            size_t descriptors = writeDescriptors.size();
+            VkWriteDescriptorSet* data = writeDescriptors.data();
+
+            vkUpdateDescriptorSets(mDevice->getLogicalDevice(), static_cast<uint32_t>(descriptors), data, 0, nullptr);
         }
     }
 }
