@@ -23,6 +23,7 @@ public:
 	{
 		VkWriteDescriptorSet res(0);
 
+        res.
 
 
 		return 

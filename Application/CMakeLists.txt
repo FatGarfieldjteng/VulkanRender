@@ -35,6 +35,7 @@ set(HEADER_FILES
 	PBRMaterial.h
 	Camera.h
 	SimpleScene.h
+	VulkanRender.h
 	RenderPass.h
 	ClearRenderPass.h
 	BeautyRenderPass.h
@@ -81,6 +82,7 @@ set(SOURCE_FILES
 	PBRMaterial.cpp
 	Camera.cpp
 	SimpleScene.cpp
+	VulkanRender.cpp
 	RenderPass.cpp
 	ClearRenderPass.cpp
 	BeautyRenderPass.cpp
