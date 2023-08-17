@@ -357,7 +357,7 @@ void SimpleScene::loadGLTFScene()
 
     createPBRDescriptorLayout();
 
-    createDescriptorPool(mPBRMaterials.size(), 1, 6, 2);
+    createPBRDescriptorPool(1, 6, 2);
 
     createDescriptorSet(2);
 }
@@ -442,9 +442,9 @@ void SimpleScene::createPBRDescriptorLayout()
     vkCreateDescriptorSetLayout(mDevice->getLogicalDevice(), &layoutInfo, nullptr, &mPBRDescriptorSetLayout);
 }
 
-void SimpleScene::createDescriptorPool(int materialCount, int uniformBufferCount, int textureCount, int frameInFlight)
+void SimpleScene::createPBRDescriptorPool(int uniformBufferCount, int textureCount, int frameInFlight)
 {
-    int materials = (int)mPBRMaterials.size();
+    int materialCount = (int)mPBRMaterials.size();
 
     std::vector<VkDescriptorPoolSize> poolSizes;
 
@@ -468,7 +468,7 @@ void SimpleScene::createDescriptorPool(int materialCount, int uniformBufferCount
     poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
     poolCreateInfo.pNext = nullptr;
     poolCreateInfo.flags = 0;
-    poolCreateInfo.maxSets = static_cast<uint32_t>(frameInFlight),
+    poolCreateInfo.maxSets = static_cast<uint32_t>(frameInFlight * materialCount),
     poolCreateInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
     poolCreateInfo.pPoolSizes = poolSizes.empty() ? nullptr : poolSizes.data();
 
@@ -478,28 +478,29 @@ void SimpleScene::createDescriptorPool(int materialCount, int uniformBufferCount
 
 void SimpleScene::createDescriptorSet(int frameInFlight)
 {
-    int materials = (int)mPBRMaterials.size();
+    int materialCount = (int)mPBRMaterials.size();
 
-    std::vector<VkDescriptorSetLayout> layouts(frameInFlight * materials, mPBRDescriptorSetLayout);
+    std::vector<VkDescriptorSetLayout> layouts(frameInFlight * materialCount, mPBRDescriptorSetLayout);
 
     VkDescriptorSetAllocateInfo allocInfo{};
 
     allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
     allocInfo.pNext = nullptr;
     allocInfo.descriptorPool = mDescriptorPool;
-    allocInfo.descriptorSetCount = frameInFlight;
+    //allocInfo.descriptorSetCount = frameInFlight * materialCount;
+    allocInfo.descriptorSetCount = frameInFlight * materialCount;
     allocInfo.pSetLayouts = layouts.data();
 
-    mDescriptorSets.resize(frameInFlight);
+    mDescriptorSets.resize(frameInFlight * materialCount);
 
     // allocate descriptor sets
     vkAllocateDescriptorSets(mDevice->getLogicalDevice(), &allocInfo, mDescriptorSets.data());
 
     for (int frameIndex = 0; frameIndex < frameInFlight; ++frameIndex)
     {
-        for (int materialIndex = 0; materialIndex < materials; ++materials)
+        for (int materialIndex = 0; materialIndex < materialCount; ++materialIndex)
         {
-            int descriptorIndex = frameIndex * materials + materialIndex;
+            int descriptorIndex = frameIndex * materialCount + materialIndex;
             VkDescriptorSet ds = mDescriptorSets[descriptorIndex];
 
             // view projection matrix and camera position uniform buffer

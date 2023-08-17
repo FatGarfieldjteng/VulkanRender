@@ -41,7 +41,7 @@ private:
 	void updateBBox();
 	void createUniformBuffers(int frameInFlight = 2);
 	void createPBRDescriptorLayout();
-	void createDescriptorPool(int materialCount, int uniformBufferCount, int textureCount, int frameInFlight = 2);
+	void createPBRDescriptorPool(int uniformBufferCount, int textureCount, int frameInFlight = 2);
 	void createDescriptorSet(int frameInFlight = 2);
 	
 	
