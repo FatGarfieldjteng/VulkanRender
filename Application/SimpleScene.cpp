@@ -312,12 +312,13 @@ void SimpleScene::loadGLTFScene()
             texture->load(file.c_str());
             mTextures.push_back(texture);
 
-            pbrMaterial->mTexAlbedo = texture;
+            pbrMaterial->mTextures.mAlbedo = texture;
         }
         
         if (material->Get(AI_MATKEY_BASE_COLOR, baseColorFactor) == AI_SUCCESS)
         {
-            pbrMaterial->mAlbedoFactor = glm::vec4(baseColorFactor.r, baseColorFactor.g, baseColorFactor.b, baseColorFactor.a);
+            pbrMaterial->mValues.mAlbedo = glm::vec4(baseColorFactor.r, baseColorFactor.g, baseColorFactor.b, baseColorFactor.a);
+            pbrMaterial->mValues.mMetalRoughness_MapORValue.g = -1.0f;
         }
 
         // MetallicRoughness
@@ -328,12 +329,13 @@ void SimpleScene::loadGLTFScene()
             texture->load(file.c_str());
             mTextures.push_back(texture);
 
-            pbrMaterial->mTexMetalRoughness = texture;
+            pbrMaterial->mTextures.mMetalRoughness = texture;
         }
 
         if (material->Get(AI_MATKEY_METALLIC_FACTOR, metallicFactor) == AI_SUCCESS)
         {
-            pbrMaterial->mMetalRoughnessFactor = metallicFactor;
+            pbrMaterial->mValues.mMetalRoughness_MapORValue.r = metallicFactor;
+            pbrMaterial->mValues.mMetalRoughness_MapORValue.b = -1.0f;
         }
 
         // Normal map
@@ -344,7 +346,11 @@ void SimpleScene::loadGLTFScene()
             texture->load(file.c_str());
             mTextures.push_back(texture);
 
-            pbrMaterial->mTexNormal = texture;
+            pbrMaterial->mTextures.mNormal = texture;
+        }
+        else
+        {
+            pbrMaterial->mValues.mMetalRoughness_MapORValue.a = -1.0f;
         }
 
         mPBRMaterials.push_back(pbrMaterial);
@@ -515,20 +521,50 @@ void SimpleScene::createDescriptorSet(int frameInFlight)
 
             // albedo map, eg. diffuse
             VkDescriptorImageInfo imageInfoAlbedo{};
-            imageInfoAlbedo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfoAlbedo.imageView = mat->mTexAlbedo->mImageView;
-            imageInfoAlbedo.sampler = mat->mTexAlbedo->mSampler;
+
+            if (mat->mValues.mMetalRoughness_MapORValue.g > 0.0f)
+            {
+                imageInfoAlbedo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                imageInfoAlbedo.imageView = mat->mTextures.mAlbedo->mImageView;
+                imageInfoAlbedo.sampler = mat->mTextures.mAlbedo->mSampler;
+            }
+            else
+            {
+                imageInfoAlbedo.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+                imageInfoAlbedo.imageView = VK_NULL_HANDLE;
+                imageInfoAlbedo.sampler = VK_NULL_HANDLE;
+            }
 
             VkDescriptorImageInfo imageInfoMeR{};
-            imageInfoMeR.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfoMeR.imageView = mat->mTexMetalRoughness->mImageView;
-            imageInfoMeR.sampler = mat->mTexMetalRoughness->mSampler;
+
+            if (mat->mValues.mMetalRoughness_MapORValue.b > 0.0f)
+            {
+                imageInfoMeR.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                imageInfoMeR.imageView = mat->mTextures.mMetalRoughness->mImageView;
+                imageInfoMeR.sampler = mat->mTextures.mMetalRoughness->mSampler;
+            }
+            else
+            {
+                imageInfoMeR.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+                imageInfoMeR.imageView = VK_NULL_HANDLE;
+                imageInfoMeR.sampler = VK_NULL_HANDLE;
+            }
 
             // normal map
             VkDescriptorImageInfo imageInfoNormal{};
-            imageInfoNormal.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfoNormal.imageView = mat->mTexNormal->mImageView;
-            imageInfoNormal.sampler = mat->mTexNormal->mSampler;
+
+            if (mat->mValues.mMetalRoughness_MapORValue.a > 0.0f)
+            {
+                imageInfoNormal.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                imageInfoNormal.imageView = mat->mTextures.mNormal->mImageView;
+                imageInfoNormal.sampler = mat->mTextures.mNormal->mSampler;
+            }
+            else
+            {
+                imageInfoNormal.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+                imageInfoNormal.imageView = VK_NULL_HANDLE;
+                imageInfoNormal.sampler = VK_NULL_HANDLE;
+            }
 
             // IBL environment map
             VkDescriptorImageInfo imageInfoEnv{};

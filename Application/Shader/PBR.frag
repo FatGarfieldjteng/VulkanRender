@@ -13,6 +13,15 @@ layout(binding = 0) uniform UniformBufferObject
 	vec4 cameraPos;
 } WVPCameraPos;
 
+layout(push_constant) uniform MaterialValue {
+	vec4 albedoFactor;
+
+	// metalRoughnessFactor_MapORValue.r is metalRoughnessFactor
+	// metalRoughnessFactor_MapORValue.g > 0, albedo value from map; metalRoughnessFactor_MapORValue.g < 0, albedo value from albedoFactor
+	// metalRoughnessFactor_MapORValue.b > 0, metalRoughness value from map; metalRoughnessFactor_MapORValue.g < 0, metalRoughness value from metalRoughnessFactor
+	// metalRoughnessFactor_MapORValue.a > 0, normal map exist; metalRoughnessFactor_MapORValue.a < 0, no normal map
+	vec4 metalRoughnessFactor_MapORValue;
+} materialValue;
 
 layout(binding = 1) uniform sampler2D texAlbedo;
 layout(binding = 2) uniform sampler2D texMetalRoughness;
