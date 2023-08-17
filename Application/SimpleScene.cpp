@@ -9,6 +9,7 @@
 #include "BoundingBox.h"
 #include "PBRMaterial.h"
 #include "Device.h"
+#include "VulkanHelper.h"
 #include <unordered_map>
 #include <stdexcept>
 #include <array>
@@ -549,66 +550,19 @@ void SimpleScene::createDescriptorSet(int frameInFlight)
 
             std::array<VkWriteDescriptorSet, 7> writeDescriptors;
 
-            writeDescriptors[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            writeDescriptors[0].dstSet = ds;
-            writeDescriptors[0].dstBinding = 0;
-            writeDescriptors[0].dstArrayElement = 0;
-            writeDescriptors[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            writeDescriptors[0].descriptorCount = 1;
-            writeDescriptors[0].pBufferInfo = &bufferInfo;
+            writeDescriptors[0] = VulkanHelper::bufferWriteDescriptorSet(ds, 0, &bufferInfo);
+            writeDescriptors[1] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 1, &imageInfoAlbedo);
+            writeDescriptors[2] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 2, &imageInfoMeR);
+            writeDescriptors[3] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 3, &imageInfoNormal);
+            writeDescriptors[4] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 4, &imageInfoEnv);
+            writeDescriptors[5] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 5, &imageInfoEnvIrr);
+            writeDescriptors[6] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 6, &imageInfoLUT);
+            
 
-            writeDescriptors[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            writeDescriptors[1].dstSet = ds;
-            writeDescriptors[1].dstBinding = 1;
-            writeDescriptors[1].dstArrayElement = 0;
-            writeDescriptors[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            writeDescriptors[1].descriptorCount = 1;
-            writeDescriptors[1].pImageInfo = &imageInfoAlbedo;
+            size_t writeDescriptorCount = writeDescriptors.size();
+            VkWriteDescriptorSet* writeDescriptorData = writeDescriptors.data();
 
-            writeDescriptors[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            writeDescriptors[2].dstSet = ds;
-            writeDescriptors[2].dstBinding = 2;
-            writeDescriptors[2].dstArrayElement = 0;
-            writeDescriptors[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            writeDescriptors[2].descriptorCount = 1;
-            writeDescriptors[2].pImageInfo = &imageInfoMeR;
-
-            writeDescriptors[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            writeDescriptors[3].dstSet = ds;
-            writeDescriptors[3].dstBinding = 3;
-            writeDescriptors[3].dstArrayElement = 0;
-            writeDescriptors[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            writeDescriptors[3].descriptorCount = 1;
-            writeDescriptors[3].pImageInfo = &imageInfoNormal;
-
-            writeDescriptors[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            writeDescriptors[4].dstSet = ds;
-            writeDescriptors[4].dstBinding = 4;
-            writeDescriptors[4].dstArrayElement = 0;
-            writeDescriptors[4].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            writeDescriptors[4].descriptorCount = 1;
-            writeDescriptors[4].pImageInfo = &imageInfoEnv;
-
-            writeDescriptors[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            writeDescriptors[5].dstSet = ds;
-            writeDescriptors[5].dstBinding = 5;
-            writeDescriptors[5].dstArrayElement = 0;
-            writeDescriptors[5].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            writeDescriptors[5].descriptorCount = 1;
-            writeDescriptors[5].pImageInfo = &imageInfoEnvIrr;
-
-            writeDescriptors[6].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            writeDescriptors[6].dstSet = ds;
-            writeDescriptors[6].dstBinding = 6;
-            writeDescriptors[6].dstArrayElement = 0;
-            writeDescriptors[6].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            writeDescriptors[6].descriptorCount = 1;
-            writeDescriptors[6].pImageInfo = &imageInfoLUT;
-
-            size_t descriptors = writeDescriptors.size();
-            VkWriteDescriptorSet* data = writeDescriptors.data();
-
-            vkUpdateDescriptorSets(mDevice->getLogicalDevice(), static_cast<uint32_t>(descriptors), data, 0, nullptr);
+            vkUpdateDescriptorSets(mDevice->getLogicalDevice(), static_cast<uint32_t>(writeDescriptorCount), writeDescriptorData, 0, nullptr);
         }
     }
 }
