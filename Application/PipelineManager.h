@@ -27,6 +27,8 @@ public:
 private:
     void createSimplePipeline();
 
+    void createPBRPipeline();
+
 private:
     
     VkDevice mLogicalDevice = VK_NULL_HANDLE;

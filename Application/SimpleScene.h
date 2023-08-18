@@ -38,6 +38,7 @@ private:
 	void loadObjScene();
 	void loadGLTFScene();
 	void loadIBLTextures();
+	void loadDefaultTexture();
 	void updateBBox();
 	void createUniformBuffers(int frameInFlight = 2);
 	void createPBRDescriptorLayout();
@@ -48,6 +49,7 @@ private:
 private:
 	std::vector<Mesh*> mMeshes;
 	std::vector<Texture*> mTextures;
+	Texture* mDefaultTexture;
 	CubeTexture* mEnvTexture;
 	CubeTexture* mEnvIrrTexture;
 	GLITexture* mLUTTexture;

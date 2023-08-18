@@ -1,5 +1,6 @@
 #include "PipelineManager.h"
-#include "Pipeline.h"
+#include "SimplePipeline.h"
+#include "PBRPipeline.h"
 
 PipelineManager::PipelineManager(VkDevice logicalDevice, Managers* managers)
 	:mLogicalDevice(logicalDevice)
@@ -21,15 +22,26 @@ PipelineManager::~PipelineManager()
 void PipelineManager::createPipelines()
 {
 	createSimplePipeline();
+
+	createPBRPipeline();
 }
 
 void PipelineManager::createSimplePipeline()
 {
-	Pipeline* pipeline = new Pipeline();
+	Pipeline* pipeline = new SimplePipeline(mLogicalDevice, mManagers);
 
-	pipeline->create(mLogicalDevice, mManagers);
+	pipeline->create();
 
-	addPipeline("SimplePipeline", pipeline);
+	addPipeline("Simple", pipeline);
+}
+
+void PipelineManager::createPBRPipeline()
+{
+	Pipeline* pipeline = new PBRPipeline(mLogicalDevice, mManagers);
+
+	pipeline->create();
+
+	addPipeline("PBR", pipeline);
 }
 
 void PipelineManager::addPipeline(const std::string& ID, Pipeline* pipeline)

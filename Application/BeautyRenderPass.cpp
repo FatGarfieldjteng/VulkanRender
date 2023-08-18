@@ -25,6 +25,9 @@ void BeautyRenderPass::buildPass()
     mDevice->createRenderPassFrameBuffer(mRenderPass,
         mDevice->getDepthStencilBuffer()->getView(),
         mFramebuffers);
+
+    // build pipeline
+
 }
 
 void BeautyRenderPass::recordCommand(VkCommandBuffer commandBuffer, size_t frameIndex, Scene* scene)

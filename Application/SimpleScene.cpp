@@ -358,6 +358,8 @@ void SimpleScene::loadGLTFScene()
     
     loadIBLTextures();
 
+    loadDefaultTexture();
+
     updateBBox();
 
     createUniformBuffers();
@@ -384,6 +386,17 @@ void SimpleScene::loadIBLTextures()
     mLUTTexture = new GLITexture(mDevice);
     std::string strLUTTexture = strTextureFileBase + "brdfLUT.ktx";
     mLUTTexture->load(strLUTTexture.c_str());
+}
+
+void SimpleScene::loadDefaultTexture()
+{
+    std::string strTextureFileBase("../../Asset/");
+
+    mDefaultTexture = new Texture(mDevice);
+
+    std::string file = strTextureFileBase + "Default.jpg";
+    mDefaultTexture->load(file.c_str());
+    mTextures.push_back(mDefaultTexture);
 }
 
 void SimpleScene::updateBBox()
@@ -530,9 +543,10 @@ void SimpleScene::createDescriptorSet(int frameInFlight)
             }
             else
             {
-                imageInfoAlbedo.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-                imageInfoAlbedo.imageView = VK_NULL_HANDLE;
-                imageInfoAlbedo.sampler = VK_NULL_HANDLE;
+                // load default image to prevent crash
+                imageInfoAlbedo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                imageInfoAlbedo.imageView = mDefaultTexture->mImageView;
+                imageInfoAlbedo.sampler = mDefaultTexture->mSampler;
             }
 
             VkDescriptorImageInfo imageInfoMeR{};
@@ -545,9 +559,9 @@ void SimpleScene::createDescriptorSet(int frameInFlight)
             }
             else
             {
-                imageInfoMeR.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-                imageInfoMeR.imageView = VK_NULL_HANDLE;
-                imageInfoMeR.sampler = VK_NULL_HANDLE;
+                imageInfoMeR.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                imageInfoMeR.imageView = mDefaultTexture->mImageView;
+                imageInfoMeR.sampler = mDefaultTexture->mSampler;
             }
 
             // normal map
@@ -561,9 +575,9 @@ void SimpleScene::createDescriptorSet(int frameInFlight)
             }
             else
             {
-                imageInfoNormal.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-                imageInfoNormal.imageView = VK_NULL_HANDLE;
-                imageInfoNormal.sampler = VK_NULL_HANDLE;
+                imageInfoNormal.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                imageInfoNormal.imageView = mDefaultTexture->mImageView;
+                imageInfoNormal.sampler = mDefaultTexture->mSampler;
             }
 
             // IBL environment map

@@ -11,6 +11,8 @@ set(HEADER_FILES
 	DepthStencilBuffer.h
 	ShaderManager.h
 	Pipeline.h
+	SimplePipeline.h
+	PBRPipeline.h
 	PassManager.h
 	PipelineManager.h
 	SyncObjectManager.h
@@ -57,6 +59,8 @@ set(SOURCE_FILES
 	SwapChain.cpp
 	ShaderManager.cpp
 	Pipeline.cpp
+	SimplePipeline.cpp
+	PBRPipeline.cpp
 	DepthStencilBuffer.cpp
 	PassManager.cpp
 	PipelineManager.cpp
