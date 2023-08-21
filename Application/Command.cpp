@@ -99,7 +99,7 @@ void Command::recordSimpleRenderingCommandBuffer(VkCommandBuffer commandBuffer,
     renderPassInfo.clearValueCount = 2;
     renderPassInfo.pClearValues = &clearValues[0];
 
-    Pipeline* pipeline = managers->getPipelineManager()->getPipeline("SimplePipeline");
+    Pipeline* pipeline = managers->getPipelineManager()->getPipeline("Simple");
 
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 

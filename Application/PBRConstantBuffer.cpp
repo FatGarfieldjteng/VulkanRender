@@ -15,7 +15,7 @@ PBRConstantBuffer::PBRConstantBuffer(Device* device,
     unsigned int maxFramesInFligt)
     :ConstantBuffer(device, scene, maxFramesInFligt)
 {
-    
+    init();
 }
 
 PBRConstantBuffer::~PBRConstantBuffer()

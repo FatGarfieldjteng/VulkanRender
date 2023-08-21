@@ -23,7 +23,7 @@ void PipelineManager::createPipelines()
 {
 	createSimplePipeline();
 
-	createPBRPipeline();
+	//createPBRPipeline();
 }
 
 void PipelineManager::createSimplePipeline()

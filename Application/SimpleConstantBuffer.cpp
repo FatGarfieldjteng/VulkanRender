@@ -9,7 +9,7 @@ SimpleConstantBuffer::SimpleConstantBuffer(Device* device,
     unsigned int maxFramesInFligt)
     :ConstantBuffer(device, scene, maxFramesInFligt)
 {
-    
+    init();
 }
 
 SimpleConstantBuffer::~SimpleConstantBuffer()

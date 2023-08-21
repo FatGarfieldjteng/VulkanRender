@@ -9,7 +9,7 @@ ConstantBuffer::ConstantBuffer(Device* device,
     mScene(scene),
     mMaxFramesInFligt(maxFramesInFligt)
 {
-    init();
+    
 }
 
 ConstantBuffer::~ConstantBuffer()
@@ -36,8 +36,8 @@ void ConstantBuffer::init()
 {   
     createDescriptorPool();
     createDescriptorSetLayout();
-    createDescriptorSets();
     createUniformBuffers();
+    createDescriptorSets();
 }
 
 void ConstantBuffer::update(uint32_t frameIndex, void* data, size_t size)

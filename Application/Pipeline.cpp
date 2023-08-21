@@ -147,18 +147,11 @@ void Pipeline::setupDepthStencilState(VkPipelineDepthStencilStateCreateInfo& inf
 void Pipeline::setupColorBlendState(VkPipelineColorBlendStateCreateInfo& info, 
     const VkPipelineColorBlendAttachmentState& colorBlendAttachmentState)
 {
-    VkPipelineColorBlendAttachmentState colorBlendAttachment{};
-    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT
-        | VK_COLOR_COMPONENT_G_BIT
-        | VK_COLOR_COMPONENT_B_BIT
-        | VK_COLOR_COMPONENT_A_BIT;
-    colorBlendAttachment.blendEnable = VK_FALSE;
-        
     info.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
     info.logicOpEnable = VK_FALSE;
     info.logicOp = VK_LOGIC_OP_COPY;
     info.attachmentCount = 1;
-    info.pAttachments = &colorBlendAttachment;
+    info.pAttachments = &colorBlendAttachmentState;
     info.blendConstants[0] = 0.0f;
     info.blendConstants[1] = 0.0f;
     info.blendConstants[2] = 0.0f;

@@ -53,8 +53,8 @@ SimpleScene::~SimpleScene()
 
 void SimpleScene::init()
 {
-    //createBox();
-    loadScene();
+    createBox();
+    //loadScene();
 }
 
 void SimpleScene::createBox()
@@ -121,7 +121,7 @@ void SimpleScene::createBox()
     updateBBox();
 
     Texture* texture = new Texture(mDevice);
-    texture->load("E:/PersonalGit/VulkanRender/Asset/viking_room.png");
+    texture->load("D:/tengj/git/VulkanRender/Asset/viking_room.png");
     mTextures.push_back(texture);
 }
 

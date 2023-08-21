@@ -41,30 +41,30 @@ ConstantBufferManager::~ConstantBufferManager()
 void ConstantBufferManager::createConstantBuffers()
 {
 	createSimpleConstantBuffer();
-	createPBRConstantBuffer();
+	//createPBRConstantBuffer();
 }
 
 void ConstantBufferManager::createPBRConstantBuffer()
 {
 	ConstantBuffer* constantBuffer = new PBRConstantBuffer(mDevice,
 		mScene);
-	addConstantBuffer("Simple", constantBuffer);
+	addConstantBuffer("PBR", constantBuffer);
 }
 
 void ConstantBufferManager::createSimpleConstantBuffer()
 {
 	ConstantBuffer* constantBuffer = new SimpleConstantBuffer(mDevice,
 		mScene);
-	addConstantBuffer("PBR", constantBuffer);
+	addConstantBuffer("Simple", constantBuffer);
 }
 
 void ConstantBufferManager::updateWVPConstantBuffer(uint32_t frameIndex, float timePassed, VkExtent2D extent)
 {
-	/*MVPConstantBuffer WVP{};
+	SimpleConstantBuffer::MVPConstantBuffer WVP{};
 	
 	WVP.mvp = mCamera->getViewProj();
 
-	getConstantBuffer("WVP")->update(frameIndex, &WVP, sizeof(WVP));*/
+	getConstantBuffer("Simple")->update(frameIndex, &WVP, sizeof(WVP));
 }
 
 void ConstantBufferManager::addConstantBuffer(const std::string& ID, ConstantBuffer* constantBuffer)
