@@ -33,6 +33,34 @@ public:
 	virtual Mesh* getMesh(int index);
 	virtual int getTextureCount();
 	virtual Texture* getTexture(int index);
+	
+	// get functions
+
+	// get material
+	const std::vector< PBRMaterial*>& getPBRMaterials()
+	{
+		return mPBRMaterials;
+	}
+
+	Texture* getDefaultTexture()
+	{
+		return mDefaultTexture;
+	}
+
+	CubeTexture* getEnvTexture()
+	{
+		return mEnvTexture;
+	}
+
+	CubeTexture* getEnvIrrTexture()
+	{
+		return mEnvIrrTexture;
+	}
+
+	GLITexture* getEnvLUTTexture()
+	{
+		return mLUTTexture;
+	}
 
 private:
 	void loadObjScene();
@@ -40,12 +68,7 @@ private:
 	void loadIBLTextures();
 	void loadDefaultTexture();
 	void updateBBox();
-	void createUniformBuffers(int frameInFlight = 2);
-	void createPBRDescriptorLayout();
-	void createPBRDescriptorPool(int uniformBufferCount, int textureCount, int frameInFlight = 2);
-	void createDescriptorSet(int frameInFlight = 2);
-	
-	
+
 private:
 	std::vector<Mesh*> mMeshes;
 	std::vector<Texture*> mTextures;
