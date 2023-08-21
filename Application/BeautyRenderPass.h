@@ -3,6 +3,7 @@
 
 class Device;
 
+
 class BeautyRenderPass : public RenderPass
 {
 public:
@@ -12,7 +13,10 @@ public:
 
 public:
 	virtual void buildPass();
-	virtual void recordCommand(VkCommandBuffer commandBuffer, size_t frameIndex, Scene* scene = nullptr);
+	virtual void recordCommand(VkCommandBuffer commandBuffer, 
+		Managers* managers,
+		size_t frameIndex, 
+		Scene* scene = nullptr);
 
 private:
 	VkPipeline mPipeline = VK_NULL_HANDLE;

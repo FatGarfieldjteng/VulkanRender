@@ -5,6 +5,9 @@
 #include "Mesh.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "Managers.h"
+#include "PipelineManager.h"
+#include "Pipeline.h"
 
 BeautyRenderPass::BeautyRenderPass(Device* device, 
     PassInfo passinfo)
@@ -25,12 +28,12 @@ void BeautyRenderPass::buildPass()
     mDevice->createRenderPassFrameBuffer(mRenderPass,
         mDevice->getDepthStencilBuffer()->getView(),
         mFramebuffers);
-
-    // build pipeline
-
 }
 
-void BeautyRenderPass::recordCommand(VkCommandBuffer commandBuffer, size_t frameIndex, Scene* scene)
+void BeautyRenderPass::recordCommand(VkCommandBuffer commandBuffer,
+    Managers* managers,
+    size_t frameIndex, 
+    Scene* scene)
 {
 	VkExtent2D extent = mDevice->getSwapChain()->getExtent();
 
@@ -44,7 +47,10 @@ void BeautyRenderPass::recordCommand(VkCommandBuffer commandBuffer, size_t frame
 
 	vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline);
+    PipelineManager* pipelineManager = managers->getPipelineManager();
+  	vkCmdBindPipeline(commandBuffer,
+       VK_PIPELINE_BIND_POINT_GRAPHICS, 
+       pipelineManager->getPipeline("PBR")->getPipeline());
 
     int meshCount = scene->getMeshCount();
 
