@@ -39,6 +39,11 @@ public:
 		return mBBox;
 	}
 
+	unsigned int getMaterialIndex()
+	{
+		return mMaterialIndex;
+	}
+
 protected:
 	Device* mDevice = nullptr;
 	BoundingBox* mBBox = nullptr;

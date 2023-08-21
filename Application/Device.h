@@ -65,6 +65,11 @@ public:
 		return mCamera;
 	}
 
+	FrameBuffer* getFrameBuffer()
+	{
+		return mFrameBuffer;
+	}
+
 	void createBuffer(VkDeviceSize size, 
 		VkBufferUsageFlags usage, 
 		VkMemoryPropertyFlags properties, 

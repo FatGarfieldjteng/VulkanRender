@@ -117,8 +117,8 @@ void PBRConstantBuffer::createDescriptorSets()
     {
         for (int materialIndex = 0; materialIndex < materialCount; ++materialIndex)
         {
-            int descriptorIndex = frameIndex * materialCount + materialIndex;
-            VkDescriptorSet ds = mDescriptorSets[descriptorIndex];
+            int descriptorSetIndex = frameIndex * materialCount + materialIndex;
+            VkDescriptorSet ds = mDescriptorSets[descriptorSetIndex];
 
             // view projection matrix and camera position uniform buffer
             VkDescriptorBufferInfo bufferInfo{};

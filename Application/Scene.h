@@ -19,6 +19,7 @@ public:
 	virtual void init() = 0;
 	virtual void loadScene() = 0;
 	virtual int getMeshCount() = 0;
+	virtual int getMaterialCount() = 0;
 	virtual Mesh* getMesh(int index) = 0;
 	virtual int getTextureCount() = 0;
 	virtual Texture* getTexture(int index) = 0;

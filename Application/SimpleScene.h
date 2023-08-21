@@ -24,6 +24,7 @@ public:
 	virtual void createBox();
 	virtual void loadScene();
 	virtual int getMeshCount();
+	virtual int getMaterialCount();
 	virtual Mesh* getMesh(int index);
 	virtual int getTextureCount();
 	virtual Texture* getTexture(int index);

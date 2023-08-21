@@ -25,7 +25,8 @@ void FinalRenderPass::buildPass()
 
 void FinalRenderPass::recordCommand(VkCommandBuffer commandBuffer, 
 	Managers* managers, 
-	size_t frameIndex, 
+	size_t imageIndex,
+	size_t frameIndex,
 	Scene* scene)
 {
 	VkExtent2D extent = mDevice->getSwapChain()->getExtent();

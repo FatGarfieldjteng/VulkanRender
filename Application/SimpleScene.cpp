@@ -53,8 +53,8 @@ SimpleScene::~SimpleScene()
 
 void SimpleScene::init()
 {
-    createBox();
-    //loadScene();
+    //createBox();
+    loadScene();
 }
 
 void SimpleScene::createBox()
@@ -254,6 +254,8 @@ void SimpleScene::loadGLTFScene()
                 const aiVector3D t = originalMesh->mTextureCoords[0][vertexIndex];
                 vertex.texCoord = {t.x, 1.0f - t.y};
             }
+
+            vertices.push_back(vertex);
         }
 
         for (unsigned int faceIndex = 0; faceIndex < originalMesh->mNumFaces; ++faceIndex)
@@ -402,6 +404,11 @@ void SimpleScene::updateBBox()
 int SimpleScene::getMeshCount()
 {
     return static_cast<int>(mMeshes.size());
+}
+
+int SimpleScene::getMaterialCount()
+{
+    return static_cast<int>(mPBRMaterials.size());
 }
 
 Mesh* SimpleScene::getMesh(int index)

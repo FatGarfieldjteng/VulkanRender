@@ -15,10 +15,7 @@ public:
 	virtual void buildPass();
 	virtual void recordCommand(VkCommandBuffer commandBuffer, 
 		Managers* managers,
-		size_t frameIndex, 
+		size_t imageIndex,
+		size_t frameIndex,
 		Scene* scene = nullptr);
-
-private:
-	VkPipeline mPipeline = VK_NULL_HANDLE;
-	VkPipelineLayout mPipelineLayout = VK_NULL_HANDLE;
 };

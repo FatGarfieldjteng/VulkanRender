@@ -272,11 +272,6 @@ void Device::drawPBRFrame()
     VkSemaphore backBufferAvailableSemaphore = mSyncObjectManager->getBackBufferReadySemaphore(mFrameIndex);
     vkAcquireNextImageKHR(mLogicalDevice, mSwapChain->get(), UINT64_MAX, backBufferAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
-    // update WVP matrix constant buffer
-    static auto startTime = std::chrono::high_resolution_clock::now();
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
     ConstantBufferManager* constantBufferManager = mManagers->getConstantBufferManager();
     constantBufferManager->updateWVPCameraPosConstantBuffer(mFrameIndex);
 
@@ -293,24 +288,16 @@ void Device::drawPBRFrame()
 
     RenderPassManager* renderPassManager = mManagers->getRenderPassManager();
 
-    RenderPass * clearPass = renderPassManager->getPass("clear");
-    clearPass->recordCommand(commandBuffer,nullptr, imageIndex);
+    /*RenderPass * clearPass = renderPassManager->getPass("clear");
+    clearPass->recordCommand(commandBuffer,nullptr, mFrameIndex);*/
 
     RenderPass* beautyPass = renderPassManager->getPass("beauty");
-    beautyPass->recordCommand(commandBuffer, mManagers, imageIndex, mScene);
+    beautyPass->recordCommand(commandBuffer, mManagers, imageIndex, mFrameIndex, mScene);
     
-    RenderPass* finalPass = renderPassManager->getPass("final");
-    finalPass->recordCommand(commandBuffer, nullptr, imageIndex);
+    /*RenderPass* finalPass = renderPassManager->getPass("final");
+    finalPass->recordCommand(commandBuffer, nullptr, mFrameIndex);*/
 
     vkEndCommandBuffer(commandBuffer);
-
-   /* mCommand->recordPBRRenderingCommandBuffer(commandBuffer,
-        mScene,
-        mSwapChain,
-        mFrameBuffer,
-        mManagers,
-        imageIndex,
-        mFrameIndex);*/
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
