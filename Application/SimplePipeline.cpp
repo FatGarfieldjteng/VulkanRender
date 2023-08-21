@@ -18,8 +18,6 @@ SimplePipeline::SimplePipeline(VkDevice logicalDevice, Managers* managers)
 
 SimplePipeline::~SimplePipeline()
 {
-    vkDestroyPipeline(mLogicalDevice, mPipeline, nullptr);
-    vkDestroyPipelineLayout(mLogicalDevice, mPipelineLayout, nullptr);
 }
 
 void SimplePipeline::setupShaderStage(std::vector<VkPipelineShaderStageCreateInfo>& infos)
