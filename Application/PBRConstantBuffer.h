@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <vector>
-#include <ConstantBuffer>
+#include "ConstantBuffer.h"
 
 class Device;
 
@@ -12,20 +12,15 @@ class PBRConstantBuffer: public ConstantBuffer
 {
 public:
 	PBRConstantBuffer(Device *device,
+		Scene* scene,
 		unsigned int maxFramesInFligt = 2);
 	virtual ~PBRConstantBuffer();
 
 public:
-	virtual void init(VkDeviceSize bufferSize);
-
 	void update(uint32_t frameIndex, void* data, size_t size);
-
-	Device* mDevice = nullptr;
-	unsigned int mMaxFramesInFligt = 2;
-	
-	VkDescriptorSetLayout mDescriptorSetLayout = VK_NULL_HANDLE;
-
-	std::vector<VkBuffer> mUniformBuffers;
-	std::vector<VkDeviceMemory> mUniformBuffersMemory;
-	std::vector<void*> mMappedData;
+protected:
+	virtual void createDescriptorPool();
+	virtual void createDescriptorSetLayout();
+	virtual void createDescriptorSets();
+	virtual void createUniformBuffers();
 };

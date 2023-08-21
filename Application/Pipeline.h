@@ -32,7 +32,7 @@ protected:
 	virtual void setupDynamicState(VkPipelineDynamicStateCreateInfo& info, 
 		const std::vector<VkDynamicState>& dynamicStates);
 	virtual void setupPipelineLayout(VkPipelineLayoutCreateInfo& info) = 0;
-	virtual VkRenderPass getRednerPass() = 0;
+	virtual VkRenderPass getRenderPass() = 0;
 protected:
 
 	VkDevice mLogicalDevice = VK_NULL_HANDLE;

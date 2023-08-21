@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <vector>
-#include <ConstantBuffer>
+#include "ConstantBuffer.h"
 
 class Device;
 
@@ -12,20 +12,23 @@ class SimpleConstantBuffer: public ConstantBuffer
 {
 public:
 	SimpleConstantBuffer(Device *device,
+		Scene* scene,
 		unsigned int maxFramesInFligt = 2);
 	virtual ~SimpleConstantBuffer();
 
-public:
-	virtual void init(VkDeviceSize bufferSize);
+	// WVP constant buffer
+	struct MVPConstantBuffer
+	{
+		glm::mat4 mvp;
+	};
 
+public:
+	
 	void update(uint32_t frameIndex, void* data, size_t size);
 
-	Device* mDevice = nullptr;
-	unsigned int mMaxFramesInFligt = 2;
-	
-	VkDescriptorSetLayout mDescriptorSetLayout = VK_NULL_HANDLE;
-
-	std::vector<VkBuffer> mUniformBuffers;
-	std::vector<VkDeviceMemory> mUniformBuffersMemory;
-	std::vector<void*> mMappedData;
+protected:
+	virtual void createDescriptorPool();
+	virtual void createDescriptorSetLayout();
+	virtual void createDescriptorSets();
+	virtual void createUniformBuffers();
 };

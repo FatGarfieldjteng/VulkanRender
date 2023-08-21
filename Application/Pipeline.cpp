@@ -82,7 +82,7 @@ void Pipeline::create()
     pipelineInfo.pColorBlendState = &colorBlending;
     pipelineInfo.pDynamicState = &dynamicState;
     pipelineInfo.layout = mPipelineLayout;
-    pipelineInfo.renderPass = getRednerPass();
+    pipelineInfo.renderPass = getRenderPass();
     pipelineInfo.subpass = 0;
     pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 

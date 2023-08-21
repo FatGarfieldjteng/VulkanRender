@@ -17,5 +17,5 @@ public:
 	virtual void setupShaderStage(std::vector<VkPipelineShaderStageCreateInfo>& infos);
 	virtual void setupVertexInputState(VkPipelineVertexInputStateCreateInfo& info);
 	virtual void setupPipelineLayout(VkPipelineLayoutCreateInfo& info);
-	virtual VkRenderPass getRednerPass();
+	virtual VkRenderPass getRenderPass();
 };

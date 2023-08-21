@@ -49,7 +49,7 @@ void SimplePipeline::setupPipelineLayout(VkPipelineLayoutCreateInfo& info)
 
     info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     info.setLayoutCount = 1;
-    info.pSetLayouts = &(constantBufferManager->getConstantBuffer("WVP")->mDescriptorSetLayout);
+    info.pSetLayouts = constantBufferManager->getConstantBuffer("Simple")->getDescriptorSetLayout();
     info.pushConstantRangeCount = 0;
 
     if (vkCreatePipelineLayout(mLogicalDevice,
@@ -61,7 +61,7 @@ void SimplePipeline::setupPipelineLayout(VkPipelineLayoutCreateInfo& info)
     }
 }
 
-VkRenderPass SimplePipeline::getRednerPass()
+VkRenderPass SimplePipeline::getRenderPass()
 {
     PassManager* passManager = mManagers->getPassManager();
     return passManager->getPass("SimplePass");

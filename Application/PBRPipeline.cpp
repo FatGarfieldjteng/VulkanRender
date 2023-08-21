@@ -6,8 +6,6 @@
 #include "ConstantBufferManager.h"
 #include "ConstantBuffer.h"
 #include "PBRVertexFormat.h"
-
-
 #include <vector>
 #include <stdexcept>
 
@@ -48,7 +46,7 @@ void PBRPipeline::setupPipelineLayout(VkPipelineLayoutCreateInfo& info)
     
     info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     info.setLayoutCount = 1;
-    info.pSetLayouts = &(constantBufferManager->getConstantBuffer("WVP")->mDescriptorSetLayout);
+    info.pSetLayouts = constantBufferManager->getConstantBuffer("PBR")->getDescriptorSetLayout();
     info.pushConstantRangeCount = 0;
 
     if (vkCreatePipelineLayout(mLogicalDevice,
@@ -60,7 +58,7 @@ void PBRPipeline::setupPipelineLayout(VkPipelineLayoutCreateInfo& info)
     }
 }
 
-VkRenderPass PBRPipeline::getRednerPass()
+VkRenderPass PBRPipeline::getRenderPass()
 {
     PassManager* passManager = mManagers->getPassManager();
     return passManager->getPass("SimplePass");

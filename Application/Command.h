@@ -21,11 +21,18 @@ public:
 
 public:
 	void create();
-	void recordCommandBuffer(VkCommandBuffer commandBuffer, 
+	void recordSimpleRenderingCommandBuffer(VkCommandBuffer commandBuffer, 
 		Scene* scene,
 		SwapChain* swapChain,
 		FrameBuffer* frameBuffer,
 		Managers *managers,
+		size_t imageIndex,
+		size_t frameIndex);
+	void recordPBRRenderingCommandBuffer(VkCommandBuffer commandBuffer,
+		Scene* scene,
+		SwapChain* swapChain,
+		FrameBuffer* frameBuffer,
+		Managers* managers,
 		size_t imageIndex,
 		size_t frameIndex);
 

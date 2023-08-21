@@ -217,7 +217,7 @@ void Device::drawFrame()
     constantBufferManager->updateWVPConstantBuffer(mFrameIndex, time, mSwapChain->getExtent());
 
     vkResetCommandBuffer(commandBuffer, 0);
-    mCommand->recordCommandBuffer(commandBuffer, 
+    mCommand->recordSimpleRenderingCommandBuffer(commandBuffer, 
         mScene, 
         mSwapChain, 
         mFrameBuffer, 
