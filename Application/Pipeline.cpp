@@ -47,17 +47,22 @@ void Pipeline::create()
 
     // blend
     VkPipelineColorBlendStateCreateInfo colorBlending{};
-    setupColorBlendState(colorBlending);
+    VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT
+        | VK_COLOR_COMPONENT_G_BIT
+        | VK_COLOR_COMPONENT_B_BIT
+        | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.blendEnable = VK_FALSE;
+    setupColorBlendState(colorBlending, colorBlendAttachment);
 
     // dynamic state, which can be set at rendering dynamically without recreate Pipeline
+    VkPipelineDynamicStateCreateInfo dynamicState{};
     std::vector<VkDynamicState> dynamicStates =
     {
         VK_DYNAMIC_STATE_VIEWPORT,
         VK_DYNAMIC_STATE_SCISSOR
     };
-
-    VkPipelineDynamicStateCreateInfo dynamicState{};
-    setupDynamicState(dynamicState);
+    setupDynamicState(dynamicState, dynamicStates);
 
     // root signature
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
@@ -139,7 +144,8 @@ void Pipeline::setupDepthStencilState(VkPipelineDepthStencilStateCreateInfo& inf
     info.stencilTestEnable = VK_FALSE;
 }
 
-void Pipeline::setupColorBlendState(VkPipelineColorBlendStateCreateInfo& info)
+void Pipeline::setupColorBlendState(VkPipelineColorBlendStateCreateInfo& info, 
+    const VkPipelineColorBlendAttachmentState& colorBlendAttachmentState)
 {
     VkPipelineColorBlendAttachmentState colorBlendAttachment{};
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT
@@ -159,14 +165,9 @@ void Pipeline::setupColorBlendState(VkPipelineColorBlendStateCreateInfo& info)
     info.blendConstants[3] = 0.0f;
 }
 
-void Pipeline::setupDynamicState(VkPipelineDynamicStateCreateInfo& info)
+void Pipeline::setupDynamicState(VkPipelineDynamicStateCreateInfo& info,
+    const std::vector<VkDynamicState>& dynamicStates)
 {
-    std::vector<VkDynamicState> dynamicStates =
-    {
-        VK_DYNAMIC_STATE_VIEWPORT,
-        VK_DYNAMIC_STATE_SCISSOR
-    };
-        
     info.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
     info.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
     info.pDynamicStates = dynamicStates.data();

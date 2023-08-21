@@ -27,8 +27,10 @@ protected:
 	virtual void setupRasterizationState(VkPipelineRasterizationStateCreateInfo& info);
 	virtual void setupMultisampleState(VkPipelineMultisampleStateCreateInfo& info);
 	virtual void setupDepthStencilState(VkPipelineDepthStencilStateCreateInfo& info);
-	virtual void setupColorBlendState(VkPipelineColorBlendStateCreateInfo& info);
-	virtual void setupDynamicState(VkPipelineDynamicStateCreateInfo& info);
+	virtual void setupColorBlendState(VkPipelineColorBlendStateCreateInfo& info, 
+		const VkPipelineColorBlendAttachmentState& colorBlendAttachmentState);
+	virtual void setupDynamicState(VkPipelineDynamicStateCreateInfo& info, 
+		const std::vector<VkDynamicState>& dynamicStates);
 	virtual void setupPipelineLayout(VkPipelineLayoutCreateInfo& info) = 0;
 	virtual VkRenderPass getRednerPass() = 0;
 protected:
