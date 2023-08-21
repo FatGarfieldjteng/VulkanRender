@@ -73,6 +73,6 @@ void Managers::createManagers()
 	// pipelinemanager
 	mPipelineManager = new PipelineManager(mDevice->getLogicalDevice(), this);
 
-	//renderpassmanager
+	//renderpassmanager, manage Vulkan renderpass
 	mRenderPassManager = new RenderPassManager(mDevice);
 }

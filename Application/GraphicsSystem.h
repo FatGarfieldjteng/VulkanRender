@@ -54,8 +54,6 @@ private:
 
     Device* mDevice = nullptr;
 
-    
-
 #ifdef NDEBUG
     const bool mEnableValidationLayers = false;
 #else

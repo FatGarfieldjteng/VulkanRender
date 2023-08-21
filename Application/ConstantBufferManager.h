@@ -39,6 +39,10 @@ public:
     std::vector<VkDescriptorSet>& getDescriptorSets(const std::string& ID);
    
 private:
+    void createSimpleUniform();
+
+    void createPBRUniform();
+
     void createWVPConstantBuffer();
 
     void createWVPDescriptorSets();

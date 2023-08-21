@@ -66,11 +66,24 @@ void ConstantBufferManager::createDescriptorPool()
 
 void ConstantBufferManager::createConstantBuffers()
 {
+	createSimpleUniform();
+	createPBRUniform();
+}
+
+
+void ConstantBufferManager::createPBRUniform()
+{
+
+}
+
+void ConstantBufferManager::createSimpleUniform()
+{
 	// WVP
 	createWVPConstantBuffer();
 
 	createWVPDescriptorSets();
 }
+
 
 void ConstantBufferManager::createWVPConstantBuffer()
 {

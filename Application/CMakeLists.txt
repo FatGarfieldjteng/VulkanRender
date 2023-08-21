@@ -18,6 +18,8 @@ set(HEADER_FILES
 	SyncObjectManager.h
 	ConstantBufferManager.h
 	ConstantBuffer.h
+	SimpleConstantBuffer.h
+	PBRConstantBuffer.h
 	Texture.h
 	CubeTexture.h
 	GLITexture.h
@@ -67,6 +69,8 @@ set(SOURCE_FILES
 	SyncObjectManager.cpp
 	ConstantBufferManager.cpp
 	ConstantBuffer.cpp
+	SimpleConstantBuffer.cpp
+	PBRConstantBuffer.cpp
 	Texture.cpp
 	CubeTexture.cpp
 	GLITexture.cpp
