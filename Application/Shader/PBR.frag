@@ -249,6 +249,7 @@ vec3 perturbNormal(vec3 n, vec3 v, vec3 normalSample, vec2 uv)
 
 void main()
 {
+/*
 	vec4 Kd  = texture(texAlbedo, inTexCoord);
 	vec2 MeR = texture(texMetalRoughness, inTexCoord).yz;
 
@@ -270,4 +271,7 @@ void main()
 	color += calculatePBRLightContribution( pbrInputs, normalize(vec3(-1.0, -1.0, -1.0)), vec3(1.0) );
 	
 	out_FragColor = vec4(color, 1.0);
+	*/
+
+	out_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }

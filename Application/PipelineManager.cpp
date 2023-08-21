@@ -1,9 +1,13 @@
 #include "PipelineManager.h"
 #include "SimplePipeline.h"
 #include "PBRPipeline.h"
+#include "Scene.h"
 
-PipelineManager::PipelineManager(VkDevice logicalDevice, Managers* managers)
+PipelineManager::PipelineManager(VkDevice logicalDevice, 
+	Scene* scene,
+	Managers* managers)
 	:mLogicalDevice(logicalDevice)
+	, mScene(scene)
 	, mManagers(managers)
 {
 	createPipelines();
@@ -21,14 +25,14 @@ PipelineManager::~PipelineManager()
 
 void PipelineManager::createPipelines()
 {
-	createSimplePipeline();
+	//createSimplePipeline();
 
-	//createPBRPipeline();
+	createPBRPipeline();
 }
 
 void PipelineManager::createSimplePipeline()
 {
-	Pipeline* pipeline = new SimplePipeline(mLogicalDevice, mManagers);
+	Pipeline* pipeline = new SimplePipeline(mLogicalDevice, mScene, mManagers);
 
 	pipeline->create();
 
@@ -37,7 +41,7 @@ void PipelineManager::createSimplePipeline()
 
 void PipelineManager::createPBRPipeline()
 {
-	Pipeline* pipeline = new PBRPipeline(mLogicalDevice, mManagers);
+	Pipeline* pipeline = new PBRPipeline(mLogicalDevice, mScene, mManagers);
 
 	pipeline->create();
 

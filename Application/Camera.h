@@ -42,6 +42,11 @@ public:
 		return mViewProj;
 	}
 
+	glm::vec4 getCameraPos()
+	{
+		return glm::vec4(mEye, 1.0f);
+	}
+
 private:
 	
 	// initial parameter

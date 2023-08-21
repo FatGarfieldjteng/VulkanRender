@@ -16,6 +16,12 @@ public:
 		unsigned int maxFramesInFligt = 2);
 	virtual ~PBRConstantBuffer();
 
+	struct MVPCameraPosConstantBuffer
+	{
+		glm::mat4 mvp;
+		glm::vec4 cameraPos;
+	};
+
 public:
 	void update(uint32_t frameIndex, void* data, size_t size);
 protected:

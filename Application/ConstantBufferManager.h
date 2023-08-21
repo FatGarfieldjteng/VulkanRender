@@ -26,7 +26,9 @@ public:
 public:
     void createConstantBuffers();
 
-    void updateWVPConstantBuffer(uint32_t frameIndex, float timePassed, VkExtent2D extent);
+    void updateWVPConstantBuffer(uint32_t frameIndex);
+
+    void updateWVPCameraPosConstantBuffer(uint32_t frameIndex);
 
     ConstantBuffer* getConstantBuffer(const std::string& ID);
    

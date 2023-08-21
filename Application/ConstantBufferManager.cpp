@@ -40,8 +40,8 @@ ConstantBufferManager::~ConstantBufferManager()
 
 void ConstantBufferManager::createConstantBuffers()
 {
-	createSimpleConstantBuffer();
-	//createPBRConstantBuffer();
+	//createSimpleConstantBuffer();
+	createPBRConstantBuffer();
 }
 
 void ConstantBufferManager::createPBRConstantBuffer()
@@ -58,13 +58,23 @@ void ConstantBufferManager::createSimpleConstantBuffer()
 	addConstantBuffer("Simple", constantBuffer);
 }
 
-void ConstantBufferManager::updateWVPConstantBuffer(uint32_t frameIndex, float timePassed, VkExtent2D extent)
+void ConstantBufferManager::updateWVPConstantBuffer(uint32_t frameIndex)
 {
 	SimpleConstantBuffer::MVPConstantBuffer WVP{};
 	
 	WVP.mvp = mCamera->getViewProj();
 
 	getConstantBuffer("Simple")->update(frameIndex, &WVP, sizeof(WVP));
+}
+
+void ConstantBufferManager::updateWVPCameraPosConstantBuffer(uint32_t frameIndex)
+{
+	PBRConstantBuffer::MVPCameraPosConstantBuffer WVPCameraPos{};
+
+	WVPCameraPos.mvp = mCamera->getViewProj();
+	WVPCameraPos.cameraPos = mCamera->getCameraPos();
+
+	getConstantBuffer("PBR")->update(frameIndex, &WVPCameraPos, sizeof(WVPCameraPos));
 }
 
 void ConstantBufferManager::addConstantBuffer(const std::string& ID, ConstantBuffer* constantBuffer)

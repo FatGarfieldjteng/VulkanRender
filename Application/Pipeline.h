@@ -5,12 +5,15 @@
 #include <vector>
 
 class Managers;
+class Scene;
 
 class Pipeline
 {
 public:
 	
-	Pipeline(VkDevice logicalDevice, Managers* managers);
+	Pipeline(VkDevice logicalDevice, 
+		Scene* scene,
+		Managers* managers);
 	virtual ~Pipeline();
 
 public:
@@ -36,6 +39,7 @@ protected:
 protected:
 
 	VkDevice mLogicalDevice = VK_NULL_HANDLE;
+	Scene* mScene = nullptr;
 	Managers* mManagers = nullptr;
 	VkPipelineLayout mPipelineLayout = VK_NULL_HANDLE;
 	VkPipeline mPipeline = VK_NULL_HANDLE;

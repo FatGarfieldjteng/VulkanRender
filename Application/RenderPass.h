@@ -7,6 +7,8 @@
 
 class Device;
 class Scene;
+class PassManager;
+class Managers;
 
 class RenderPass
 {
@@ -24,7 +26,10 @@ public:
 public:
 	
 	virtual void buildPass() = 0;
-	virtual void recordCommand(VkCommandBuffer commandBuffer, size_t frameIndex, Scene* scene = nullptr) = 0;
+	virtual void recordCommand(VkCommandBuffer commandBuffer, 
+		Managers* managers, 
+		size_t frameIndex, 
+		Scene* scene = nullptr) = 0;
 
 protected:
 	Device* mDevice = nullptr;

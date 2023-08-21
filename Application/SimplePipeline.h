@@ -10,7 +10,9 @@ class SimplePipeline : public Pipeline
 {
 public:
 	
-	SimplePipeline(VkDevice logicalDevice, Managers* managers);
+	SimplePipeline(VkDevice logicalDevice, 
+		Scene* scene, 
+		Managers* managers);
 	virtual ~SimplePipeline();
 
 protected:

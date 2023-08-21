@@ -131,7 +131,7 @@ void GraphicsSystem::cleanup()
 
 void GraphicsSystem::drawFrame()
 {
-    mDevice->drawFrame();
+    mDevice->drawPBRFrame();
 }
 
 

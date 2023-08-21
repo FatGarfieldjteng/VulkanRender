@@ -10,8 +10,10 @@
 #include <vector>
 #include <stdexcept>
 
-SimplePipeline::SimplePipeline(VkDevice logicalDevice, Managers* managers)
-    :Pipeline(logicalDevice, managers)
+SimplePipeline::SimplePipeline(VkDevice logicalDevice, 
+    Scene* scene, 
+    Managers* managers)
+    :Pipeline(logicalDevice, scene, managers)
 {
 
 }

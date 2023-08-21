@@ -23,7 +23,10 @@ void ClearRenderPass::buildPass()
         mFramebuffers);
 }
 
-void ClearRenderPass::recordCommand(VkCommandBuffer commandBuffer, size_t frameIndex, Scene* scene)
+void ClearRenderPass::recordCommand(VkCommandBuffer commandBuffer, 
+	Managers* managers, 
+	size_t frameIndex, 
+	Scene* scene)
 {
 	VkClearValue clearValues[2];
 	clearValues[0].color = { {1.0f, 1.0f, 1.0f, 1.0f} };

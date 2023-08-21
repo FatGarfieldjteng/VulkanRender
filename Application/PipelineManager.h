@@ -8,12 +8,15 @@
 
 class Pipeline;
 class Managers;
+class Scene;
 
 class PipelineManager
 {
 public:
 
-    PipelineManager(VkDevice logicalDevice, Managers* managers);
+    PipelineManager(VkDevice logicalDevice, 
+        Scene* scene, 
+        Managers* managers);
 
     ~PipelineManager();
 
@@ -33,5 +36,6 @@ private:
     
     VkDevice mLogicalDevice = VK_NULL_HANDLE;
     Managers* mManagers = nullptr;
+    Scene* mScene = nullptr;
     std::map<std::string, Pipeline*> mIDToPipeline;
 };

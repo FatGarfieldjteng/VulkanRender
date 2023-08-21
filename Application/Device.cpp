@@ -209,12 +209,9 @@ void Device::drawFrame()
     vkAcquireNextImageKHR(mLogicalDevice, mSwapChain->get(), UINT64_MAX, backBufferAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
     // update WVP matrix constant buffer
-    static auto startTime = std::chrono::high_resolution_clock::now();
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
     ConstantBufferManager* constantBufferManager = mManagers->getConstantBufferManager();
-    constantBufferManager->updateWVPConstantBuffer(mFrameIndex, time, mSwapChain->getExtent());
+    constantBufferManager->updateWVPConstantBuffer(mFrameIndex);
 
     vkResetCommandBuffer(commandBuffer, 0);
     mCommand->recordSimpleRenderingCommandBuffer(commandBuffer, 
@@ -262,7 +259,7 @@ void Device::drawFrame()
     mFrameIndex = (mFrameIndex + 1) % mMaxFramesInFligt;
 }
 
-void Device::drawFrame1()
+void Device::drawPBRFrame()
 {
     VkFence fence = mSyncObjectManager->geFrameFence(mFrameIndex);
     VkCommandBuffer commandBuffer = mCommand->get(mFrameIndex);
@@ -281,7 +278,7 @@ void Device::drawFrame1()
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
     ConstantBufferManager* constantBufferManager = mManagers->getConstantBufferManager();
-    constantBufferManager->updateWVPConstantBuffer(mFrameIndex, time, mSwapChain->getExtent());
+    constantBufferManager->updateWVPCameraPosConstantBuffer(mFrameIndex);
 
     vkResetCommandBuffer(commandBuffer, 0);
 
@@ -297,17 +294,17 @@ void Device::drawFrame1()
     RenderPassManager* renderPassManager = mManagers->getRenderPassManager();
 
     RenderPass * clearPass = renderPassManager->getPass("clear");
-    clearPass->recordCommand(commandBuffer, imageIndex);
+    clearPass->recordCommand(commandBuffer,nullptr, imageIndex);
 
     RenderPass* beautyPass = renderPassManager->getPass("beauty");
-    beautyPass->recordCommand(commandBuffer, imageIndex, mScene);
+    beautyPass->recordCommand(commandBuffer, mManagers, imageIndex, mScene);
     
     RenderPass* finalPass = renderPassManager->getPass("final");
-    finalPass->recordCommand(commandBuffer, imageIndex);
+    finalPass->recordCommand(commandBuffer, nullptr, imageIndex);
 
     vkEndCommandBuffer(commandBuffer);
 
-    /*mCommand->recordCommandBuffer(commandBuffer,
+   /* mCommand->recordPBRRenderingCommandBuffer(commandBuffer,
         mScene,
         mSwapChain,
         mFrameBuffer,

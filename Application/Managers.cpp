@@ -71,7 +71,7 @@ void Managers::createManagers()
 	mConstantBufferManager = new ConstantBufferManager(mDevice, mCamera, mScene);
 
 	// pipelinemanager
-	mPipelineManager = new PipelineManager(mDevice->getLogicalDevice(), this);
+	mPipelineManager = new PipelineManager(mDevice->getLogicalDevice(), mScene, this);
 
 	//renderpassmanager, manage Vulkan renderpass
 	mRenderPassManager = new RenderPassManager(mDevice);

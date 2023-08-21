@@ -3,8 +3,11 @@
 #include <vector>
 #include <stdexcept>
 
-Pipeline::Pipeline(VkDevice logicalDevice, Managers* managers)
+Pipeline::Pipeline(VkDevice logicalDevice, 
+    Scene* scene,
+    Managers* managers)
     :mLogicalDevice(logicalDevice),
+    mScene(scene),
     mManagers(managers)
 {
 

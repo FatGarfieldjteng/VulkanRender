@@ -13,12 +13,6 @@ class PBRMaterial;
 class CubeTexture;
 class GLITexture;
 
-struct MVPCameraPosConstantBuffer
-{
-	glm::mat4 mvp;
-	glm::vec4 cameraPos;
-};
-
 class SimpleScene : public Scene
 {
 public:
