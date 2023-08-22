@@ -60,7 +60,7 @@ private:
     const bool mEnableValidationLayers = true;
 #endif
 
-    const uint32_t WIDTH = 1024;
-    const uint32_t HEIGHT = 768;
+    const uint32_t WIDTH = 2048;
+    const uint32_t HEIGHT = 1536;
     GLFWwindow* mWindow = nullptr;
 };

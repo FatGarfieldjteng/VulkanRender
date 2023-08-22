@@ -211,7 +211,7 @@ void SimpleScene::loadObjScene()
 
 void SimpleScene::loadGLTFScene()
 {
-    const aiScene* scene = aiImportFile("../../Asset/ABeautifulGame/glTF/ABeautifulGame.gltf", aiProcess_Triangulate);
+    const aiScene* scene = aiImportFile("../../Asset/ABeautifulGame/glTF/ABeautifulGame.gltf", aiProcess_Triangulate| aiProcess_PreTransformVertices);
 
     if (!scene || !scene->HasMeshes())
     {
@@ -221,7 +221,7 @@ void SimpleScene::loadGLTFScene()
     for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
     {
         aiMesh* originalMesh = scene->mMeshes[meshIndex];
-
+        
         if (!originalMesh->HasPositions() ||
             !originalMesh->HasFaces() )
         {
