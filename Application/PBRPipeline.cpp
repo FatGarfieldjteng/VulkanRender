@@ -7,6 +7,7 @@
 #include "ConstantBuffer.h"
 #include "PBRVertexFormat.h"
 #include "SimpleScene.h"
+#include "PBRMaterial.h"
 #include <vector>
 #include <stdexcept>
 
@@ -53,22 +54,12 @@ void PBRPipeline::setupPipelineLayout(VkPipelineLayoutCreateInfo& info)
     // setup push constants
     SimpleScene* simpleScene = dynamic_cast<SimpleScene*>(mScene);
 
-    int meshCount = simpleScene->getMeshCount();
-
-    mMaterialPushConstants.resize(meshCount);
-
-    for (int materialIndex = 0; materialIndex < meshCount; ++materialIndex)
-    {
-        mMaterialPushConstants[materialIndex].albedoFactor = glm::vec4(rnd(), rnd(), rnd(), 1.0f);
-        mMaterialPushConstants[materialIndex].metalRoughnessFactor_MapORValue = glm::vec4(rnd(), rnd(), rnd(), 1.0f);
-    }
-
     ConstantBufferManager* constantBufferManager = mManagers->getConstantBufferManager();
     
     VkPushConstantRange pushConstantRange{};
     pushConstantRange.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
     pushConstantRange.offset = 0;
-    pushConstantRange.size = sizeof(MaterialValue);
+    pushConstantRange.size = sizeof(PBRMaterial::MaterialValue);
 
     info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     info.setLayoutCount = 1;

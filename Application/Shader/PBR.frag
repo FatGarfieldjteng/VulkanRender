@@ -13,15 +13,24 @@ layout(binding = 0) uniform UniformBufferObject
 	vec4 cameraPos;
 } WVPCameraPos;
 
-layout(push_constant) uniform MaterialValue {
+layout(push_constant) uniform MaterialValue 
+{
 	vec4 albedoFactor;
-
-	// metalRoughnessFactor_MapORValue.r is metalRoughnessFactor
-	// metalRoughnessFactor_MapORValue.g > 0, albedo value from map; metalRoughnessFactor_MapORValue.g < 0, albedo value from albedoFactor
-	// metalRoughnessFactor_MapORValue.b > 0, metalRoughness value from map; metalRoughnessFactor_MapORValue.g < 0, metalRoughness value from metalRoughnessFactor
-	// metalRoughnessFactor_MapORValue.a > 0, normal map exist; metalRoughnessFactor_MapORValue.a < 0, no normal map
-	vec4 metalRoughnessFactor_MapORValue;
+	float metallic;
+	float roughness;
+    uint mapOrValue;
+	float padding;
 } materialValue;
+
+uint testMapOrValue(uint mapOrValue, uint flag)
+{
+    return (mapOrValue & flag);
+}
+
+// define Macros for map existance
+const uint HAS_ALBEDO_MAP = (0x1 << 0);
+const uint HAS_ROUGHNESS_METALLIC_MAP = (0x1 << 1);
+const uint HAS_NORMAL_MAP = (0x1 << 2);
 
 layout(binding = 1) uniform sampler2D texAlbedo;
 layout(binding = 2) uniform sampler2D texMetalRoughness;
@@ -125,19 +134,19 @@ float microfacetDistribution(PBRInfo pbrInputs)
 	return roughnessSq / (M_PI * f * f);
 }
 
-vec3 calculatePBRInputsMetallicRoughness( vec4 albedo, vec3 normal, vec3 cameraPos, vec3 worldPos, vec4 mrSample, out PBRInfo pbrInputs )
+vec3 calculatePBRInputsMetallicRoughness( vec4 albedo, 
+	vec3 normal, 
+	vec3 cameraPos, 
+	vec3 worldPos, 
+	float roughness,
+	float metallic,
+	out PBRInfo pbrInputs )
 {
-	float perceptualRoughness = 1.0;
-	float metallic = 1.0;
-
 	// Roughness is stored in the 'g' channel, metallic is stored in the 'b' channel.
 	// This layout intentionally reserves the 'r' channel for (optional) occlusion map data
-	perceptualRoughness = mrSample.g * perceptualRoughness;
-	metallic = mrSample.b * metallic;
-
 	const float c_MinRoughness = 0.04;
 
-	perceptualRoughness = clamp(perceptualRoughness, c_MinRoughness, 1.0);
+	float perceptualRoughness = clamp(roughness, c_MinRoughness, 1.0);
 	metallic = clamp(metallic, 0.0, 1.0);
 	// Roughness is authored as perceptual roughness; as is convention,
 	// convert to material roughness by squaring the perceptual roughness [2].
@@ -176,7 +185,7 @@ vec3 calculatePBRInputsMetallicRoughness( vec4 albedo, vec3 normal, vec3 cameraP
 
 	// Calculate lighting contribution from image based lighting source (IBL)
 	vec3 color = getIBLContribution(pbrInputs, n, reflection);
-
+	color = vec3(0.2, 0.2, 0.2);
 	return color;
 }
 
@@ -249,29 +258,47 @@ vec3 perturbNormal(vec3 n, vec3 v, vec3 normalSample, vec2 uv)
 
 void main()
 {
-/*
-	vec4 Kd  = texture(texAlbedo, inTexCoord);
-	vec2 MeR = texture(texMetalRoughness, inTexCoord).yz;
+	vec4 Kd = materialValue.albedoFactor;
 
-	vec3 normalSample = texture(texNormal, inTexCoord).xyz;
+	if(testMapOrValue(materialValue.mapOrValue, HAS_ALBEDO_MAP) != 0)
+	{
+		Kd  = texture(texAlbedo, inTexCoord);
+	}
 
 	// world-space normal
 	vec3 n = normalize(inNormal);
 
-	// normal mapping
-	n = perturbNormal(n, normalize(WVPCameraPos.cameraPos.xyz - inPos), normalSample, inTexCoord);
+	if(testMapOrValue(materialValue.mapOrValue, HAS_NORMAL_MAP) != 0)
+	{
+		vec3 normalSample = texture(texNormal, inTexCoord).xyz;
+		// normal mapping
+		n = perturbNormal(n, normalize(WVPCameraPos.cameraPos.xyz - inPos), normalSample, inTexCoord);
+	}
+	
+	float roughness = materialValue.roughness;
+	float metallic = materialValue.metallic;
 
-	vec4 mrSample = texture(texMetalRoughness, inTexCoord);
-
+	if(testMapOrValue(materialValue.mapOrValue, HAS_ROUGHNESS_METALLIC_MAP) != 0)
+	{
+		vec4 mrSample = texture(texMetalRoughness, inTexCoord);
+		roughness = mrSample.g;
+		metallic = mrSample.b;
+	}
+	
 	PBRInfo pbrInputs;
 
 	// image-based lighting
-	vec3 color = calculatePBRInputsMetallicRoughness(Kd, n, WVPCameraPos.cameraPos.xyz, inPos, mrSample, pbrInputs);
+	vec3 color = calculatePBRInputsMetallicRoughness(Kd, 
+		n, 
+		WVPCameraPos.cameraPos.xyz, 
+		inPos, 
+		roughness, 
+		metallic, 
+		pbrInputs);
+	
 	// one hardcoded light source
 	color += calculatePBRLightContribution( pbrInputs, normalize(vec3(-1.0, -1.0, -1.0)), vec3(1.0) );
 	
 	out_FragColor = vec4(color, 1.0);
-	*/
 
-	out_FragColor = materialValue.albedoFactor;
 }

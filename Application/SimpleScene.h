@@ -31,12 +31,6 @@ public:
 	
 	// get functions
 
-	// get material
-	const std::vector< PBRMaterial*>& getPBRMaterials()
-	{
-		return mPBRMaterials;
-	}
-
 	Texture* getDefaultTexture()
 	{
 		return mDefaultTexture;
@@ -55,6 +49,11 @@ public:
 	GLITexture* getEnvLUTTexture()
 	{
 		return mLUTTexture;
+	}
+
+	const std::vector< PBRMaterial*>& getPBRMaterials()
+	{
+		return mPBRMaterials;
 	}
 
 private:

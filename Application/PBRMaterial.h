@@ -2,32 +2,35 @@
 #include <glm/glm.hpp>
 class Texture;
 
-struct MaterialValue {
-	glm::vec4 mAlbedo = {1.0, 1.0, 1.0, 1.0};
-
-	// mMetalRoughness_MapORValue.r is metalRoughnessFactor
-	// mMetalRoughness_MapORValue.g > 0, albedo value from map; mMetalRoughness_MapORValue.g < 0, albedo value from albedoFactor
-	// mMetalRoughness_MapORValue.b > 0, metalRoughness value from map; mMetalRoughness_MapORValue.g < 0, metalRoughness value from metalRoughnessFactor
-	// mMetalRoughness_MapORValue.a > 0, normal map exist; mMetalRoughness_MapORValue.a < 0, no normal map
-	glm::vec4 mMetalRoughness_MapORValue = {1.0f, 1.0f, 1.0f, 1.0f};
-};
-
-struct MaterialTexture {
-	// Albedo
-	Texture* mAlbedo = nullptr;
-
-	// Metallic-Roughness
-	Texture* mMetalRoughness = nullptr;
-
-	// Normal
-	Texture* mNormal = nullptr;
-};
-
 class PBRMaterial
 {
 public:
 	PBRMaterial();
 	virtual ~PBRMaterial();
+
+	static const unsigned int HAS_ALBEDO_MAP = (0x1 << 0);
+	static const unsigned int HAS_ROUGHNESS_METALLIC_MAP = (0x1 << 1);
+	static const unsigned int HAS_NORMAL_MAP = (0x1 << 2);
+
+	struct MaterialValue {
+		glm::vec4 mAlbedo = { 1.0, 1.0, 1.0, 1.0 };
+
+		float mMetallic = 0.0f;
+		float mRoughness = 0.0f;
+		unsigned int   mMapOrValue = 0;
+		float mPadding = 0.0f;
+	};
+
+	struct MaterialTexture {
+		// Albedo
+		Texture* mAlbedo = nullptr;
+
+		// Metallic-Roughness
+		Texture* mMetalRoughness = nullptr;
+
+		// Normal
+		Texture* mNormal = nullptr;
+	};
 
 public:
 

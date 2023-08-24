@@ -89,6 +89,11 @@ void PBRConstantBuffer::createDescriptorSetLayout()
     vkCreateDescriptorSetLayout(mDevice->getLogicalDevice(), &layoutInfo, nullptr, &mDescriptorSetLayout);
 }
 
+unsigned int testMapOrValue(unsigned int mapOrValue, unsigned int flag)
+{
+    return (mapOrValue & flag);
+}
+
 void PBRConstantBuffer::createDescriptorSets()
 {
     SimpleScene* simpleScene = dynamic_cast<SimpleScene*>(mScene);
@@ -128,11 +133,11 @@ void PBRConstantBuffer::createDescriptorSets()
 
             // textures for PBR material
             PBRMaterial* mat = PBRMaterials[materialIndex];
-
+            
             // albedo map, eg. diffuse
             VkDescriptorImageInfo imageInfoAlbedo{};
 
-            if (mat->mValues.mMetalRoughness_MapORValue.g > 0.0f)
+            if (testMapOrValue(mat->mValues.mMapOrValue, PBRMaterial::HAS_ALBEDO_MAP))
             {
                 imageInfoAlbedo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
                 imageInfoAlbedo.imageView = mat->mTextures.mAlbedo->mImageView;
@@ -148,7 +153,7 @@ void PBRConstantBuffer::createDescriptorSets()
 
             VkDescriptorImageInfo imageInfoMeR{};
 
-            if (mat->mValues.mMetalRoughness_MapORValue.b > 0.0f)
+            if (testMapOrValue(mat->mValues.mMapOrValue, PBRMaterial::HAS_ROUGHNESS_METALLIC_MAP))
             {
                 imageInfoMeR.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
                 imageInfoMeR.imageView = mat->mTextures.mMetalRoughness->mImageView;
@@ -164,7 +169,7 @@ void PBRConstantBuffer::createDescriptorSets()
             // normal map
             VkDescriptorImageInfo imageInfoNormal{};
 
-            if (mat->mValues.mMetalRoughness_MapORValue.a > 0.0f)
+            if (testMapOrValue(mat->mValues.mMapOrValue, PBRMaterial::HAS_NORMAL_MAP))
             {
                 imageInfoNormal.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
                 imageInfoNormal.imageView = mat->mTextures.mNormal->mImageView;
@@ -209,7 +214,6 @@ void PBRConstantBuffer::createDescriptorSets()
             writeDescriptors[4] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 4, &imageInfoEnv);
             writeDescriptors[5] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 5, &imageInfoEnvIrr);
             writeDescriptors[6] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 6, &imageInfoLUT);
-
 
             size_t writeDescriptorCount = writeDescriptors.size();
             VkWriteDescriptorSet* writeDescriptorData = writeDescriptors.data();

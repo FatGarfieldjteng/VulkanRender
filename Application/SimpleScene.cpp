@@ -305,6 +305,8 @@ void SimpleScene::loadGLTFScene()
 
         pbrMaterial = new PBRMaterial();
         
+        pbrMaterial->mValues.mMapOrValue = 0;
+
         // Albedo
         if (material->GetTexture(AI_MATKEY_BASE_COLOR_TEXTURE, &mapBaseColor) == AI_SUCCESS)
         {
@@ -315,12 +317,12 @@ void SimpleScene::loadGLTFScene()
             mTextures.push_back(texture);
 
             pbrMaterial->mTextures.mAlbedo = texture;
+            pbrMaterial->mValues.mMapOrValue |= PBRMaterial::HAS_ALBEDO_MAP;
         }
         
         if (material->Get(AI_MATKEY_BASE_COLOR, baseColorFactor) == AI_SUCCESS)
         {
             pbrMaterial->mValues.mAlbedo = glm::vec4(baseColorFactor.r, baseColorFactor.g, baseColorFactor.b, baseColorFactor.a);
-            pbrMaterial->mValues.mMetalRoughness_MapORValue.g = -1.0f;
         }
 
         // MetallicRoughness
@@ -332,12 +334,17 @@ void SimpleScene::loadGLTFScene()
             mTextures.push_back(texture);
 
             pbrMaterial->mTextures.mMetalRoughness = texture;
+            pbrMaterial->mValues.mMapOrValue |= PBRMaterial::HAS_ROUGHNESS_METALLIC_MAP;
         }
 
         if (material->Get(AI_MATKEY_METALLIC_FACTOR, metallicFactor) == AI_SUCCESS)
         {
-            pbrMaterial->mValues.mMetalRoughness_MapORValue.r = metallicFactor;
-            pbrMaterial->mValues.mMetalRoughness_MapORValue.b = -1.0f;
+            pbrMaterial->mValues.mMetallic = metallicFactor;
+        }
+
+        if (material->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughnessFactor) == AI_SUCCESS)
+        {
+            pbrMaterial->mValues.mRoughness = roughnessFactor;
         }
 
         // Normal map
@@ -349,10 +356,7 @@ void SimpleScene::loadGLTFScene()
             mTextures.push_back(texture);
 
             pbrMaterial->mTextures.mNormal = texture;
-        }
-        else
-        {
-            pbrMaterial->mValues.mMetalRoughness_MapORValue.a = -1.0f;
+            pbrMaterial->mValues.mMapOrValue |= PBRMaterial::HAS_NORMAL_MAP;
         }
 
         mPBRMaterials.push_back(pbrMaterial);

@@ -18,26 +18,8 @@ public:
 	virtual ~PBRPipeline();
 
 public:
-	struct MaterialValue {
-		glm::vec4 albedoFactor;
-
-		// metalRoughnessFactor_MapORValue.r is metalRoughnessFactor
-		// metalRoughnessFactor_MapORValue.g > 0, albedo value from map; metalRoughnessFactor_MapORValue.g < 0, albedo value from albedoFactor
-		// metalRoughnessFactor_MapORValue.b > 0, metalRoughness value from map; metalRoughnessFactor_MapORValue.g < 0, metalRoughness value from metalRoughnessFactor
-		// metalRoughnessFactor_MapORValue.a > 0, normal map exist; metalRoughnessFactor_MapORValue.a < 0, no normal map
-		glm::vec4 metalRoughnessFactor_MapORValue;
-	};
-	
-
-public:
 	virtual void setupShaderStage(std::vector<VkPipelineShaderStageCreateInfo>& infos);
 	virtual void setupVertexInputState(VkPipelineVertexInputStateCreateInfo& info);
 	virtual void setupPipelineLayout(VkPipelineLayoutCreateInfo& info);
 	virtual VkRenderPass getRenderPass();
-	const std::vector<MaterialValue>& getMaterialValues()
-	{
-		return mMaterialPushConstants;
-	}
-protected:
-	std::vector<MaterialValue> mMaterialPushConstants;
 };

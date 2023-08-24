@@ -10,7 +10,8 @@
 #include "ConstantBufferManager.h"
 #include "PassManager.h"
 #include "Pipeline.h"
-#include "PBRPipeline.h"
+#include "PBRMaterial.h"
+#include "SimpleScene.h"
 #include "ConstantBuffer.h"
 #include "FrameBuffer.h"
 
@@ -58,9 +59,8 @@ void BeautyRenderPass::recordCommand(VkCommandBuffer commandBuffer,
 
     PipelineManager* pipelineManager = managers->getPipelineManager();
     Pipeline* pipeline = pipelineManager->getPipeline("PBR");
-    PBRPipeline* pbrpipeline = dynamic_cast<PBRPipeline*>(pipeline);
 
-  	vkCmdBindPipeline(commandBuffer,
+    vkCmdBindPipeline(commandBuffer,
        VK_PIPELINE_BIND_POINT_GRAPHICS, 
         pipeline->getPipeline());
 
@@ -84,6 +84,8 @@ void BeautyRenderPass::recordCommand(VkCommandBuffer commandBuffer,
     int meshCount = scene->getMeshCount();
     int materialCount = scene->getMaterialCount();
 
+    SimpleScene* simplescene = dynamic_cast<SimpleScene*>(scene);
+
     for (int meshIndex = 0; meshIndex < meshCount; ++meshIndex)
     {
         Mesh* mesh = scene->getMesh(meshIndex);
@@ -103,15 +105,15 @@ void BeautyRenderPass::recordCommand(VkCommandBuffer commandBuffer,
             pipeline->getPipelineLayout(), 0, 1,
             PBRConstantBuffer->getDescriptorSets(descriptorSetIndex),
             0, nullptr);
-
+        
         // push color constant
         vkCmdPushConstants(
             commandBuffer,
             pipeline->getPipelineLayout(),
             VK_SHADER_STAGE_FRAGMENT_BIT,
             0,
-            sizeof(PBRPipeline::MaterialValue),
-            &pbrpipeline->getMaterialValues()[meshIndex]);
+            sizeof(PBRMaterial::MaterialValue),
+            &simplescene->getPBRMaterials()[mesh->getMaterialIndex()]);
 
         vkCmdDrawIndexed(commandBuffer, ib->mIndices, 1, 0, 0, 0);
     }
