@@ -49,6 +49,22 @@ SimpleScene::~SimpleScene()
         PBRMaterial* mesh = mPBRMaterials[i];
         delete mesh;
     }
+
+    if (mEnvTexture)
+    {
+        delete mEnvTexture;
+    } 
+
+    if (mEnvIrrTexture)
+    {
+        delete mEnvIrrTexture;
+    }
+    
+
+    if (mLUTTexture)
+    {
+        delete mLUTTexture;
+    }
 }
 
 void SimpleScene::init()
