@@ -625,7 +625,7 @@ void Device::createCamera()
 
     VkExtent2D windowSize = mSwapChain->getExtent();
 
-    mCamera->setupPespective(90.0f, windowSize.width / (float)windowSize.height, 0.1f, 100000.0f);
+    mCamera->setupPespective(90.0f, windowSize.width / (float)windowSize.height, 0.001f, 100000.0f);
 
     mCamera->computeViewProj();
 }

@@ -22,5 +22,5 @@ void main()
 
 	outPos = inPosition;
 	outNormal = inNormal;
-	outTexCoord = inTexCoord;
+	outTexCoord = vec2(inTexCoord.x, inTexCoord.y);
 }

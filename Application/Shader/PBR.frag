@@ -185,7 +185,7 @@ vec3 calculatePBRInputsMetallicRoughness( vec4 albedo,
 
 	// Calculate lighting contribution from image based lighting source (IBL)
 	vec3 color = getIBLContribution(pbrInputs, n, reflection);
-	color = vec3(0.2, 0.2, 0.2);
+
 	return color;
 }
 
@@ -268,9 +268,11 @@ void main()
 	// world-space normal
 	vec3 n = normalize(inNormal);
 
+	vec3 normalSample;
+
 	if(testMapOrValue(materialValue.mapOrValue, HAS_NORMAL_MAP) != 0)
 	{
-		vec3 normalSample = texture(texNormal, inTexCoord).xyz;
+		normalSample = texture(texNormal, inTexCoord).xyz;
 		// normal mapping
 		n = perturbNormal(n, normalize(WVPCameraPos.cameraPos.xyz - inPos), normalSample, inTexCoord);
 	}
@@ -300,5 +302,4 @@ void main()
 	color += calculatePBRLightContribution( pbrInputs, normalize(vec3(-1.0, -1.0, -1.0)), vec3(1.0) );
 	
 	out_FragColor = vec4(color, 1.0);
-
 }

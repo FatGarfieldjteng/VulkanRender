@@ -31,8 +31,10 @@ Texture::~Texture()
         nullptr);
 }
 
-void Texture::load(const std::string& file)
+void Texture::load(const std::string& file, bool sRGB)
 {
+    VkFormat format = sRGB ? VK_FORMAT_R8G8B8A8_SRGB : VK_FORMAT_R8G8B8A8_UNORM;
+
     // load image
     stbi_uc* pixels = stbi_load(file.c_str(),
         &mWidth, 
@@ -63,7 +65,7 @@ void Texture::load(const std::string& file)
 
     mDevice->create2DImage(mWidth, 
         mHeight, 
-        VK_FORMAT_R8G8B8A8_SRGB, 
+        format,
         VK_IMAGE_TILING_OPTIMAL, 
         VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, 
         0,
@@ -72,7 +74,7 @@ void Texture::load(const std::string& file)
         mDeviceMemory);
 
     mDevice->transitImageLayout(mImage,
-        VK_FORMAT_R8G8B8A8_SRGB, 
+        format,
         VK_IMAGE_LAYOUT_UNDEFINED, 
         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
@@ -82,7 +84,7 @@ void Texture::load(const std::string& file)
         static_cast<uint32_t>(mHeight));
 
     mDevice->transitImageLayout(mImage,
-        VK_FORMAT_R8G8B8A8_SRGB, 
+        format,
         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 
         VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
@@ -91,7 +93,7 @@ void Texture::load(const std::string& file)
 
     // create image view
     mImageView = mDevice->createImageView(mImage, 
-        VK_FORMAT_R8G8B8A8_SRGB, 
+        format,
         VK_IMAGE_ASPECT_COLOR_BIT);
 
     // crete sampler

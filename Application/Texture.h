@@ -14,7 +14,7 @@ public:
 	virtual ~Texture();
 
 public:
-	void load(const std::string& file);
+	void load(const std::string& file, bool sRGB);
 
 public:
 	Device* mDevice = nullptr;

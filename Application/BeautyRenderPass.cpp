@@ -106,6 +106,8 @@ void BeautyRenderPass::recordCommand(VkCommandBuffer commandBuffer,
             PBRConstantBuffer->getDescriptorSets(descriptorSetIndex),
             0, nullptr);
         
+        const PBRMaterial *pbrmaterial = simplescene->getPBRMaterials()[mesh->getMaterialIndex()];
+
         // push color constant
         vkCmdPushConstants(
             commandBuffer,
@@ -113,7 +115,7 @@ void BeautyRenderPass::recordCommand(VkCommandBuffer commandBuffer,
             VK_SHADER_STAGE_FRAGMENT_BIT,
             0,
             sizeof(PBRMaterial::MaterialValue),
-            &simplescene->getPBRMaterials()[mesh->getMaterialIndex()]);
+            &(pbrmaterial->mValues));
 
         vkCmdDrawIndexed(commandBuffer, ib->mIndices, 1, 0, 0, 0);
     }

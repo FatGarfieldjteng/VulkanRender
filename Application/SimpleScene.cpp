@@ -121,7 +121,7 @@ void SimpleScene::createBox()
     updateBBox();
 
     Texture* texture = new Texture(mDevice);
-    texture->load("D:/tengj/git/VulkanRender/Asset/viking_room.png");
+    texture->load("D:/tengj/git/VulkanRender/Asset/viking_room.png", true);
     mTextures.push_back(texture);
 }
 
@@ -205,7 +205,7 @@ void SimpleScene::loadObjScene()
     updateBBox();
 
     Texture* texture = new Texture(mDevice);
-    texture->load("../../Asset/viking_room.png");
+    texture->load("../../Asset/viking_room.png", true);
     mTextures.push_back(texture);
 }
 
@@ -313,7 +313,7 @@ void SimpleScene::loadGLTFScene()
             texture = new Texture(mDevice);
 
             std::string file = strTextureFileBase + mapBaseColor.C_Str();
-            texture->load(file.c_str());
+            texture->load(file.c_str(), true);
             mTextures.push_back(texture);
 
             pbrMaterial->mTextures.mAlbedo = texture;
@@ -330,7 +330,7 @@ void SimpleScene::loadGLTFScene()
         {
             texture = new Texture(mDevice);
             std::string file = strTextureFileBase + mapMetallicRoughness.C_Str();
-            texture->load(file.c_str());
+            texture->load(file.c_str(), false);
             mTextures.push_back(texture);
 
             pbrMaterial->mTextures.mMetalRoughness = texture;
@@ -352,7 +352,7 @@ void SimpleScene::loadGLTFScene()
         {
             texture = new Texture(mDevice);
             std::string file = strTextureFileBase + mapNormal.C_Str();
-            texture->load(file.c_str());
+            texture->load(file.c_str(), false);
             mTextures.push_back(texture);
 
             pbrMaterial->mTextures.mNormal = texture;
@@ -393,7 +393,7 @@ void SimpleScene::loadDefaultTexture()
     mDefaultTexture = new Texture(mDevice);
 
     std::string file = strTextureFileBase + "Default.jpg";
-    mDefaultTexture->load(file.c_str());
+    mDefaultTexture->load(file.c_str(), false);
     mTextures.push_back(mDefaultTexture);
 }
 
