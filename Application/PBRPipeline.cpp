@@ -52,10 +52,12 @@ void PBRPipeline::setupPipelineLayout(VkPipelineLayoutCreateInfo& info)
 {
     // setup push constants
     SimpleScene* simpleScene = dynamic_cast<SimpleScene*>(mScene);
-    const std::vector< PBRMaterial*>& PBRMaterials = simpleScene->getPBRMaterials();
-    mMaterialPushConstants.resize(PBRMaterials.size());
 
-    for (size_t materialIndex = 0; materialIndex < PBRMaterials.size(); ++materialIndex)
+    int meshCount = simpleScene->getMeshCount();
+
+    mMaterialPushConstants.resize(meshCount);
+
+    for (int materialIndex = 0; materialIndex < meshCount; ++materialIndex)
     {
         mMaterialPushConstants[materialIndex].albedoFactor = glm::vec4(rnd(), rnd(), rnd(), 1.0f);
         mMaterialPushConstants[materialIndex].metalRoughnessFactor_MapORValue = glm::vec4(rnd(), rnd(), rnd(), 1.0f);

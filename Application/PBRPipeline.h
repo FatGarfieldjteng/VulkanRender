@@ -34,7 +34,10 @@ public:
 	virtual void setupVertexInputState(VkPipelineVertexInputStateCreateInfo& info);
 	virtual void setupPipelineLayout(VkPipelineLayoutCreateInfo& info);
 	virtual VkRenderPass getRenderPass();
-
+	const std::vector<MaterialValue>& getMaterialValues()
+	{
+		return mMaterialPushConstants;
+	}
 protected:
 	std::vector<MaterialValue> mMaterialPushConstants;
 };

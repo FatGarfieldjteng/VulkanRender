@@ -10,6 +10,7 @@
 #include "ConstantBufferManager.h"
 #include "PassManager.h"
 #include "Pipeline.h"
+#include "PBRPipeline.h"
 #include "ConstantBuffer.h"
 #include "FrameBuffer.h"
 
@@ -57,6 +58,7 @@ void BeautyRenderPass::recordCommand(VkCommandBuffer commandBuffer,
 
     PipelineManager* pipelineManager = managers->getPipelineManager();
     Pipeline* pipeline = pipelineManager->getPipeline("PBR");
+    PBRPipeline* pbrpipeline = dynamic_cast<PBRPipeline*>(pipeline);
 
   	vkCmdBindPipeline(commandBuffer,
        VK_PIPELINE_BIND_POINT_GRAPHICS, 
@@ -102,6 +104,14 @@ void BeautyRenderPass::recordCommand(VkCommandBuffer commandBuffer,
             PBRConstantBuffer->getDescriptorSets(descriptorSetIndex),
             0, nullptr);
 
+        // push color constant
+        vkCmdPushConstants(
+            commandBuffer,
+            pipeline->getPipelineLayout(),
+            VK_SHADER_STAGE_FRAGMENT_BIT,
+            0,
+            sizeof(PBRPipeline::MaterialValue),
+            &pbrpipeline->getMaterialValues()[meshIndex]);
 
         vkCmdDrawIndexed(commandBuffer, ib->mIndices, 1, 0, 0, 0);
     }
