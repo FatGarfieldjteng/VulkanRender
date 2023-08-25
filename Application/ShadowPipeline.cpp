@@ -1,4 +1,4 @@
-#include "PBRPipeline.h"
+#include "ShadowPipeline.h"
 #include "Managers.h"
 #include "Shadermanager.h"
 #include "PassManager.h"
@@ -11,7 +11,7 @@
 #include <vector>
 #include <stdexcept>
 
-PBRPipeline::PBRPipeline(VkDevice logicalDevice, 
+ShadowPipeline::ShadowPipeline(VkDevice logicalDevice,
     Scene* scene, 
     Managers* managers)
     :Pipeline(logicalDevice, scene, managers)
@@ -19,20 +19,19 @@ PBRPipeline::PBRPipeline(VkDevice logicalDevice,
 
 }
 
-PBRPipeline::~PBRPipeline()
+ShadowPipeline::~ShadowPipeline()
 {
 }
 
-void PBRPipeline::setupShaderStage(std::vector<VkPipelineShaderStageCreateInfo>& infos)
+void ShadowPipeline::setupShaderStage(std::vector<VkPipelineShaderStageCreateInfo>& infos)
 {
     ShaderManager* shaderManager = mManagers->getShaderManager();
 
-    infos.resize(2);
-    infos[0] = shaderManager->getVS("PBRVS");
-    infos[1] = shaderManager->getPS("PBRPS");
+    infos.resize(1);
+    infos[0] = shaderManager->getVS("ShadowVS");
 }
 
-void PBRPipeline::setupVertexInputState(VkPipelineVertexInputStateCreateInfo& info)
+void ShadowPipeline::setupVertexInputState(VkPipelineVertexInputStateCreateInfo& info)
 {
     FormatManager* formatManager = mManagers->getFormatManager();
     PBRVertexFormat* format = (PBRVertexFormat*)formatManager->getFormat("PBRFormat");
@@ -44,7 +43,30 @@ void PBRPipeline::setupVertexInputState(VkPipelineVertexInputStateCreateInfo& in
     info.pVertexAttributeDescriptions = format->mAttribute.data();
 }
 
-void PBRPipeline::setupPipelineLayout(VkPipelineLayoutCreateInfo& info)
+void ShadowPipeline::setupColorBlendState(VkPipelineColorBlendStateCreateInfo& info,
+    const VkPipelineColorBlendAttachmentState& colorBlendAttachmentState)
+{
+    info.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    info.logicOpEnable = VK_FALSE;
+    info.logicOp = VK_LOGIC_OP_COPY;
+    info.attachmentCount = 1;
+    info.pAttachments = &colorBlendAttachmentState;
+    info.blendConstants[0] = 0.0f;
+    info.blendConstants[1] = 0.0f;
+    info.blendConstants[2] = 0.0f;
+    info.blendConstants[3] = 0.0f;
+}
+
+void ShadowPipeline::setupDynamicState(VkPipelineDynamicStateCreateInfo& info,
+    std::vector<VkDynamicState>& dynamicStates)
+{
+    dynamicStates.push_back(VK_DYNAMIC_STATE_DEPTH_BIAS);
+    info.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    info.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+    info.pDynamicStates = dynamicStates.data();
+}
+
+void ShadowPipeline::setupPipelineLayout(VkPipelineLayoutCreateInfo& info)
 {
     // setup push constants
     SimpleScene* simpleScene = dynamic_cast<SimpleScene*>(mScene);
@@ -71,8 +93,8 @@ void PBRPipeline::setupPipelineLayout(VkPipelineLayoutCreateInfo& info)
     }
 }
 
-VkRenderPass PBRPipeline::getRenderPass()
+VkRenderPass ShadowPipeline::getRenderPass()
 {
     PassManager* passManager = mManagers->getPassManager();
-    return passManager->getPass("SimplePass");
+    return passManager->getPass("ShadowPass");
 }

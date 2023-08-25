@@ -37,6 +37,8 @@ private:
 
     void createPBRConstantBuffer();
 
+    void createShadowConstantBuffer();
+
     void addConstantBuffer(const std::string& ID, ConstantBuffer* constantBuffer);
 
 private:

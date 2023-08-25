@@ -1,6 +1,7 @@
 #include "ConstantBufferManager.h"
 #include "SimpleConstantBuffer.h"
 #include "PBRConstantBuffer.h"
+#include "ShadowConstantBuffer.h"
 #include "Device.h"
 #include "Scene.h"
 #include "Camera.h"
@@ -42,6 +43,8 @@ void ConstantBufferManager::createConstantBuffers()
 {
 	//createSimpleConstantBuffer();
 	createPBRConstantBuffer();
+
+	createShadowConstantBuffer();
 }
 
 void ConstantBufferManager::createPBRConstantBuffer()
@@ -56,6 +59,13 @@ void ConstantBufferManager::createSimpleConstantBuffer()
 	ConstantBuffer* constantBuffer = new SimpleConstantBuffer(mDevice,
 		mScene);
 	addConstantBuffer("Simple", constantBuffer);
+}
+
+void ConstantBufferManager::createShadowConstantBuffer()
+{
+	ConstantBuffer* constantBuffer = new ShadowConstantBuffer(mDevice,
+		mScene);
+	addConstantBuffer("Shadow", constantBuffer);
 }
 
 void ConstantBufferManager::updateWVPConstantBuffer(uint32_t frameIndex)

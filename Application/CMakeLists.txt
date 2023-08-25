@@ -13,6 +13,7 @@ set(HEADER_FILES
 	Pipeline.h
 	SimplePipeline.h
 	PBRPipeline.h
+	ShadowPipeline.h
 	PassManager.h
 	PipelineManager.h
 	SyncObjectManager.h
@@ -20,6 +21,7 @@ set(HEADER_FILES
 	ConstantBuffer.h
 	SimpleConstantBuffer.h
 	PBRConstantBuffer.h
+	ShadowConstantBuffer.h
 	Texture.h
 	CubeTexture.h
 	GLITexture.h
@@ -47,6 +49,8 @@ set(HEADER_FILES
 	BeautyRenderPass.h
 	ShadowRenderPass.h
 	RenderPassManager.h
+	TransitResource.h
+	TransitDepthMap.h
 	Bitmap.h
 	tinyobjloader/tiny_obj_loader.h
 	stb/stb_image.h
@@ -65,12 +69,14 @@ set(SOURCE_FILES
 	PBRPipeline.cpp
 	DepthStencilBuffer.cpp
 	PassManager.cpp
+	ShadowPipeline.cpp
 	PipelineManager.cpp
 	SyncObjectManager.cpp
 	ConstantBufferManager.cpp
 	ConstantBuffer.cpp
 	SimpleConstantBuffer.cpp
 	PBRConstantBuffer.cpp
+	ShadowConstantBuffer.cpp
 	Texture.cpp
 	CubeTexture.cpp
 	GLITexture.cpp
@@ -97,6 +103,8 @@ set(SOURCE_FILES
 	FinalRenderPass.cpp
 	ShadowRenderPass.cpp
 	RenderPassManager.cpp
+	TransitResource.cpp
+	TransitDepthMap.cpp
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")

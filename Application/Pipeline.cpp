@@ -162,7 +162,7 @@ void Pipeline::setupColorBlendState(VkPipelineColorBlendStateCreateInfo& info,
 }
 
 void Pipeline::setupDynamicState(VkPipelineDynamicStateCreateInfo& info,
-    const std::vector<VkDynamicState>& dynamicStates)
+    std::vector<VkDynamicState>& dynamicStates)
 {
     info.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
     info.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());

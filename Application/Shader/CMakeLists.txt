@@ -2,7 +2,7 @@
 add_custom_target(shaders)
 find_program(GLSLC glslc)
 
-set(VLSL_SHADER_FILES SimpleVS.vert SimplePS.frag PBR.vert PBR.frag)
+set(VLSL_SHADER_FILES SimpleVS.vert SimplePS.frag PBR.vert PBR.frag Shadow.vert)
 
 foreach(shader ${VLSL_SHADER_FILES})
 

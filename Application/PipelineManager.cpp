@@ -1,6 +1,7 @@
 #include "PipelineManager.h"
 #include "SimplePipeline.h"
 #include "PBRPipeline.h"
+#include "ShadowPipeline.h"
 #include "Scene.h"
 
 PipelineManager::PipelineManager(VkDevice logicalDevice, 
@@ -28,6 +29,8 @@ void PipelineManager::createPipelines()
 	//createSimplePipeline();
 
 	createPBRPipeline();
+
+	createShadowPipeline();
 }
 
 void PipelineManager::createSimplePipeline()
@@ -46,6 +49,15 @@ void PipelineManager::createPBRPipeline()
 	pipeline->create();
 
 	addPipeline("PBR", pipeline);
+}
+
+void PipelineManager::createShadowPipeline()
+{
+	Pipeline* pipeline = new ShadowPipeline(mLogicalDevice, mScene, mManagers);
+
+	pipeline->create();
+
+	addPipeline("Shadow", pipeline);
 }
 
 void PipelineManager::addPipeline(const std::string& ID, Pipeline* pipeline)

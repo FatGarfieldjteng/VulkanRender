@@ -32,6 +32,8 @@ private:
 
     void createPBRPipeline();
 
+    void createShadowPipeline();
+
 private:
     
     VkDevice mLogicalDevice = VK_NULL_HANDLE;

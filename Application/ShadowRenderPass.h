@@ -12,5 +12,9 @@ public:
 
 public:
 	virtual void buildPass();
-	virtual void recordCommand();
+	virtual void recordCommand(VkCommandBuffer commandBuffer,
+		Managers* managers,
+		size_t imageIndex,
+		size_t frameIndex,
+		Scene* scene);
 };

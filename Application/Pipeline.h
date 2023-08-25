@@ -33,7 +33,7 @@ protected:
 	virtual void setupColorBlendState(VkPipelineColorBlendStateCreateInfo& info, 
 		const VkPipelineColorBlendAttachmentState& colorBlendAttachmentState);
 	virtual void setupDynamicState(VkPipelineDynamicStateCreateInfo& info, 
-		const std::vector<VkDynamicState>& dynamicStates);
+		std::vector<VkDynamicState>& dynamicStates);
 	virtual void setupPipelineLayout(VkPipelineLayoutCreateInfo& info) = 0;
 	virtual VkRenderPass getRenderPass() = 0;
 protected:

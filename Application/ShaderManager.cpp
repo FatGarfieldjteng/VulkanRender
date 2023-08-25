@@ -22,6 +22,9 @@ void ShaderManager::createShaders()
 
 	createPBRVS();
 	createPBRPS();
+
+	// no shadow ps needed
+	createShadowVS();
 }
 
 void ShaderManager::createSimpleVS()
@@ -100,6 +103,26 @@ void ShaderManager::createPBRPS()
 	fragShaderStageInfo.pName = "main";
 
 	addPS("PBRPS", fragShaderStageInfo);
+}
+
+void ShaderManager::createShadowVS()
+{
+	std::string path = shaderPath();
+
+	std::string shaderPath = path + "Shadow.vert.spv";
+	std::vector<char> bytecode = readFile(shaderPath);
+
+	VkShaderModule shaderModule = createShaderModule(bytecode);
+
+	mScratchPad.push_back(shaderModule);
+
+	VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
+	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+	vertShaderStageInfo.module = shaderModule;
+	vertShaderStageInfo.pName = "main";
+
+	addVS("ShadowVS", vertShaderStageInfo);
 }
 
 void ShaderManager::addVS(const std::string& ID, VkPipelineShaderStageCreateInfo vs)

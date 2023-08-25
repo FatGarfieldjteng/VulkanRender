@@ -27,6 +27,8 @@ public:
 
 private:
     void createSimplePass();
+
+    void createShadowPass();
     
 private:
     
