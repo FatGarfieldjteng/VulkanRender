@@ -49,6 +49,7 @@ set(HEADER_FILES
 	BeautyRenderPass.h
 	ShadowRenderPass.h
 	RenderPassManager.h
+	TransitResourceManager.h
 	TransitResource.h
 	TransitDepthMap.h
 	Bitmap.h
@@ -103,6 +104,7 @@ set(SOURCE_FILES
 	FinalRenderPass.cpp
 	ShadowRenderPass.cpp
 	RenderPassManager.cpp
+	TransitResourceManager.cpp
 	TransitResource.cpp
 	TransitDepthMap.cpp
 )
