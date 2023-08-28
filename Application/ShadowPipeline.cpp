@@ -68,21 +68,12 @@ void ShadowPipeline::setupDynamicState(VkPipelineDynamicStateCreateInfo& info,
 
 void ShadowPipeline::setupPipelineLayout(VkPipelineLayoutCreateInfo& info)
 {
-    // setup push constants
-    SimpleScene* simpleScene = dynamic_cast<SimpleScene*>(mScene);
-
     ConstantBufferManager* constantBufferManager = mManagers->getConstantBufferManager();
-    
-    VkPushConstantRange pushConstantRange{};
-    pushConstantRange.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    pushConstantRange.offset = 0;
-    pushConstantRange.size = sizeof(PBRMaterial::MaterialValue);
 
     info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     info.setLayoutCount = 1;
-    info.pSetLayouts = constantBufferManager->getConstantBuffer("PBR")->getDescriptorSetLayout();
-    info.pushConstantRangeCount = 1;
-    info.pPushConstantRanges = &pushConstantRange;
+    info.pSetLayouts = constantBufferManager->getConstantBuffer("Shadow")->getDescriptorSetLayout();
+    info.pushConstantRangeCount = 0;
 
     if (vkCreatePipelineLayout(mLogicalDevice,
         &info,

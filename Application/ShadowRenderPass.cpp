@@ -142,17 +142,6 @@ void ShadowRenderPass::recordCommand(VkCommandBuffer commandBuffer,
             shadowConstantBuffer->getDescriptorSets(frameIndex),
             0, nullptr);
 
-        const PBRMaterial* pbrmaterial = simplescene->getPBRMaterials()[mesh->getMaterialIndex()];
-
-        // push color constant
-        vkCmdPushConstants(
-            commandBuffer,
-            pipeline->getPipelineLayout(),
-            VK_SHADER_STAGE_FRAGMENT_BIT,
-            0,
-            sizeof(PBRMaterial::MaterialValue),
-            &(pbrmaterial->mValues));
-
         vkCmdDrawIndexed(commandBuffer, ib->mIndices, 1, 0, 0, 0);
     }
 

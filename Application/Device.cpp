@@ -273,7 +273,6 @@ void Device::drawPBRFrame()
     vkAcquireNextImageKHR(mLogicalDevice, mSwapChain->get(), UINT64_MAX, backBufferAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
     ConstantBufferManager* constantBufferManager = mManagers->getConstantBufferManager();
-    constantBufferManager->updateWVPCameraPosConstantBuffer(mFrameIndex);
 
     vkResetCommandBuffer(commandBuffer, 0);
 
@@ -292,6 +291,7 @@ void Device::drawPBRFrame()
     clearPass->recordCommand(commandBuffer,nullptr, mFrameIndex);*/
 
     RenderPass* beautyPass = renderPassManager->getPass("beauty");
+    constantBufferManager->updateWVPCameraPosConstantBuffer(mFrameIndex);
     beautyPass->recordCommand(commandBuffer, mManagers, imageIndex, mFrameIndex, mScene);
 
     RenderPass* shadowPass = renderPassManager->getPass("shadow");
