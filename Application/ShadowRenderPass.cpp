@@ -21,7 +21,7 @@ ShadowRenderPass::ShadowRenderPass(Device* device,
     RenderPass::PassInfo passinfo)
     :RenderPass(device, passinfo)
 {
-    
+
 }
 
 ShadowRenderPass::~ShadowRenderPass()
@@ -116,10 +116,8 @@ void ShadowRenderPass::recordCommand(VkCommandBuffer commandBuffer,
 
 
     // update constant buffer, not finished!!
-
-    !!
     ConstantBufferManager* constantBufferManager = managers->getConstantBufferManager();
-    ConstantBuffer* PBRConstantBuffer = constantBufferManager->getConstantBuffer("PBR");
+    ConstantBuffer* shadowConstantBuffer = constantBufferManager->getConstantBuffer("Shadow");
 
     int meshCount = scene->getMeshCount();
     int materialCount = scene->getMaterialCount();
@@ -139,11 +137,9 @@ void ShadowRenderPass::recordCommand(VkCommandBuffer commandBuffer,
         IndexBuffer* ib = mesh->getIB();
         vkCmdBindIndexBuffer(commandBuffer, ib->mIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-        int descriptorSetIndex = frameIndex * materialCount + mesh->getMaterialIndex();
-
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
             pipeline->getPipelineLayout(), 0, 1,
-            PBRConstantBuffer->getDescriptorSets(descriptorSetIndex),
+            shadowConstantBuffer->getDescriptorSets(frameIndex),
             0, nullptr);
 
         const PBRMaterial* pbrmaterial = simplescene->getPBRMaterials()[mesh->getMaterialIndex()];
