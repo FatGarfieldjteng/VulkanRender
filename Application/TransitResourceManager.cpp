@@ -27,10 +27,8 @@ void TransitResourceManager::createResources()
 void TransitResourceManager::createTransitDepthMap()
 {
 	TransitResource* resource = new TransitDepthMap(mDevice);
-	
 
-
-    addResource("ShadowPass", resource);
+    addResource("depth", resource);
 }
 
 void TransitResourceManager::addResource(const std::string& ID, TransitResource* resource)

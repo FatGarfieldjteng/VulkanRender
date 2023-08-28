@@ -8,6 +8,8 @@
 #include "Managers.h"
 #include "PipelineManager.h"
 #include "ConstantBufferManager.h"
+#include "TransitResourceManager.h"
+#include "TransitResource.h"
 #include "PassManager.h"
 #include "Pipeline.h"
 #include "PBRMaterial.h"
@@ -29,7 +31,34 @@ ShadowRenderPass::~ShadowRenderPass()
 
 void ShadowRenderPass::buildPass()
 {
+    // create framebuffers
+    unsigned int maxFramesInFligt = mDevice->getMaxFramesInFlight();
 
+    mFramebuffers.resize(maxFramesInFligt);
+
+    Managers* managers = mDevice->getManagers();
+
+    TransitResourceManager* transitResourceManager = mDevice->getManagers()->getTransitResourceManager();
+
+    PassManager* passManager = managers->getPassManager();
+
+    TransitResource* resource = transitResourceManager->getResource("depth");
+
+    for (size_t i = 0; i < maxFramesInFligt; ++i)
+    {
+        VkFramebufferCreateInfo framebufferInfo{};
+        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferInfo.pNext = nullptr;
+        framebufferInfo.flags = 0;
+        framebufferInfo.renderPass = passManager->getPass("ShadowPass");;
+        framebufferInfo.attachmentCount = 1;
+        framebufferInfo.pAttachments = &resource->mImageViews[i];
+        framebufferInfo.width = mWidth;
+        framebufferInfo.height = mHeight;
+        framebufferInfo.layers = 1;
+
+        vkCreateFramebuffer(mDevice->getLogicalDevice(), &framebufferInfo, nullptr, &mFramebuffers[i]);
+    }
 }
 
 void ShadowRenderPass::recordCommand(VkCommandBuffer commandBuffer,
@@ -38,22 +67,28 @@ void ShadowRenderPass::recordCommand(VkCommandBuffer commandBuffer,
     size_t frameIndex,
     Scene* scene)
 {
-    VkExtent2D extent = mDevice->getSwapChain()->getExtent();
+    TransitResourceManager* transitResourceManager = mDevice->getManagers()->getTransitResourceManager();
+    TransitResource* resource = transitResourceManager->getResource("depth");
+    
+    int width = resource->mWidth;
+    int height = resource->mHeight;
+
     PassManager* passManager = managers->getPassManager();
 
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassInfo.renderPass = passManager->getPass("ShadowPass");
-
-    renderPassInfo.framebuffer = mDevice->getFrameBuffer()->getFrameBuffer(imageIndex);
+    
+    renderPassInfo.framebuffer = mFramebuffers[frameIndex];
     renderPassInfo.renderArea.offset = { 0, 0 };
-    renderPassInfo.renderArea.extent = extent;
-    VkClearValue clearValues[2];
-    clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
-    clearValues[1].depthStencil = { 1.0f, 0 };
-
-    renderPassInfo.clearValueCount = 2;
-    renderPassInfo.pClearValues = &clearValues[0];
+    renderPassInfo.renderArea.extent.width = (uint32_t)width;
+    renderPassInfo.renderArea.extent.height = (uint32_t)height;
+    
+    VkClearValue clearValue;
+    // color clear value is not relevant
+    clearValue.depthStencil = { 1.0f, 0 };
+    renderPassInfo.clearValueCount = 1;
+    renderPassInfo.pClearValues = &clearValue;
 
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
@@ -67,17 +102,22 @@ void ShadowRenderPass::recordCommand(VkCommandBuffer commandBuffer,
     VkViewport viewport{};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
-    viewport.width = (float)extent.width;
-    viewport.height = (float)extent.height;
+    viewport.width = (float)width;
+    viewport.height = (float)height;
     viewport.minDepth = 0.0f;
     viewport.maxDepth = 1.0f;
     vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
     VkRect2D scissor{};
     scissor.offset = { 0, 0 };
-    scissor.extent = extent;
+    scissor.extent.width = (uint32_t)width;
+    scissor.extent.height = (uint32_t)height;
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
+
+    // update constant buffer, not finished!!
+
+    !!
     ConstantBufferManager* constantBufferManager = managers->getConstantBufferManager();
     ConstantBuffer* PBRConstantBuffer = constantBufferManager->getConstantBuffer("PBR");
 

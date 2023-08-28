@@ -45,6 +45,11 @@ public:
 		return mLogicalDevice;
 	}
 
+	unsigned int getMaxFramesInFlight()
+	{
+		return mMaxFramesInFligt;
+	}
+
 	Managers* getManagers()
 	{
 		return mManagers;
@@ -97,6 +102,8 @@ public:
 		uint32_t layerCount = 1);
 
 	VkSampler createSampler();
+
+	VkSampler createShadowMapSampler();
 
 	void transitImageLayout(VkImage image, 
 		VkFormat format, 

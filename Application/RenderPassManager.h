@@ -27,6 +27,7 @@ public:
 private:
     void createClearRenderPass();
     void createBeautyRenderPass();
+    void createShadowRenderPass();
     void createFinalRenderPass();
     
 private:

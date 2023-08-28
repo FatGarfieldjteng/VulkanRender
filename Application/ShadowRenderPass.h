@@ -17,4 +17,8 @@ public:
 		size_t imageIndex,
 		size_t frameIndex,
 		Scene* scene);
+
+private:
+	unsigned int mWidth = 2048;
+	unsigned int mHeight = 2048;
 };

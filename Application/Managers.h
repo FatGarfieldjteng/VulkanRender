@@ -11,6 +11,7 @@ class PipelineManager;
 class FormatManager;
 class ConstantBufferManager;
 class RenderPassManager;
+class TransitResourceManager;
 class Device;
 class Scene;
 class Camera;
@@ -58,6 +59,11 @@ public:
         return mRenderPassManager;
     }
 
+    TransitResourceManager* getTransitResourceManager()
+    {
+        return mTransitResourceManager;
+    }
+
 private:
     void createManagers();
 
@@ -74,4 +80,5 @@ private:
     FormatManager*          mFormatManager = nullptr;
     ConstantBufferManager*  mConstantBufferManager = nullptr;
     RenderPassManager*      mRenderPassManager = nullptr;
+    TransitResourceManager* mTransitResourceManager = nullptr;
 };

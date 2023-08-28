@@ -5,6 +5,7 @@
 #include "FormatManager.h"
 #include "ConstantBufferManager.h"
 #include "RenderPassManager.h"
+#include "TransitResourceManager.h"
 #include "SwapChain.h"
 #include "DepthStencilBuffer.h"
 #include "Device.h"
@@ -54,12 +55,19 @@ Managers::~Managers()
 	{
 		delete mRenderPassManager;
 	}
+
+	if (mTransitResourceManager)
+	{
+		delete mTransitResourceManager;
+	}
 }
 
 void Managers::createManagers()
 {
 	// shadermanager
 	mShaderManager = new ShaderManager(mDevice->getLogicalDevice());
+
+	mTransitResourceManager = new TransitResourceManager(mDevice);
 
 	// passmanager
 	mPassManager = new PassManager(mDevice->getLogicalDevice(), mSwapChain, mDepthStencilBuffer);

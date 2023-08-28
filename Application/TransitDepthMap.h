@@ -14,4 +14,7 @@ public:
 	TransitDepthMap(Device *device,
 		unsigned int maxFramesInFligt = 2);
 	virtual ~TransitDepthMap();
+
+protected:
+	virtual void create();
 };
