@@ -18,6 +18,7 @@ class Command;
 class SyncObjectManager;
 class Scene;
 class Camera;
+class Light;
 
 class Device
 {
@@ -68,6 +69,11 @@ public:
 	Camera* getCamera()
 	{
 		return mCamera;
+	}
+
+	Light* getLight()
+	{
+		return mLight;
 	}
 
 	FrameBuffer* getFrameBuffer()
@@ -127,8 +133,6 @@ public:
 		VkImageView depthImageView, 
 		std::vector<VkFramebuffer>& framebuffers);
 
-	
-
 private:
 	void createSurface(GLFWwindow* window);
 	void createPhysicalDevice();
@@ -141,6 +145,7 @@ private:
 	void createSyncObjectManager();
 	void createScene();
 	void createCamera();
+	void createLight();
 
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
@@ -184,6 +189,8 @@ private:
 	Scene* mScene = nullptr;
 
 	Camera* mCamera = nullptr;
+
+	Light* mLight = nullptr;
 
 	uint32_t mFrameIndex = 0;
 

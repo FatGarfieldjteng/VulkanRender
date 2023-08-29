@@ -30,6 +30,8 @@ public:
 
     void updateWVPCameraPosConstantBuffer(uint32_t frameIndex);
 
+    void updateShadowConstantBuffer(uint32_t frameIndex);
+
     ConstantBuffer* getConstantBuffer(const std::string& ID);
    
 private:

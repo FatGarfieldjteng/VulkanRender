@@ -5,6 +5,7 @@
 #include "Device.h"
 #include "Scene.h"
 #include "Camera.h"
+#include "Light.h"
 #include "Texture.h"
 
 #include <stdexcept>
@@ -85,6 +86,15 @@ void ConstantBufferManager::updateWVPCameraPosConstantBuffer(uint32_t frameIndex
 	WVPCameraPos.cameraPos = mCamera->getCameraPos();
 
 	getConstantBuffer("PBR")->update(frameIndex, &WVPCameraPos, sizeof(WVPCameraPos));
+}
+
+void ConstantBufferManager::updateShadowConstantBuffer(uint32_t frameIndex)
+{
+	ShadowConstantBuffer::LightMVPConstantBuffer lightMVP{};
+
+	lightMVP.mvp = mDevice->getLight()->getLightCamera()->getViewProj();
+
+	getConstantBuffer("Shadow")->update(frameIndex, &lightMVP, sizeof(lightMVP));
 }
 
 void ConstantBufferManager::addConstantBuffer(const std::string& ID, ConstantBuffer* constantBuffer)

@@ -21,4 +21,9 @@ public:
 private:
 	unsigned int mWidth = 2048;
 	unsigned int mHeight = 2048;
+
+	// depth bias for shadow map generation
+	float depthBiasConstant = 1.25f;
+
+	float depthBiasSlope = 1.75f;
 };

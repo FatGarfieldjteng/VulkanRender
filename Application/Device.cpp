@@ -13,6 +13,7 @@
 #include "PassManager.h"
 #include "SimpleScene.h"
 #include "Camera.h"
+#include "Light.h"
 #include "BoundingBox.h"
 #include "RenderPass.h"
 
@@ -77,6 +78,16 @@ Device::~Device()
     if (mScene)
     {
         delete mScene;
+    }
+
+    if (mLight)
+    {
+        delete mLight;
+    }
+
+    if (mCamera)
+    {
+        delete mCamera;
     }
 
 
@@ -161,6 +172,7 @@ void Device::create(VkInstance instance, GLFWwindow* window)
 
     createScene();
     createCamera();
+    createLight();
 
     createManagers();
     
@@ -295,6 +307,7 @@ void Device::drawPBRFrame()
     beautyPass->recordCommand(commandBuffer, mManagers, imageIndex, mFrameIndex, mScene);
 
     RenderPass* shadowPass = renderPassManager->getPass("shadow");
+    constantBufferManager->updateShadowConstantBuffer(mFrameIndex);
     shadowPass->recordCommand(commandBuffer, mManagers, imageIndex, mFrameIndex, mScene);
     
     /*RenderPass* finalPass = renderPassManager->getPass("final");
@@ -636,6 +649,11 @@ void Device::createCamera()
     mCamera->setupPespective(90.0f, windowSize.width / (float)windowSize.height, 0.001f, 100000.0f);
 
     mCamera->computeViewProj();
+}
+
+void Device::createLight()
+{
+    mLight = new Light(true);
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)

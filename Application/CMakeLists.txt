@@ -40,6 +40,7 @@ set(HEADER_FILES
 	Scene.h
 	PBRMaterial.h
 	Camera.h
+	Light.h
 	SimpleScene.h
 	VulkanHelper.h
 	RenderPass.h
@@ -96,6 +97,7 @@ set(SOURCE_FILES
 	Scene.cpp
 	PBRMaterial.cpp
 	Camera.cpp
+	Light.cpp
 	SimpleScene.cpp
 	VulkanHelper.cpp
 	RenderPass.cpp
