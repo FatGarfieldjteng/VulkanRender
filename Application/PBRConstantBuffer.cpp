@@ -10,6 +10,13 @@
 #include <stdexcept>
 #include <array>
 
+namespace {
+    const int mTexturesPerMaterialCount = 3;
+    const int mTexturesIBLCount = 3;
+    const int mUniformBuffersCount = 2;
+    const int mShadowTexturesCount = 1;
+}
+
 PBRConstantBuffer::PBRConstantBuffer(Device* device,
     Scene* scene,
     unsigned int maxFramesInFligt)
@@ -39,12 +46,13 @@ void PBRConstantBuffer::createDescriptorPool()
 
     VkDescriptorPoolSize uniformPoolSize{};
     uniformPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    uniformPoolSize.descriptorCount = mMaxFramesInFligt * materialCount;
+    uniformPoolSize.descriptorCount = mMaxFramesInFligt * materialCount * mUniformBuffersCount;
     poolSizes.push_back(uniformPoolSize);
    
     VkDescriptorPoolSize samplerPoolSize{};
     samplerPoolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    samplerPoolSize.descriptorCount = mMaxFramesInFligt * materialCount * 6;
+    samplerPoolSize.descriptorCount = mMaxFramesInFligt * materialCount * 
+        (mTexturesPerMaterialCount + mTexturesIBLCount + mShadowTexturesCount);
     poolSizes.push_back(samplerPoolSize);
    
 
@@ -126,10 +134,16 @@ void PBRConstantBuffer::createDescriptorSets()
             VkDescriptorSet ds = mDescriptorSets[descriptorSetIndex];
 
             // view projection matrix and camera position uniform buffer
-            VkDescriptorBufferInfo bufferInfo{};
-            bufferInfo.buffer = mUniformBuffers[frameIndex];
-            bufferInfo.offset = 0;
-            bufferInfo.range = sizeof(MVPCameraPosConstantBuffer);
+            VkDescriptorBufferInfo bufferInfo[2];
+
+            bufferInfo[0].buffer = mUniformBuffers[frameIndex * mUniformBuffersCount];
+            bufferInfo[0].offset = 0;
+            bufferInfo[0].range = sizeof(MVPCameraPosConstantBuffer);
+
+            // light view projection matrix
+            bufferInfo[1].buffer = mUniformBuffers[frameIndex * mUniformBuffersCount + 1];
+            bufferInfo[1].offset = 0;
+            bufferInfo[1].range = sizeof(LightMVPConstantBuffer);
 
             // textures for PBR material
             PBRMaterial* mat = PBRMaterials[materialIndex];
@@ -205,15 +219,36 @@ void PBRConstantBuffer::createDescriptorSets()
             imageInfoLUT.imageView = LUTTexture->mImageView;
             imageInfoLUT.sampler = LUTTexture->mSampler;
 
-            std::array<VkWriteDescriptorSet, 7> writeDescriptors;
+            VkDescriptorImageInfo imageInfoShadowMap{};
 
-            writeDescriptors[0] = VulkanHelper::bufferWriteDescriptorSet(ds, 0, &bufferInfo);
-            writeDescriptors[1] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 1, &imageInfoAlbedo);
-            writeDescriptors[2] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 2, &imageInfoMeR);
-            writeDescriptors[3] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 3, &imageInfoNormal);
-            writeDescriptors[4] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 4, &imageInfoEnv);
-            writeDescriptors[5] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 5, &imageInfoEnvIrr);
-            writeDescriptors[6] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 6, &imageInfoLUT);
+            // get shadow map
+            /*imageInfoLUT.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            GLITexture* LUTTexture = simpleScene->getEnvLUTTexture();
+            imageInfoLUT.imageView = LUTTexture->mImageView;
+            imageInfoLUT.sampler = LUTTexture->mSampler;*/
+
+            const int mTexturesPerMaterialCount = 3;
+            const int mTexturesIBLCount = 3;
+            const int mUniformBuffersCount = 2;
+            const int mShadowTexturesCount = 1;
+
+            int totalDescriptors = mTexturesPerMaterialCount + 
+                mTexturesIBLCount + 
+                mUniformBuffersCount + 
+                mShadowTexturesCount;
+
+            std::vector<VkWriteDescriptorSet> writeDescriptors;
+            writeDescriptors.resize(totalDescriptors);
+
+            writeDescriptors[0] = VulkanHelper::bufferWriteDescriptorSet(ds, 0, &bufferInfo[0]);
+            writeDescriptors[1] = VulkanHelper::bufferWriteDescriptorSet(ds, 0, &bufferInfo[1]);
+            writeDescriptors[2] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 2, &imageInfoAlbedo);
+            writeDescriptors[3] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 3, &imageInfoMeR);
+            writeDescriptors[4] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 4, &imageInfoNormal);
+            writeDescriptors[5] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 5, &imageInfoEnv);
+            writeDescriptors[6] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 6, &imageInfoEnvIrr);
+            writeDescriptors[7] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 7, &imageInfoLUT);
+            writeDescriptors[8] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 8, &imageInfoLUT);
 
             size_t writeDescriptorCount = writeDescriptors.size();
             VkWriteDescriptorSet* writeDescriptorData = writeDescriptors.data();
@@ -227,9 +262,9 @@ void PBRConstantBuffer::createUniformBuffers()
 {
     VkDeviceSize bufferSize = sizeof(MVPCameraPosConstantBuffer);
 
-    mUniformBuffers.resize(mMaxFramesInFligt);
-    mUniformBuffersMemory.resize(mMaxFramesInFligt);
-    mMappedData.resize(mMaxFramesInFligt);
+    mUniformBuffers.resize(mMaxFramesInFligt * mUniformBuffersCount);
+    mUniformBuffersMemory.resize(mMaxFramesInFligt * mUniformBuffersCount);
+    mMappedData.resize(mMaxFramesInFligt * mUniformBuffersCount);
 
     for (size_t i = 0; i < mMaxFramesInFligt; i++)
     {
@@ -237,13 +272,26 @@ void PBRConstantBuffer::createUniformBuffers()
             VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
             mUniformBuffers[i],
-            mUniformBuffersMemory[i]);
+            mUniformBuffersMemory[i * mUniformBuffersCount]);
 
         vkMapMemory(mDevice->getLogicalDevice(),
-            mUniformBuffersMemory[i],
+            mUniformBuffersMemory[i * mUniformBuffersCount],
             0,
             bufferSize,
             0,
-            &mMappedData[i]);
+            &mMappedData[i * mUniformBuffersCount]);
+
+        mDevice->createBuffer(bufferSize,
+            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            mUniformBuffers[i],
+            mUniformBuffersMemory[i * mUniformBuffersCount + 1]);
+
+        vkMapMemory(mDevice->getLogicalDevice(),
+            mUniformBuffersMemory[i * mUniformBuffersCount + 1],
+            0,
+            bufferSize,
+            0,
+            &mMappedData[i * mUniformBuffersCount + 1]);
     }
 }

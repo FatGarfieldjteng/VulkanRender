@@ -11,6 +11,7 @@ class Device;
 class PBRConstantBuffer: public ConstantBuffer
 {
 public:
+
 	PBRConstantBuffer(Device *device,
 		Scene* scene,
 		unsigned int maxFramesInFligt = 2);
@@ -20,6 +21,12 @@ public:
 	{
 		glm::mat4 mvp;
 		glm::vec4 cameraPos;
+	};
+
+	// WVP constant buffer
+	struct LightMVPConstantBuffer
+	{
+		glm::mat4 mvp;
 	};
 
 public:

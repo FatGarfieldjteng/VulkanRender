@@ -4,6 +4,7 @@
 layout(location = 0) in vec3 inPos;
 layout(location = 1) in vec3 inNormal;
 layout(location = 2) in vec2 inTexCoord;
+layout (location = 3) in vec4 inShadowTexCoord;
 
 layout(location = 0) out vec4 out_FragColor;
 
@@ -32,14 +33,16 @@ const uint HAS_ALBEDO_MAP = (0x1 << 0);
 const uint HAS_ROUGHNESS_METALLIC_MAP = (0x1 << 1);
 const uint HAS_NORMAL_MAP = (0x1 << 2);
 
-layout(binding = 1) uniform sampler2D texAlbedo;
-layout(binding = 2) uniform sampler2D texMetalRoughness;
-layout(binding = 3) uniform sampler2D texNormal;
+layout(binding = 2) uniform sampler2D texAlbedo;
+layout(binding = 3) uniform sampler2D texMetalRoughness;
+layout(binding = 4) uniform sampler2D texNormal;
 
-layout(binding = 4) uniform samplerCube texEnvMap;
-layout(binding = 5) uniform samplerCube texEnvMapIrradiance;
+layout(binding = 5) uniform samplerCube texEnvMap;
+layout(binding = 6) uniform samplerCube texEnvMapIrradiance;
 
-layout(binding = 6) uniform sampler2D texBRDF_LUT;
+layout(binding = 7) uniform sampler2D texBRDF_LUT;
+
+layout (binding = 8) uniform sampler2D shadowMap;
 
 struct PBRInfo
 {
@@ -256,6 +259,44 @@ vec3 perturbNormal(vec3 n, vec3 v, vec3 normalSample, vec2 uv)
 	return normalize(TBN * map);
 }
 
+float textureProj(vec4 shadowCoord, vec2 off)
+{
+	float shadow = 1.0;
+	float ambient = 0.1;
+	if ( shadowCoord.z > -1.0 && shadowCoord.z < 1.0 ) 
+	{
+		float dist = texture( shadowMap, shadowCoord.st + off ).r;
+		if ( shadowCoord.w > 0.0 && dist < shadowCoord.z ) 
+		{
+			shadow = ambient;
+		}
+	}
+	return shadow;
+}
+
+float filterPCF(vec4 sc)
+{
+	ivec2 texDim = textureSize(shadowMap, 0);
+	float scale = 1.5;
+	float dx = scale * 1.0 / float(texDim.x);
+	float dy = scale * 1.0 / float(texDim.y);
+
+	float shadowFactor = 0.0;
+	int count = 0;
+	int range = 1;
+	
+	for (int x = -range; x <= range; x++)
+	{
+		for (int y = -range; y <= range; y++)
+		{
+			shadowFactor += textureProj(sc, vec2(dx*x, dy*y));
+			count++;
+		}
+	
+	}
+	return shadowFactor / count;
+}
+
 void main()
 {
 	vec4 Kd = materialValue.albedoFactor;
@@ -299,7 +340,9 @@ void main()
 		pbrInputs);
 	
 	// one hardcoded light source
-	color += calculatePBRLightContribution( pbrInputs, normalize(vec3(-1.0, -1.0, -1.0)), vec3(1.0) );
+	color = calculatePBRLightContribution( pbrInputs, normalize(vec3(1.0, 1.0, 1.0)), vec3(1.0) );
+
+	float shadow = filterPCF(inShadowTexCoord / inShadowTexCoord.w);
 	
-	out_FragColor = vec4(color, 1.0);
+	out_FragColor = vec4(color * shadow, 1.0);
 }
