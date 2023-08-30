@@ -241,7 +241,7 @@ void PBRConstantBuffer::createDescriptorSets()
 
             // shadow map
             VkDescriptorImageInfo imageInfoShadowMap{};
-            imageInfoShadowMap.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            imageInfoShadowMap.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
             imageInfoShadowMap.imageView = shadowMap->mImageViews[frameIndex];
             imageInfoShadowMap.sampler = shadowMap->mSamplers[frameIndex];
 
