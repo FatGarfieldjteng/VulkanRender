@@ -32,6 +32,8 @@ public:
 
     void updateShadowConstantBuffer(uint32_t frameIndex);
 
+    void updatePBRShadowConstantBuffer(uint32_t frameIndex);
+
     ConstantBuffer* getConstantBuffer(const std::string& ID);
    
 private:

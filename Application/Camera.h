@@ -17,10 +17,16 @@ public:
 		float near, 
 		float far);
 
+	void setupPespectiveShadow(float FOV,
+		float aspect,
+		float near,
+		float far);
+
 	void setCameraMoveSpeed(glm::vec3 moveSpeed);
 
 	void computeView();
 	void computeProj();
+	void computeProjShadow();
 	void computeViewProj();
 
 	// move camera
@@ -59,7 +65,7 @@ private:
 	glm::vec3 mUp;
 
 	// move speed
-	glm::vec3 mMoveSpeed = glm::vec3(0.01f, 0.01f, 0.01f);
+	glm::vec3 mMoveSpeed = glm::vec3(0.005f, 0.005f, 0.005f);
 
 	// rotate speed
 	glm::vec3 mRotateSpeed = glm::vec3(0.01f, 0.01f, 0.01f);

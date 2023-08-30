@@ -262,7 +262,7 @@ vec3 perturbNormal(vec3 n, vec3 v, vec3 normalSample, vec2 uv)
 float textureProj(vec4 shadowCoord, vec2 off)
 {
 	float shadow = 1.0;
-	float ambient = 0.1;
+	float ambient = 0.01;
 	if ( shadowCoord.z > -1.0 && shadowCoord.z < 1.0 ) 
 	{
 		float dist = texture( shadowMap, shadowCoord.st + off ).r;
@@ -340,7 +340,7 @@ void main()
 		pbrInputs);
 	
 	// one hardcoded light source
-	color = calculatePBRLightContribution( pbrInputs, normalize(vec3(1.0, 1.0, 1.0)), vec3(1.0) );
+	color += calculatePBRLightContribution( pbrInputs, normalize(vec3(5.0, 15.0, 5.0)), vec3(1.0) );
 
 	float shadow = filterPCF(inShadowTexCoord / inShadowTexCoord.w);
 	

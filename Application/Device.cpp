@@ -307,6 +307,7 @@ void Device::drawPBRFrame()
     shadowPass->recordCommand(commandBuffer, mManagers, imageIndex, mFrameIndex, mScene);
 
     RenderPass* beautyPass = renderPassManager->getPass("beauty");
+    constantBufferManager->updatePBRShadowConstantBuffer(mFrameIndex);
     constantBufferManager->updateWVPCameraPosConstantBuffer(mFrameIndex);
     beautyPass->recordCommand(commandBuffer, mManagers, imageIndex, mFrameIndex, mScene);
     

@@ -21,7 +21,7 @@ protected:
 
 	bool mCastShadow = false;
 
-	glm::vec3 mPos = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::vec3 mPos = glm::vec3(5.0f, 15.0f, 5.0f);
 
 	Camera* mLightCamera = nullptr;
 };

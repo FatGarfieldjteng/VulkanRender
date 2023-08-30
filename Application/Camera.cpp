@@ -39,6 +39,18 @@ void Camera::setupPespective(float FOV,
 	computeProj();
 }
 
+void Camera::setupPespectiveShadow(float FOV,
+	float aspect,
+	float near,
+	float far)
+{
+	mFOV = FOV;
+	mAspect = aspect;
+	mNear = near;
+	mFar = far;
+	computeProjShadow();
+}
+
 void Camera::setCameraMoveSpeed(glm::vec3 moveSpeed)
 {
 	mMoveSpeed = moveSpeed;
@@ -53,6 +65,11 @@ void Camera::computeProj()
 {
 	mProj = glm::perspective(mFOV, mAspect, mNear, mFar);
 	mProj[1][1] *= -1;
+}
+
+void Camera::computeProjShadow()
+{
+	mProj = glm::perspective(mFOV, mAspect, mNear, mFar);
 }
 
 void Camera::computeViewProj()

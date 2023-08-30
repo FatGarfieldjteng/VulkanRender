@@ -23,7 +23,7 @@ void Light::create()
 	{
 		mLightCamera = new Camera();
 
-		mLightCamera->setupPespective(90.0f, 1.0f, 0.001f, 100000.0f);
+		mLightCamera->setupPespective(90.0f, 1.0f, 1.0f, 100.0f);
 		mLightCamera->setupLookAt(mPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		mLightCamera->computeViewProj();

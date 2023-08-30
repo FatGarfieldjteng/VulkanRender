@@ -85,7 +85,8 @@ void ConstantBufferManager::updateWVPCameraPosConstantBuffer(uint32_t frameIndex
 	WVPCameraPos.mvp = mCamera->getViewProj();
 	WVPCameraPos.cameraPos = mCamera->getCameraPos();
 
-	getConstantBuffer("PBR")->update(frameIndex, &WVPCameraPos, sizeof(WVPCameraPos));
+	uint32_t index = frameIndex * 2;
+	getConstantBuffer("PBR")->update(index, &WVPCameraPos, sizeof(WVPCameraPos));
 }
 
 void ConstantBufferManager::updateShadowConstantBuffer(uint32_t frameIndex)
@@ -96,6 +97,17 @@ void ConstantBufferManager::updateShadowConstantBuffer(uint32_t frameIndex)
 
 	getConstantBuffer("Shadow")->update(frameIndex, &lightMVP, sizeof(lightMVP));
 }
+
+void ConstantBufferManager::updatePBRShadowConstantBuffer(uint32_t frameIndex)
+{
+	ShadowConstantBuffer::LightMVPConstantBuffer lightMVP{};
+
+	lightMVP.mvp = mDevice->getLight()->getLightCamera()->getViewProj();
+
+	uint32_t index = frameIndex * 2 + 1;
+	getConstantBuffer("PBR")->update(index, &lightMVP, sizeof(lightMVP));
+}
+
 
 void ConstantBufferManager::addConstantBuffer(const std::string& ID, ConstantBuffer* constantBuffer)
 {
