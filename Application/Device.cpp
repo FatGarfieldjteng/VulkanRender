@@ -16,6 +16,7 @@
 #include "Light.h"
 #include "BoundingBox.h"
 #include "RenderPass.h"
+#include "VulkanRenderTaskGraph.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -90,6 +91,10 @@ Device::~Device()
         delete mCamera;
     }
 
+    if (mRenderTaskGraph)
+    {
+        delete mRenderTaskGraph;
+    }
 
     vkDestroyCommandPool(mLogicalDevice, mCopyCommandPool, nullptr);
 
@@ -657,6 +662,11 @@ void Device::createCamera()
 void Device::createLight()
 {
     mLight = new Light(true);
+}
+
+void Device::createRenderTaskGraph()
+{
+    mRenderTaskGraph = new VulkanRenderTaskGraph();
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)

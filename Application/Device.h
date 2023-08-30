@@ -19,6 +19,7 @@ class SyncObjectManager;
 class Scene;
 class Camera;
 class Light;
+class VulkanRenderTaskGraph;
 
 class Device
 {
@@ -147,6 +148,8 @@ private:
 	void createCamera();
 	void createLight();
 
+	void createRenderTaskGraph();
+
 	bool isDeviceSuitable(VkPhysicalDevice device);
 
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
@@ -197,6 +200,8 @@ private:
 	// copy CommandPool and CopyCommand
 	VkCommandPool mCopyCommandPool = VK_NULL_HANDLE;
 	VkCommandBuffer mCopyCommandBuffer = VK_NULL_HANDLE;
+
+	VulkanRenderTaskGraph* mRenderTaskGraph = nullptr;
 
 	// swap chain extension
 	const std::vector<const char*> mSwapChainExtensionName = 
