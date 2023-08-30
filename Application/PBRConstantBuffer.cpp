@@ -278,7 +278,8 @@ void PBRConstantBuffer::createDescriptorSets()
 
 void PBRConstantBuffer::createUniformBuffers()
 {
-    VkDeviceSize bufferSize = sizeof(MVPCameraPosConstantBuffer);
+    VkDeviceSize bufferSize0 = sizeof(MVPCameraPosConstantBuffer);
+    VkDeviceSize bufferSize1 = sizeof(LightMVPConstantBuffer);
 
     mUniformBuffers.resize(mMaxFramesInFligt * mUniformBuffersCount);
     mUniformBuffersMemory.resize(mMaxFramesInFligt * mUniformBuffersCount);
@@ -286,29 +287,29 @@ void PBRConstantBuffer::createUniformBuffers()
 
     for (size_t i = 0; i < mMaxFramesInFligt; i++)
     {
-        mDevice->createBuffer(bufferSize,
+        mDevice->createBuffer(bufferSize0,
             VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            mUniformBuffers[i],
+            mUniformBuffers[i * mUniformBuffersCount],
             mUniformBuffersMemory[i * mUniformBuffersCount]);
 
         vkMapMemory(mDevice->getLogicalDevice(),
             mUniformBuffersMemory[i * mUniformBuffersCount],
             0,
-            bufferSize,
+            bufferSize0,
             0,
             &mMappedData[i * mUniformBuffersCount]);
 
-        mDevice->createBuffer(bufferSize,
+        mDevice->createBuffer(bufferSize1,
             VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            mUniformBuffers[i],
+            mUniformBuffers[i * mUniformBuffersCount + 1],
             mUniformBuffersMemory[i * mUniformBuffersCount + 1]);
 
         vkMapMemory(mDevice->getLogicalDevice(),
             mUniformBuffersMemory[i * mUniformBuffersCount + 1],
             0,
-            bufferSize,
+            bufferSize1,
             0,
             &mMappedData[i * mUniformBuffersCount + 1]);
     }
