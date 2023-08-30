@@ -3,6 +3,12 @@ cmake_minimum_required(VERSION 3.16.1)
 set(TARGET_NAME VulkanRenderApp)
 
 set(HEADER_FILES
+    RenderTask.h
+	RenderShadowTask.h
+	RenderBeautyTask.h
+	RenderTaskGraph.h
+	VulkanRenderTaskGraph.h
+	RenderTaskResource.h
 	GraphicsSystem.h
 	Validation.h
 	Device.h
@@ -60,6 +66,12 @@ set(HEADER_FILES
 
 set(SOURCE_FILES 
 	VulkanMain.cpp
+	RenderTask.cpp
+	RenderShadowTask.cpp
+	RenderBeautyTask.cpp
+	RenderTaskGraph.cpp
+	VulkanRenderTaskGraph.cpp
+	RenderTaskResource.cpp
 	GraphicsSystem.cpp
 	Validation.cpp
 	Device.cpp
