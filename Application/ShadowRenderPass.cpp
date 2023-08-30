@@ -95,6 +95,12 @@ void ShadowRenderPass::recordCommand(VkCommandBuffer commandBuffer,
     PipelineManager* pipelineManager = managers->getPipelineManager();
     Pipeline* pipeline = pipelineManager->getPipeline("Shadow");
 
+    vkCmdSetDepthBias(
+        commandBuffer,
+        depthBiasConstant,
+        0.0f,
+        depthBiasSlope);
+
     vkCmdBindPipeline(commandBuffer,
         VK_PIPELINE_BIND_POINT_GRAPHICS,
         pipeline->getPipeline());

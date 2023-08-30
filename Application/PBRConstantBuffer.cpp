@@ -7,6 +7,9 @@
 #include "CubeTexture.h"
 #include "GLITexture.h"
 #include "VulkanHelper.h"
+#include "Managers.h"
+#include "TransitResourceManager.h"
+#include "TransitResource.h"
 #include <stdexcept>
 #include <array>
 
@@ -69,8 +72,17 @@ void PBRConstantBuffer::createDescriptorPool()
 
 void PBRConstantBuffer::createDescriptorSetLayout()
 {
+    int totalDescriptors = mTexturesPerMaterialCount +
+        mTexturesIBLCount +
+        mUniformBuffersCount +
+        mShadowTexturesCount;
+
+    int textureDescriptors = mTexturesPerMaterialCount +
+        mTexturesIBLCount +
+        mShadowTexturesCount;
+
     std::vector<VkDescriptorSetLayoutBinding> bindings;
-    bindings.resize(7);
+    bindings.resize(totalDescriptors);
 
     bindings[0].binding = 0;
     bindings[0].descriptorCount = 1;
@@ -78,7 +90,13 @@ void PBRConstantBuffer::createDescriptorSetLayout()
     bindings[0].pImmutableSamplers = nullptr;
     bindings[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 
-    for (int i = 1; i < 7; i++)
+    bindings[1].binding = 1;
+    bindings[1].descriptorCount = 1;
+    bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    bindings[1].pImmutableSamplers = nullptr;
+    bindings[1].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+    for (int i = mUniformBuffersCount; i < totalDescriptors; i++)
     {
         bindings[i].binding = i;
         bindings[i].descriptorCount = 1;
@@ -125,6 +143,8 @@ void PBRConstantBuffer::createDescriptorSets()
 
     // allocate descriptor sets
     vkAllocateDescriptorSets(mDevice->getLogicalDevice(), &allocInfo, mDescriptorSets.data());
+
+    TransitResource *shadowMap = mDevice->getManagers()->getTransitResourceManager()->getResource("depth");
 
     for (int frameIndex = 0; frameIndex < mMaxFramesInFligt; ++frameIndex)
     {
@@ -219,13 +239,11 @@ void PBRConstantBuffer::createDescriptorSets()
             imageInfoLUT.imageView = LUTTexture->mImageView;
             imageInfoLUT.sampler = LUTTexture->mSampler;
 
+            // shadow map
             VkDescriptorImageInfo imageInfoShadowMap{};
-
-            // get shadow map
-            /*imageInfoLUT.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            GLITexture* LUTTexture = simpleScene->getEnvLUTTexture();
-            imageInfoLUT.imageView = LUTTexture->mImageView;
-            imageInfoLUT.sampler = LUTTexture->mSampler;*/
+            imageInfoShadowMap.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            imageInfoShadowMap.imageView = shadowMap->mImageViews[frameIndex];
+            imageInfoShadowMap.sampler = shadowMap->mSamplers[frameIndex];
 
             const int mTexturesPerMaterialCount = 3;
             const int mTexturesIBLCount = 3;
@@ -241,14 +259,14 @@ void PBRConstantBuffer::createDescriptorSets()
             writeDescriptors.resize(totalDescriptors);
 
             writeDescriptors[0] = VulkanHelper::bufferWriteDescriptorSet(ds, 0, &bufferInfo[0]);
-            writeDescriptors[1] = VulkanHelper::bufferWriteDescriptorSet(ds, 0, &bufferInfo[1]);
+            writeDescriptors[1] = VulkanHelper::bufferWriteDescriptorSet(ds, 1, &bufferInfo[1]);
             writeDescriptors[2] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 2, &imageInfoAlbedo);
             writeDescriptors[3] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 3, &imageInfoMeR);
             writeDescriptors[4] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 4, &imageInfoNormal);
             writeDescriptors[5] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 5, &imageInfoEnv);
             writeDescriptors[6] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 6, &imageInfoEnvIrr);
             writeDescriptors[7] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 7, &imageInfoLUT);
-            writeDescriptors[8] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 8, &imageInfoLUT);
+            writeDescriptors[8] = VulkanHelper::imageSamplerWriteDescriptorSet(ds, 8, &imageInfoShadowMap);
 
             size_t writeDescriptorCount = writeDescriptors.size();
             VkWriteDescriptorSet* writeDescriptorData = writeDescriptors.data();

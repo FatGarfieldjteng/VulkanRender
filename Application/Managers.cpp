@@ -21,7 +21,7 @@ Managers::Managers(Device* mDevice,
 	, mCamera(camera)
 	, mScene(scene)
 {
-	createManagers();
+
 }
 
 Managers::~Managers()

@@ -302,13 +302,13 @@ void Device::drawPBRFrame()
     /*RenderPass * clearPass = renderPassManager->getPass("clear");
     clearPass->recordCommand(commandBuffer,nullptr, mFrameIndex);*/
 
-    RenderPass* beautyPass = renderPassManager->getPass("beauty");
-    constantBufferManager->updateWVPCameraPosConstantBuffer(mFrameIndex);
-    beautyPass->recordCommand(commandBuffer, mManagers, imageIndex, mFrameIndex, mScene);
-
     RenderPass* shadowPass = renderPassManager->getPass("shadow");
     constantBufferManager->updateShadowConstantBuffer(mFrameIndex);
     shadowPass->recordCommand(commandBuffer, mManagers, imageIndex, mFrameIndex, mScene);
+
+    RenderPass* beautyPass = renderPassManager->getPass("beauty");
+    constantBufferManager->updateWVPCameraPosConstantBuffer(mFrameIndex);
+    beautyPass->recordCommand(commandBuffer, mManagers, imageIndex, mFrameIndex, mScene);
     
     /*RenderPass* finalPass = renderPassManager->getPass("final");
     finalPass->recordCommand(commandBuffer, nullptr, mFrameIndex);*/
@@ -576,6 +576,8 @@ void Device::createDepthStencilBuffer()
 void Device::createManagers()
 {
     mManagers = new Managers(this, mSwapChain, mDepthStencilBuffer, mCamera, mScene);
+
+    mManagers->createManagers();
 
     //deferred the build of passes, because RenderPass::build need to access mManagers,
     // which is not available yet

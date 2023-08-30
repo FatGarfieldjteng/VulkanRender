@@ -64,7 +64,7 @@ public:
         return mTransitResourceManager;
     }
 
-private:
+public:
     void createManagers();
 
 private:
