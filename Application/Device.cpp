@@ -180,6 +180,8 @@ void Device::create(VkInstance instance, GLFWwindow* window)
     createLight();
 
     createManagers();
+
+    createRenderTaskGraph();
     
     
     createFrameBuffer();
@@ -667,6 +669,10 @@ void Device::createLight()
 void Device::createRenderTaskGraph()
 {
     mRenderTaskGraph = new VulkanRenderTaskGraph();
+
+    mRenderTaskGraph->createTasks();
+
+    mRenderTaskGraph->compile();
 }
 
 bool Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)

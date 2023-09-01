@@ -5,6 +5,7 @@
 
 class RenderTask;
 class RenderTaskResource;
+class RenderTaskLinkInfo;
 
 class RenderTaskGraph
 {
@@ -14,11 +15,12 @@ public:
 
 public:
 	virtual void createTasks() = 0;
-	virtual void linkPass(RenderTask* srcPass, RenderTask* dstPass, RenderTaskResource* resource);
+	virtual void linkPass(RenderTaskLinkInfo* linkInfos);
 	void compile();
 	void execute();
 	RenderTask* getTask(const std::string& ID);
 protected:
 	std::map<std::string, RenderTask*> mIDToTask;
+	std::vector<RenderTaskLinkInfo*> mLinkInfos;
 	std::vector<RenderTask*> mCompiledTask;
 };

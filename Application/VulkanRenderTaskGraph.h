@@ -13,5 +13,4 @@ protected:
 
 public:
 	virtual void createTasks();
-	virtual void linkPass(RenderTask* srcPass, RenderTask* dstPass, RenderTaskResource* resource);
 };

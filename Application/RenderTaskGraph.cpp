@@ -11,10 +11,9 @@ RenderTaskGraph::~RenderTaskGraph()
  
 }
 
-void RenderTaskGraph::linkPass(RenderTask* srcPass, RenderTask* dstPass, RenderTaskResource* resource)
+void RenderTaskGraph::linkPass(RenderTaskLinkInfo* linkInfos)
 {
-	srcPass->addOutputResource(resource);
-	dstPass->addInputResource(resource);
+	mLinkInfos.push_back(linkInfos);
 }
 
 RenderTask* RenderTaskGraph::getTask(const std::string& ID)

@@ -4,6 +4,7 @@ set(TARGET_NAME VulkanRenderApp)
 
 set(HEADER_FILES
     RenderTask.h
+	RenderTaskLinkInfo.h
 	RenderShadowTask.h
 	RenderBeautyTask.h
 	RenderTaskGraph.h
@@ -67,6 +68,7 @@ set(HEADER_FILES
 set(SOURCE_FILES 
 	VulkanMain.cpp
 	RenderTask.cpp
+	RenderTaskLinkInfo.cpp
 	RenderShadowTask.cpp
 	RenderBeautyTask.cpp
 	RenderTaskGraph.cpp

@@ -25,8 +25,3 @@ void VulkanRenderTaskGraph::createTasks()
 {
 
 }
-
-void VulkanRenderTaskGraph::linkPass(RenderTask* srcPass, RenderTask* dstPass, RenderTaskResource* resource)
-{
-
-}
