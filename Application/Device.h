@@ -21,6 +21,15 @@ class Camera;
 class Light;
 class VulkanRenderTaskGraph;
 
+// various managers
+class ShaderManager;
+class PassManager;
+class PipelineManager;
+class FormatManager;
+class ConstantBufferManager;
+class RenderPassManager;
+class TransitResourceManager;
+
 class Device
 {
 public:
@@ -80,6 +89,42 @@ public:
 	FrameBuffer* getFrameBuffer()
 	{
 		return mFrameBuffer;
+	}
+
+
+	ShaderManager* getShaderManager()
+	{
+		return mShaderManager;
+	}
+
+	PassManager* getPassManager()
+	{
+		return mPassManager;
+	}
+
+	PipelineManager* getPipelineManager()
+	{
+		return mPipelineManager;
+	}
+
+	FormatManager* getFormatManager()
+	{
+		return mFormatManager;
+	}
+
+	ConstantBufferManager* getConstantBufferManager()
+	{
+		return mConstantBufferManager;
+	}
+
+	RenderPassManager* getRenderPassManager()
+	{
+		return mRenderPassManager;
+	}
+
+	TransitResourceManager* getTransitResourceManager()
+	{
+		return mTransitResourceManager;
 	}
 
 	void createBuffer(VkDeviceSize size, 
@@ -208,4 +253,13 @@ private:
 	{
 		VK_KHR_SWAPCHAIN_EXTENSION_NAME
 	};
+
+	// various managers
+	ShaderManager* mShaderManager = nullptr;
+	PassManager* mPassManager = nullptr;
+	PipelineManager* mPipelineManager = nullptr;
+	FormatManager* mFormatManager = nullptr;
+	ConstantBufferManager* mConstantBufferManager = nullptr;
+	RenderPassManager* mRenderPassManager = nullptr;
+	TransitResourceManager* mTransitResourceManager = nullptr;
 };

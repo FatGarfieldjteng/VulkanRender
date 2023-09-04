@@ -34,38 +34,29 @@ void RenderPassManager::createPasses()
 
 void RenderPassManager::createClearRenderPass()
 {
-	RenderPass::PassInfo passInfo;
-	passInfo.isFirstPass = true;
-
-	ClearRenderPass* pass = new ClearRenderPass(mDevice, passInfo);
+	
+	ClearRenderPass* pass = new ClearRenderPass(mDevice);
 
 	addPass("clear", pass);
 }
 
 void RenderPassManager::createBeautyRenderPass()
 {
-	RenderPass::PassInfo passInfo;
-	
-	BeautyRenderPass *pass = new BeautyRenderPass(mDevice, passInfo);
+	BeautyRenderPass *pass = new BeautyRenderPass(mDevice);
 
 	addPass("beauty", pass);
 }
 
 void RenderPassManager::createShadowRenderPass()
 {
-	RenderPass::PassInfo passInfo;
-
-	ShadowRenderPass* pass = new ShadowRenderPass(mDevice, passInfo);
+	ShadowRenderPass* pass = new ShadowRenderPass(mDevice);
 
 	addPass("shadow", pass);
 }
 
 void RenderPassManager::createFinalRenderPass()
 {
-	RenderPass::PassInfo passInfo;
-	passInfo.isLastPass = true;
-
-	FinalRenderPass* pass = new FinalRenderPass(mDevice, passInfo);
+	FinalRenderPass* pass = new FinalRenderPass(mDevice);
 
 	addPass("final", pass);
 

@@ -8,10 +8,11 @@ class RenderTaskResource;
 
 class RenderTaskLinkInfo
 {
-
+public:
 	enum class LinkType : int
 	{
-		LINK_TYPE_TEXTURE,
+		LINK_TYPE_RENDERTARGET_TEXTURE,
+		LINK_TYPE_RENDERTARGET_DEPTH,
 		LINK_TYPE_BUFFER
 	};
 
@@ -31,6 +32,6 @@ public:
 public:
 	RenderTask* mSrcPass = nullptr;
 	RenderTask* mDstPass = nullptr;
-	LinkType mLinkType = LinkType::LINK_TYPE_TEXTURE;
+	LinkType mLinkType = LinkType::LINK_TYPE_RENDERTARGET_DEPTH;
 	LinkFormat mLinkFormat = LinkFormat::LINK_FORMAT_D32;
 };

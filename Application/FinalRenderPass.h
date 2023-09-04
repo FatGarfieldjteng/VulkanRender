@@ -6,8 +6,7 @@ class Device;
 class FinalRenderPass : public RenderPass
 {
 public:
-	FinalRenderPass(Device* device, 
-		RenderPass::PassInfo passinfo);
+	FinalRenderPass(Device* device);
 	virtual ~FinalRenderPass();
 
 public:

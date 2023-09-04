@@ -23,9 +23,7 @@ public:
     void addResource(const std::string& ID, TransitResource* resource);
     
     TransitResource* getResource(const std::string& ID);
-    
 
-private:
     void createTransitDepthMap();
     
 private:

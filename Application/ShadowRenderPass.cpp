@@ -17,9 +17,8 @@
 #include "ConstantBuffer.h"
 #include "FrameBuffer.h"
 
-ShadowRenderPass::ShadowRenderPass(Device* device, 
-    RenderPass::PassInfo passinfo)
-    :RenderPass(device, passinfo)
+ShadowRenderPass::ShadowRenderPass(Device* device)
+    :RenderPass(device)
 {
 
 }

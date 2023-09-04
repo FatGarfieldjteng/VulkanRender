@@ -6,8 +6,7 @@ class Device;
 class ShadowRenderPass : public RenderPass
 {
 public:
-	ShadowRenderPass(Device* device, 
-		RenderPass::PassInfo passinfo);
+	ShadowRenderPass(Device* device);
 	virtual ~ShadowRenderPass();
 
 public:

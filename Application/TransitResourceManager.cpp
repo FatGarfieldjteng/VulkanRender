@@ -6,7 +6,7 @@
 TransitResourceManager::TransitResourceManager(Device* device)
 	:mDevice(device)
 {
-    createResources();
+    
 }
 
 TransitResourceManager::~TransitResourceManager()

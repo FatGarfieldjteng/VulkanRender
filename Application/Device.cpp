@@ -4,12 +4,10 @@
 #include "DepthStencilBuffer.h"
 #include "ShaderManager.h"
 #include "Pipeline.h"
-#include "RenderPassManager.h"
 #include "Managers.h"
 #include "FrameBuffer.h"
 #include "Command.h"
 #include "SyncObjectManager.h"
-#include "ConstantBufferManager.h"
 #include "PassManager.h"
 #include "SimpleScene.h"
 #include "Camera.h"
@@ -17,6 +15,14 @@
 #include "BoundingBox.h"
 #include "RenderPass.h"
 #include "VulkanRenderTaskGraph.h"
+
+#include "ShaderManager.h"
+#include "PassManager.h"
+#include "PipelineManager.h"
+#include "FormatManager.h"
+#include "ConstantBufferManager.h"
+#include "RenderPassManager.h"
+#include "TransitResourceManager.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -591,6 +597,32 @@ void Device::createManagers()
     // which is not available yet
     mManagers->getRenderPassManager()->getPass("shadow")->buildPass();
 
+    //////////////////////////////////////////////////////////////////////////////////
+    // create various managers
+    // shadermanager
+    mShaderManager = new ShaderManager(getLogicalDevice());
+
+    mTransitResourceManager = new TransitResourceManager(this);
+
+    // vertex format manager
+    mFormatManager = new FormatManager();
+
+    // constant buffer manager
+    mConstantBufferManager = new ConstantBufferManager(this, mCamera, mScene);
+
+    // passmanager
+    mPassManager = new PassManager(getLogicalDevice(), mSwapChain, mDepthStencilBuffer);
+
+    
+
+    
+
+    //// pipelinemanager
+    //mPipelineManager = new PipelineManager(getLogicalDevice(), mScene, nullptr);
+
+    ////renderpassmanager, manage Vulkan renderpass
+    //mRenderPassManager = new RenderPassManager(this);
+
 }
 
 void Device::createFrameBuffer()
@@ -669,6 +701,8 @@ void Device::createLight()
 void Device::createRenderTaskGraph()
 {
     mRenderTaskGraph = new VulkanRenderTaskGraph();
+
+    mRenderTaskGraph->setDevice(this);
 
     mRenderTaskGraph->createTasks();
 

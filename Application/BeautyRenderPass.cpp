@@ -15,9 +15,8 @@
 #include "ConstantBuffer.h"
 #include "FrameBuffer.h"
 
-BeautyRenderPass::BeautyRenderPass(Device* device, 
-    PassInfo passinfo)
-    :RenderPass(device, passinfo)
+BeautyRenderPass::BeautyRenderPass(Device* device)
+    :RenderPass(device)
 {
     buildPass();
 }

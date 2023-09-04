@@ -11,7 +11,7 @@ PassManager::PassManager(VkDevice logicalDevice,
     mSwapChain(swapChain),
     mDepthStencilBuffer(depthStencilBuffer)
 {
-	createPasses();
+	
 }
 
 PassManager::~PassManager()

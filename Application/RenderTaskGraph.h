@@ -15,10 +15,14 @@ public:
 
 public:
 	virtual void createTasks() = 0;
-	virtual void linkPass(RenderTaskLinkInfo* linkInfos);
-	void compile();
-	void execute();
+	virtual void linkTask(RenderTaskLinkInfo* linkInfos);
+	
+	RenderTask* addTask(const std::string& ID, RenderTask* task);
 	RenderTask* getTask(const std::string& ID);
+
+	virtual void compile();
+	virtual void execute();
+
 protected:
 	std::map<std::string, RenderTask*> mIDToTask;
 	std::vector<RenderTaskLinkInfo*> mLinkInfos;

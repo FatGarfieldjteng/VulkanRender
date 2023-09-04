@@ -69,8 +69,12 @@ void Managers::createManagers()
 
 	mTransitResourceManager = new TransitResourceManager(mDevice);
 
+	mTransitResourceManager->createResources();
+
 	// passmanager
 	mPassManager = new PassManager(mDevice->getLogicalDevice(), mSwapChain, mDepthStencilBuffer);
+
+	mPassManager->createPasses();
 
 	// vertex format manager
 	mFormatManager = new FormatManager();

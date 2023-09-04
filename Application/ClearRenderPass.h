@@ -10,8 +10,7 @@ class Scene;
 class ClearRenderPass: public RenderPass
 {
 public:
-	ClearRenderPass(Device* device,
-		RenderPass::PassInfo passinfo);
+	ClearRenderPass(Device* device);
 	virtual ~ClearRenderPass();
 
 public:

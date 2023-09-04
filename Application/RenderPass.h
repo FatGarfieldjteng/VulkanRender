@@ -1,8 +1,10 @@
 #pragma once
 
 #define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
 
+#include "RenderTask.h"
+
+#include <GLFW/glfw3.h>
 #include <vector>
 
 class Device;
@@ -10,17 +12,10 @@ class Scene;
 class PassManager;
 class Managers;
 
-class RenderPass
+class RenderPass : public RenderTask
 {
 public:
-	struct PassInfo
-	{
-		bool isFirstPass = false;
-		bool isLastPass = false;
-	};
-public:
-	RenderPass(Device* device,
-		PassInfo passinfo);
+	RenderPass(Device* device);
 	virtual ~RenderPass();
 
 public:
@@ -34,7 +29,6 @@ public:
 
 protected:
 	Device* mDevice = nullptr;
-	PassInfo mPassInfo;
 
 	// Vulkan objects
 	VkRenderPass mRenderPass = VK_NULL_HANDLE;

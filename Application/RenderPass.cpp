@@ -1,10 +1,8 @@
 #include "RenderPass.h"
 #include "Device.h"
 
-RenderPass::RenderPass(Device* device, 
-    PassInfo passinfo)
+RenderPass::RenderPass(Device* device)
     :mDevice(device)
-    , mPassInfo(passinfo)
 {
     
 }

@@ -2,9 +2,8 @@
 #include "Device.h"
 #include "DepthStencilBuffer.h"
 
-FinalRenderPass::FinalRenderPass(Device* device, 
-    RenderPass::PassInfo passinfo)
-    :RenderPass(device, passinfo)
+FinalRenderPass::FinalRenderPass(Device* device)
+    :RenderPass(device)
 {
     buildPass();
 }
